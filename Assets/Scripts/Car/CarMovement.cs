@@ -63,6 +63,11 @@ public class CarMovement : MonoBehaviour
         Move(vInput, vInput, handbrake, hInput);
     }
 
+    public void ReduceMass(float value)
+    {
+        _rigidbody.mass -= value;
+    }
+
     public void Move(float accelerator, float footbrake, float handbrake, float steering)
     {
         accelerator = Mathf.Clamp(accelerator, 0, 1);

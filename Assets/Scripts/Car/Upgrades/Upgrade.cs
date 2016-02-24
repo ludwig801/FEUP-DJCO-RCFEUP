@@ -17,7 +17,7 @@
             get; set;
         }
 
-        public abstract void Apply();
+        public abstract void Apply(CarMovement car);
         public abstract void Remove();
     }
 }

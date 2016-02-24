@@ -73,7 +73,10 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Car\CarMovement.cs" />
     <Compile Include="Assets\Scripts\Car\UnitConverter.cs" />
+    <Compile Include="Assets\Scripts\Car\Upgrades\EngineUpgrade.cs" />
+    <Compile Include="Assets\Scripts\Car\Upgrades\SuspensionUpgrade.cs" />
     <Compile Include="Assets\Scripts\Car\Upgrades\Upgrade.cs" />
+    <Compile Include="Assets\Scripts\Car\Upgrades\WeightReductionBro.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
