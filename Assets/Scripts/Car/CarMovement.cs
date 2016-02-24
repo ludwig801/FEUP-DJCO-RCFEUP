@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CarMovement : MonoBehaviour
 {
+    public const float VelocityToKMH = 3.6f;
+    public const float KMHToVelocity = 1f / 3.6f;
+
     public List<AxleInfo> Axles;
-    public float MaxMotorTorque;
-    public float TopSpeed;
-    public float MaxReverseTorque;
+    public float MaxMotorTorque;        // em que unidade ? 
+    public float TopSpeed;              // em que unidade ? 
+    public float MaxReverseTorque;      // idem
     public float BrakeTorque;
     public float MaxHandbrakeTorque;
     public float MaxSteeringAngle;
@@ -15,8 +19,6 @@ public class CarMovement : MonoBehaviour
     public float SteeringHelp;
     public bool TractionControl;
     public float TCSlipLimit;
-    public const float VelocityToKMH = 3.6f;
-    public const float KMHToVelocity = 1f / 3.6f;
     public Transform CenterOfMass;
 
     [SerializeField]
@@ -31,15 +33,7 @@ public class CarMovement : MonoBehaviour
     {
         get
         {
-            var count = 0;
-
-            foreach (var axle in Axles)
-            {
-                if (axle.Motor)
-                    count += 2;
-            }
-
-            return count;
+            return Axles.Where(m => m.Motor).Count() * 2;
         }
     }
 
@@ -54,7 +48,6 @@ public class CarMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        //_rigidbody.centerOfMass = CenterOfMass.position;
 
         _currentMotorTorque = TractionControl ? 0 : MaxMotorTorque;
 
@@ -99,8 +92,6 @@ public class CarMovement : MonoBehaviour
         {
             axle.LeftWheel.steerAngle = steerAngle;
             axle.RightWheel.steerAngle = steerAngle;
-            //axle.LeftWheel.steerAngle = Mathf.Lerp(axle.LeftWheel.steerAngle, steerAngle, Time.fixedDeltaTime * 10f);
-            //axle.RightWheel.steerAngle = Mathf.Lerp(axle.RightWheel.steerAngle, steerAngle, Time.fixedDeltaTime * 10f);
         }
     }
 
