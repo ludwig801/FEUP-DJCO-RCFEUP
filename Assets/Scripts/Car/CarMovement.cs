@@ -23,6 +23,8 @@ public class CarMovement : MonoBehaviour
     Rigidbody _rigidbody;
     [SerializeField]
     float _currentMotorTorque;
+    [SerializeField]
+    float[] _forwardSlips;
     float _oldSteerHelpRotation;
 
     int NumMotorWheels
@@ -55,6 +57,8 @@ public class CarMovement : MonoBehaviour
         //_rigidbody.centerOfMass = CenterOfMass.position;
 
         _currentMotorTorque = TractionControl ? 0 : MaxMotorTorque;
+
+        _forwardSlips = new float[4];
 
         MaxHandbrakeTorque = float.MaxValue;
     }
@@ -166,17 +170,25 @@ public class CarMovement : MonoBehaviour
     {
         if (TractionControl)
         {
+            var i = 0;
             foreach (var axle in Axles)
             {
                 WheelHit hit;
                 if (axle.LeftWheel.GetGroundHit(out hit))
                 {
+                    _forwardSlips[i] = hit.forwardSlip;
                     AdjustTorque(hit.forwardSlip);
                 }
+
+                i++;
+
                 if (axle.RightWheel.GetGroundHit(out hit))
                 {
+                    _forwardSlips[i] = hit.forwardSlip;
                     AdjustTorque(hit.forwardSlip);
                 }
+
+                i++;
             }
         }
         else
@@ -187,7 +199,7 @@ public class CarMovement : MonoBehaviour
 
     private void AdjustTorque(float forwardSlip)
     {
-        if (forwardSlip >= TCSlipLimit && _currentMotorTorque >= 0)
+        if (forwardSlip >= TCSlipLimit && _currentMotorTorque > 0)
         {
             _currentMotorTorque -= 10;
         }
