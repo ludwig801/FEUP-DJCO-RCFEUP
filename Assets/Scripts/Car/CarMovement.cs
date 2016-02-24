@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Car;
@@ -7,7 +8,6 @@ public class CarMovement : MonoBehaviour
 {
     public List<AxleInfo> Axles;
     public float MaxMotorTorque;        // em que unidade ? 
-    public float TopSpeed;              // em que unidade ? 
     public float MaxReverseTorque;      // idem
     public float BrakeTorque;
     public float MaxHandbrakeTorque;
@@ -18,6 +18,7 @@ public class CarMovement : MonoBehaviour
     public bool TractionControl;
     public float TCSlipLimit;
     public Transform CenterOfMass;
+    public Car car;
 
     [SerializeField]
     Rigidbody _rigidbody;
@@ -144,9 +145,9 @@ public class CarMovement : MonoBehaviour
 
     private void ClampSpeed(float accelerator, float footbrake)
     {
-        if (SpeedKMH > TopSpeed)
+        if (SpeedKMH > car.TopSpeedInKmh)
         {
-            _rigidbody.velocity = UnitConverter.KmhToVelocity(TopSpeed) * _rigidbody.velocity.normalized;
+            _rigidbody.velocity = UnitConverter.KmhToVelocity(car.TopSpeedInKmh) * _rigidbody.velocity.normalized;
         }
 
         if (accelerator == 0 && footbrake == 0 && SpeedKMH > -5 && SpeedKMH < 5)

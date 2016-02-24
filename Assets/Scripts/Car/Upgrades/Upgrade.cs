@@ -1,21 +1,14 @@
-﻿namespace Assets.Scripts.Car.Upgrades
+﻿using UnityEngine;
+
+namespace Assets.Scripts.Car.Upgrades
 {
-    public abstract class Upgrade
+    public abstract class Upgrade : MonoBehaviour
     {
-        public string Name
-        {
-            get; set;
-        }
+        public string Name;
 
-        public string Description
-        {
-            get; set;
-        }
+        public string Description;
 
-        public double Price
-        {
-            get; set;
-        }
+        public double PriceInEuros;
 
         public abstract void Apply(Car car);
         public abstract void Remove();

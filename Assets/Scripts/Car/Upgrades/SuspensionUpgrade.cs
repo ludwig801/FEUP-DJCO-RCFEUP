@@ -4,6 +4,7 @@ namespace Assets.Scripts.Car.Upgrades
 {
     public class SuspensionUpgrade : Upgrade
     {
+        public float LoweringInMm;
 
         public override void Apply(Car car)
         {

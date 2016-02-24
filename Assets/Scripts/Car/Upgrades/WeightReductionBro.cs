@@ -4,11 +4,11 @@ namespace Assets.Scripts.Car.Upgrades
 {
     public class WeightReductionBro : Upgrade
     {
-        public float WeightReduction;
+        public float WeightReductionInKg;
 
         public override void Apply(Car car)
         {
-            throw new NotImplementedException();
+            car.MassInKg -= WeightReductionInKg;
         }
 
         public override void Remove()

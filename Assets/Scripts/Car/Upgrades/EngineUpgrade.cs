@@ -8,7 +8,7 @@ namespace Assets.Scripts.Car.Upgrades
 
         public override void Apply(Car car)
         {
-            throw new NotImplementedException();
+            car.TopSpeedInKmh += TopSpeedIncrement;
         }
 
         public override void Remove()

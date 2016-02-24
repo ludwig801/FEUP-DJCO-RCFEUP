@@ -1,14 +1,15 @@
 ﻿using Assets.Scripts.Car.Upgrades;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.Car
 {
-    public class Car
+    public class Car : MonoBehaviour
     {
-        public ICollection<Upgrade> Upgrades
-        {
-            get; set;
-        }
+        public ICollection<Upgrade> Upgrades;
+
+        public float TopSpeedInKmh;
+        public float MassInKg;
 
         public Car()
         {
@@ -21,6 +22,11 @@ namespace Assets.Scripts.Car
             {
                 upgrade.Apply(this);
             }
+        }
+
+        public void AddUpgrade(Upgrade upgrade)
+        {
+            Upgrades.Add(upgrade);
         }
     }
 }
