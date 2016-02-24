@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Assets.Scripts.Car.Upgrades
 {
     public class SuspensionUpgrade : Upgrade
     {
 
-        public override void Apply(CarMovement car)
+        public override void Apply(Car car)
         {
             throw new NotImplementedException();
         }

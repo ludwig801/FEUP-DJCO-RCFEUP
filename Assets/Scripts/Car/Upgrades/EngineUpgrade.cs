@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Assets.Scripts.Car.Upgrades
 {
@@ -9,9 +6,9 @@ namespace Assets.Scripts.Car.Upgrades
     {
         public int TopSpeedIncrement;
 
-        public override void Apply(CarMovement car)
+        public override void Apply(Car car)
         {
-            car.TopSpeed += TopSpeedIncrement;
+            throw new NotImplementedException();
         }
 
         public override void Remove()
