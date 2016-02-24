@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Car;
 
 public class CarMovement : MonoBehaviour
 {
-    public const float VelocityToKMH = 3.6f;
-    public const float KMHToVelocity = 1f / 3.6f;
-
     public List<AxleInfo> Axles;
     public float MaxMotorTorque;        // em que unidade ? 
     public float TopSpeed;              // em que unidade ? 
@@ -41,7 +39,7 @@ public class CarMovement : MonoBehaviour
     {
         get
         {
-            return _rigidbody.velocity.magnitude * VelocityToKMH;
+            return UnitConverter.VelocityToKmh(_rigidbody.velocity.magnitude);
         }
     }
 
@@ -143,7 +141,7 @@ public class CarMovement : MonoBehaviour
     {
         if (SpeedKMH > TopSpeed)
         {
-            _rigidbody.velocity = (TopSpeed * KMHToVelocity) * _rigidbody.velocity.normalized;
+            _rigidbody.velocity = UnitConverter.KmhToVelocity(TopSpeed) * _rigidbody.velocity.normalized;
         }
 
         if (accelerator == 0 && footbrake == 0 && SpeedKMH > -5 && SpeedKMH < 5)
