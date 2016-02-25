@@ -45,7 +45,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Car\Car.cs" />
      <Compile Include="Assets\Scripts\Car\CarMovement.cs" />
+     <Compile Include="Assets\Scripts\Car\UnitConverter.cs" />
+     <Compile Include="Assets\Scripts\Car\Upgrades\EngineUpgrade.cs" />
+     <Compile Include="Assets\Scripts\Car\Upgrades\SuspensionUpgrade.cs" />
+     <Compile Include="Assets\Scripts\Car\Upgrades\Upgrade.cs" />
+     <Compile Include="Assets\Scripts\Car\Upgrades\WeightReductionBro.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

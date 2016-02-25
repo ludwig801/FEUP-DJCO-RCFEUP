@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Car;
 
+[RequireComponent(typeof(Car))]
 public class CarMovement : MonoBehaviour
 {
     public List<AxleInfo> Axles;
-    public float MaxMotorTorque;        // em que unidade ? 
-    public float MaxReverseTorque;      // idem
+    public float MaxMotorTorqueNM;        // unit: NM (Newton x Metre)
+    public float MaxReverseTorqueNM;      // unit: NM (Newton x Metre)
     public float BrakeTorque;
     public float MaxHandbrakeTorque;
     public float MaxSteeringAngle;
@@ -18,7 +18,7 @@ public class CarMovement : MonoBehaviour
     public bool TractionControl;
     public float TCSlipLimit;
     public Transform CenterOfMass;
-    public Car car;
+    public Car Car;
 
     [SerializeField]
     Rigidbody _rigidbody;
@@ -48,9 +48,11 @@ public class CarMovement : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
 
-        _currentMotorTorque = TractionControl ? 0 : MaxMotorTorque;
+        _currentMotorTorque = TractionControl ? 0 : MaxMotorTorqueNM;
 
         _forwardSlips = new float[4];
+
+        Car = GetComponent<Car>();
 
         MaxHandbrakeTorque = float.MaxValue;
     }
@@ -135,7 +137,7 @@ public class CarMovement : MonoBehaviour
         }
         else if (footbrake != 0)
         {
-            var reverseTorque = footbrake * MaxReverseTorque;
+            var reverseTorque = footbrake * MaxReverseTorqueNM;
             axle.LeftWheel.motorTorque = -reverseTorque;
             axle.RightWheel.motorTorque = -reverseTorque;
             axle.LeftWheel.brakeTorque = 0;
@@ -145,9 +147,9 @@ public class CarMovement : MonoBehaviour
 
     private void ClampSpeed(float accelerator, float footbrake)
     {
-        if (SpeedKMH > car.TopSpeedInKmh)
+        if (SpeedKMH > Car.TopSpeedInKmh)
         {
-            _rigidbody.velocity = UnitConverter.KmhToVelocity(car.TopSpeedInKmh) * _rigidbody.velocity.normalized;
+            _rigidbody.velocity = UnitConverter.KmhToVelocity(Car.TopSpeedInKmh) * _rigidbody.velocity.normalized;
         }
 
         if (accelerator == 0 && footbrake == 0 && SpeedKMH > -5 && SpeedKMH < 5)
@@ -188,7 +190,7 @@ public class CarMovement : MonoBehaviour
         }
         else
         {
-            _currentMotorTorque = MaxMotorTorque;
+            _currentMotorTorque = MaxMotorTorqueNM;
         }
     }
 
@@ -203,7 +205,7 @@ public class CarMovement : MonoBehaviour
             _currentMotorTorque += 10;
         }
 
-        _currentMotorTorque = Mathf.Clamp(_currentMotorTorque, 0, MaxMotorTorque);
+        _currentMotorTorque = Mathf.Clamp(_currentMotorTorque, 0, MaxMotorTorqueNM);
     }
 }
 
