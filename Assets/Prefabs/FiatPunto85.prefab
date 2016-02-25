@@ -11,9 +11,10 @@ GameObject:
   - 54: {fileID: 5486934}
   - 114: {fileID: 11492248}
   - 114: {fileID: 11497312}
+  - 114: {fileID: 11490560}
   m_Layer: 0
   m_Name: FiatPunto85
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +30,7 @@ GameObject:
   - 146: {fileID: 14623998}
   m_Layer: 0
   m_Name: Front Right
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,7 +45,7 @@ GameObject:
   - 4: {fileID: 419776}
   m_Layer: 0
   m_Name: Center of Mass
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +61,7 @@ GameObject:
   - 146: {fileID: 14640106}
   m_Layer: 0
   m_Name: Rear Left
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +77,7 @@ GameObject:
   - 146: {fileID: 14600300}
   m_Layer: 0
   m_Name: Front Left
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,7 +94,7 @@ GameObject:
   - 23: {fileID: 2355638}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,7 +110,7 @@ GameObject:
   - 65: {fileID: 6558402}
   m_Layer: 0
   m_Name: Chassis
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,7 +125,7 @@ GameObject:
   - 4: {fileID: 430842}
   m_Layer: 0
   m_Name: Colliders
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,7 +140,7 @@ GameObject:
   - 4: {fileID: 454868}
   m_Layer: 0
   m_Name: Wheels
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -155,7 +156,7 @@ GameObject:
   - 146: {fileID: 14669010}
   m_Layer: 0
   m_Name: Rear Right
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -183,7 +184,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 474446}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &430842
 Transform:
   m_ObjectHideFlags: 1
@@ -196,7 +197,7 @@ Transform:
   m_Children:
   - {fileID: 432688}
   m_Father: {fileID: 474446}
-  m_RootOrder: 3
+  m_RootOrder: 0
 --- !u!4 &432688
 Transform:
   m_ObjectHideFlags: 1
@@ -244,7 +245,7 @@ Transform:
   m_LocalScale: {x: 2, y: 0.5, z: 3}
   m_Children: []
   m_Father: {fileID: 474446}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!4 &454868
 Transform:
   m_ObjectHideFlags: 1
@@ -260,21 +261,21 @@ Transform:
   - {fileID: 474586}
   - {fileID: 413888}
   m_Father: {fileID: 474446}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &474446
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103782}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.09, y: 1.06, z: 0}
+  m_LocalRotation: {x: 0, y: -0.7070824, z: 0, w: 0.7071312}
+  m_LocalPosition: {x: 18.57, y: 1.89, z: -4.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 430842}
   - {fileID: 454868}
   - {fileID: 445752}
   - {fileID: 419776}
-  - {fileID: 430842}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &474586
@@ -349,6 +350,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &11490560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 103782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b762bb34e5e1f4eb92cdefbd405d4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PassedCheckpoints: 0
+  _currentLap: 0
+  _currentCheckpoint: 0
+  _trackManager: {fileID: 0}
 --- !u!114 &11492248
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -369,8 +385,8 @@ MonoBehaviour:
     RightWheel: {fileID: 14669010}
     Motor: 1
     Steering: 0
-  MaxMotorTorqueNM: 0
-  MaxReverseTorqueNM: 0
+  MaxMotorTorqueNM: 2500
+  MaxReverseTorqueNM: 500
   BrakeTorque: 20000
   MaxHandbrakeTorque: 0
   MaxSteeringAngle: 35
@@ -409,7 +425,7 @@ WheelCollider:
     damper: 3500
     targetPosition: 0.5
   m_SuspensionDistance: 0.2
-  m_ForceAppPointDistance: 0.1
+  m_ForceAppPointDistance: 0.35
   m_Mass: 30
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -438,7 +454,7 @@ WheelCollider:
     damper: 3500
     targetPosition: 0.5
   m_SuspensionDistance: 0.2
-  m_ForceAppPointDistance: 0.1
+  m_ForceAppPointDistance: 0.35
   m_Mass: 30
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -467,7 +483,7 @@ WheelCollider:
     damper: 3500
     targetPosition: 0.5
   m_SuspensionDistance: 0.2
-  m_ForceAppPointDistance: 0.1
+  m_ForceAppPointDistance: 0.35
   m_Mass: 30
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -496,7 +512,7 @@ WheelCollider:
     damper: 3500
     targetPosition: 0.5
   m_SuspensionDistance: 0.2
-  m_ForceAppPointDistance: 0.1
+  m_ForceAppPointDistance: 0.35
   m_Mass: 30
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
