@@ -45,6 +45,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Camera\AbstractTargetFollower.cs" />
+     <Compile Include="Assets\Scripts\Camera\AutoCam.cs" />
+     <Compile Include="Assets\Scripts\Camera\PivotBasedCameraRig.cs" />
+     <Compile Include="Assets\Scripts\Camera\ProtectCameraFromWallClip.cs" />
      <Compile Include="Assets\Scripts\Car\Car.cs" />
      <Compile Include="Assets\Scripts\Car\CarMovement.cs" />
      <Compile Include="Assets\Scripts\Car\UnitConverter.cs" />
