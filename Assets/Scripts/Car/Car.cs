@@ -11,7 +11,7 @@ namespace Assets.Scripts.Car
         public float TopSpeedInKmh;
         public float MassInKg;
 
-        public Car()
+        void Start()
         {
             Upgrades = new List<Upgrade>();
         }
