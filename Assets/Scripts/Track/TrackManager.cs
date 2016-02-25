@@ -14,12 +14,17 @@ public class TrackManager : MonoBehaviour
     }
     static TrackManager _instance;
 
-    public int Start;
+    public int StartCheckpoint;
 
     [SerializeField]
     List<TrackTrigger> _checkpoints;
     [SerializeField]
     int _numLaps;
+
+    void Start()
+    {
+        StartCheckpoint = Mathf.Clamp(StartCheckpoint, 0, _checkpoints.Count - 1);
+    }
 
     public int NumLaps
     {
@@ -31,7 +36,7 @@ public class TrackManager : MonoBehaviour
 
     public int GetFirstCheckpoint()
     {
-        return Start;
+        return StartCheckpoint;
     }
 
     public int GetNextCheckpoint(int currentCheckpoint)

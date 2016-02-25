@@ -53,7 +53,6 @@ public class TrackTrigger : MonoBehaviour
 
     void SetColor(Color newColor)
     {
-        Debug.Log("Set Color: " + newColor.ToString());
         foreach (var renderer in _meshRenderers)
         {
             renderer.material.color = newColor;
