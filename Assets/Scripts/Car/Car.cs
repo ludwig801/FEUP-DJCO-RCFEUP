@@ -6,6 +6,8 @@ namespace Assets.Scripts.Car
 {
     public class Car : MonoBehaviour
     {
+		public int CarId;
+
         public ICollection<Upgrade> Upgrades;
 
         public float TopSpeedInKmh;
