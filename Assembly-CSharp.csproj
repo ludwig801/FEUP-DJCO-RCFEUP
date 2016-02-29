@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\Car\Upgrades\UpgradeManager.cs" />
      <Compile Include="Assets\Scripts\Car\Upgrades\UpgradeWriter.cs" />
      <Compile Include="Assets\Scripts\Car\Upgrades\WeightReductionBro.cs" />
+     <Compile Include="Assets\Scripts\Menus\Upgrades\ButtonManager.cs" />
      <Compile Include="Assets\Scripts\Track\TrackManager.cs" />
      <Compile Include="Assets\Scripts\Track\TrackTrigger.cs" />
  <Reference Include="UnityEngine.UI">
