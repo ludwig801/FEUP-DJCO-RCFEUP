@@ -2,39 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Car;
-
-[RequireComponent(typeof(Car))]
 public class CarMovement : MonoBehaviour
 {
-    public List<AxleInfo> Axles;
-    public float MaxMotorTorqueNM;        // unit: NM (Newton x Metre)
-    public float MaxReverseTorqueNM;      // unit: NM (Newton x Metre)
-    public float BrakeTorque;
-    public float MaxHandbrakeTorque;
-    public float MaxSteeringAngle;
-    public float Downforce;
-    [Range(0, 1)]
-    public float SteeringHelp;
-    public bool TractionControl;
-    public float TCSlipLimit;
+    public float Speed;
+    public float RotationSpeed;
     public Transform CenterOfMass;
-    public Car Car;
 
     [SerializeField]
     Rigidbody _rigidbody;
-    [SerializeField]
-    float _currentMotorTorque;
-    [SerializeField]
-    float[] _forwardSlips;
-    float _oldSteerHelpRotation;
-
-    int NumMotorWheels
-    {
-        get
-        {
-            return Axles.Where(m => m.Motor).Count() * 2;
-        }
-    }
 
     float SpeedKMH
     {
@@ -47,14 +22,7 @@ public class CarMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-
-        _currentMotorTorque = TractionControl ? 0 : MaxMotorTorqueNM;
-
-        _forwardSlips = new float[4];
-
-        Car = GetComponent<Car>();
-
-        MaxHandbrakeTorque = float.MaxValue;
+        //_rigidbody.centerOfMass = CenterOfMass.position;
     }
 
     void FixedUpdate()
@@ -71,141 +39,15 @@ public class CarMovement : MonoBehaviour
         _rigidbody.mass -= value;
     }
 
-    public void Move(float accelerator, float footbrake, float handbrake, float steering)
+    public void Move(float throttle, float footbrake, float handbrake, float steering)
     {
-        accelerator = Mathf.Clamp(accelerator, 0, 1);
-        footbrake = -1 * Mathf.Clamp(footbrake, -1, 0);
+        throttle = Input.GetAxisRaw("Vertical");
+        steering = Input.GetAxisRaw("Horizontal");
         handbrake = Mathf.Clamp(handbrake, 0, 1);
-        steering = Mathf.Clamp(steering, -1, 1);
 
-        foreach (AxleInfo axle in Axles)
-        {
-            ApplySteering(axle, steering);
-            ApplyDrive(axle, accelerator, footbrake);
-        }
-
-        ClampSpeed(accelerator, footbrake);
-        ApplyDownForce();
-        ApplyTractionControl();
-        ApplySteeringHelp();
-    }
-
-    private void ApplySteering(AxleInfo axle, float steering)
-    {
-        var steerAngle = steering * MaxSteeringAngle;
-
-        if (axle.Steering)
-        {
-            axle.LeftWheel.steerAngle = steerAngle;
-            axle.RightWheel.steerAngle = steerAngle;
-        }
-    }
-
-    private void ApplySteeringHelp()
-    {
-        foreach (var axle in Axles)
-        {
-            WheelHit hit;
-            if (!axle.LeftWheel.GetGroundHit(out hit))
-                return;
-        }
-
-
-        if (Mathf.Abs(_oldSteerHelpRotation - transform.eulerAngles.y) < 10f)
-        {
-            var turnadjust = (transform.eulerAngles.y - _oldSteerHelpRotation) * SteeringHelp;
-            var velRotation = Quaternion.AngleAxis(turnadjust, Vector3.up);
-            _rigidbody.velocity = velRotation * _rigidbody.velocity;
-        }
-        _oldSteerHelpRotation = transform.eulerAngles.y;
-    }
-
-    private void ApplyDrive(AxleInfo axle, float accelerator, float footbrake)
-    {
-        if (axle.Motor)
-        {
-            var motorTorque = accelerator * (_currentMotorTorque / NumMotorWheels);
-            axle.LeftWheel.motorTorque = motorTorque;
-            axle.RightWheel.motorTorque = motorTorque;
-        }
-
-        if (SpeedKMH > 1 && Vector3.Angle(transform.forward, _rigidbody.velocity) < 50)
-        {
-            var brakeTorque = footbrake * BrakeTorque;
-            axle.LeftWheel.brakeTorque = brakeTorque;
-            axle.RightWheel.brakeTorque = brakeTorque;
-        }
-        else if (footbrake != 0)
-        {
-            var reverseTorque = footbrake * MaxReverseTorqueNM;
-            axle.LeftWheel.motorTorque = -reverseTorque;
-            axle.RightWheel.motorTorque = -reverseTorque;
-            axle.LeftWheel.brakeTorque = 0;
-            axle.RightWheel.brakeTorque = 0;
-        }
-    }
-
-    private void ClampSpeed(float accelerator, float footbrake)
-    {
-        if (SpeedKMH > Car.TopSpeedInKmh)
-        {
-            _rigidbody.velocity = UnitConverter.KmhToVelocity(Car.TopSpeedInKmh) * _rigidbody.velocity.normalized;
-        }
-
-        if (accelerator == 0 && footbrake == 0 && SpeedKMH > -5 && SpeedKMH < 5)
-        {
-            _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, new Vector3(0, _rigidbody.velocity.y, 0), Time.fixedDeltaTime * 8f);
-        }
-    }
-
-    private void ApplyDownForce()
-    {
-        _rigidbody.AddForce(-transform.up * Downforce * _rigidbody.velocity.magnitude);
-    }
-
-    private void ApplyTractionControl()
-    {
-        if (TractionControl)
-        {
-            var i = 0;
-            foreach (var axle in Axles)
-            {
-                WheelHit hit;
-                if (axle.LeftWheel.GetGroundHit(out hit))
-                {
-                    _forwardSlips[i] = hit.forwardSlip;
-                    AdjustTorque(hit.forwardSlip);
-                }
-
-                i++;
-
-                if (axle.RightWheel.GetGroundHit(out hit))
-                {
-                    _forwardSlips[i] = hit.forwardSlip;
-                    AdjustTorque(hit.forwardSlip);
-                }
-
-                i++;
-            }
-        }
-        else
-        {
-            _currentMotorTorque = MaxMotorTorqueNM;
-        }
-    }
-
-    private void AdjustTorque(float forwardSlip)
-    {
-        if (forwardSlip >= TCSlipLimit && _currentMotorTorque > 0)
-        {
-            _currentMotorTorque -= 10;
-        }
-        else
-        {
-            _currentMotorTorque += 10;
-        }
-
-        _currentMotorTorque = Mathf.Clamp(_currentMotorTorque, 0, MaxMotorTorqueNM);
+        _rigidbody.AddForce(throttle * transform.forward * Speed * _rigidbody.mass);
+        _rigidbody.AddTorque(steering * transform.up * RotationSpeed * _rigidbody.mass);
+        _rigidbody.angularVelocity = new Vector3(_rigidbody.angularVelocity.x, Mathf.Clamp(_rigidbody.angularVelocity.y, -3, 3), _rigidbody.angularVelocity.z);
     }
 }
 
