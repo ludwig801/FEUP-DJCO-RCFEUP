@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
+using UnityEngine.UI;
 using Assets.Scripts.Car;
+using System.Collections.Generic;
+
 public class CarMovement : MonoBehaviour
 {
-    public float Speed;
-    public float RotationSpeed;
-    public Transform CenterOfMass;
+    public List<AxleInfo> Axles;
+    public float Acceleration;
+    public float TopSpeed;
+    public float AngularAcceleration;
+    public float MaxSteeringAngle;
+    public float MaxBodyInclination;
+    public Transform BodyPivot;
+    public Text Velocity;
 
     [SerializeField]
     Rigidbody _rigidbody;
+    [SerializeField]
+    float _topVelocity;
 
     float SpeedKMH
     {
@@ -22,7 +30,12 @@ public class CarMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        //_rigidbody.centerOfMass = CenterOfMass.position;
+    }
+
+    void Update()
+    {
+        Velocity.text = string.Format("Velocity: {0:0}", _rigidbody.velocity.magnitude);
+        _topVelocity = UnitConverter.KmhToVelocity(TopSpeed);
     }
 
     void FixedUpdate()
@@ -45,17 +58,34 @@ public class CarMovement : MonoBehaviour
         steering = Input.GetAxisRaw("Horizontal");
         handbrake = Mathf.Clamp(handbrake, 0, 1);
 
-        _rigidbody.AddForce(throttle * transform.forward * Speed * _rigidbody.mass);
-        _rigidbody.AddTorque(steering * transform.up * RotationSpeed * _rigidbody.mass);
-        _rigidbody.angularVelocity = new Vector3(_rigidbody.angularVelocity.x, Mathf.Clamp(_rigidbody.angularVelocity.y, -3, 3), _rigidbody.angularVelocity.z);
+        _rigidbody.AddForce(throttle * transform.forward * Acceleration);
+
+        if (Vector3.Dot(transform.forward, _rigidbody.velocity) < 0)
+            _rigidbody.AddTorque(-steering * transform.up * AngularAcceleration);
+        else
+            _rigidbody.AddTorque(steering * transform.up * AngularAcceleration);
+       
+
+        _rigidbody.angularVelocity = Vector3.ClampMagnitude(_rigidbody.angularVelocity, 2f);
+        _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, _topVelocity);
+
+        foreach (var axle in Axles)
+        {
+            if (axle.Steering)
+            {
+                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(steering * MaxSteeringAngle, 0, 0), Time.fixedDeltaTime * 5f);
+                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, Quaternion.Euler(steering * MaxSteeringAngle, 0, 0), Time.fixedDeltaTime * 5f);
+            }
+        }
+
+        BodyPivot.localRotation = Quaternion.Lerp(BodyPivot.localRotation, Quaternion.Euler(MaxBodyInclination * -throttle, BodyPivot.localRotation.y, MaxBodyInclination * steering), Time.fixedDeltaTime * 5f);
     }
 }
 
 [System.Serializable]
 public class AxleInfo
 {
-    public WheelCollider LeftWheel;
-    public WheelCollider RightWheel;
-    public bool Motor;
+    public Transform LeftWheel;
+    public Transform RightWheel;
     public bool Steering;
 }
