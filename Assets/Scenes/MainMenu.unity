@@ -2313,9 +2313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74ccc7d7176b8f4d9dd3425cce3b372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quitDialoguePanel: {fileID: 1105520695}
-  creditsPanel: {fileID: 1285226188}
-  startMenu: {fileID: 1213696320}
+  quitDialoguePanel: {fileID: 1105520698}
+  creditsPanel: {fileID: 1285226191}
+  startMenu: {fileID: 1213696321}
   playButton: {fileID: 1739152811}
   quitButton: {fileID: 1216021445}
   creditsButton: {fileID: 1782231510}
