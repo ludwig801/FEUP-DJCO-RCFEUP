@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using Assets.Scripts.Car;
 using System.Collections.Generic;
 
@@ -12,10 +11,10 @@ public class CarMovement : MonoBehaviour
     public float Acceleration;
     public float ReverseAcceleration;
     public float AngularAcceleration;
-    public float MaxSteeringAngle;
     public float TurnThresholdKMH;
     public float TopSpeedKMH;
     public float TopSpeedReverseKMH;
+    public float MaxSteeringAngle;
     public float MaxBodySideAngle;
     public float MaxBodyAccelAngle;
     public float MaxBodyBrakeAngle;

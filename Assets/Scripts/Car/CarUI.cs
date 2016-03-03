@@ -14,12 +14,12 @@ public class CarUI : MonoBehaviour
     [SerializeField]
     CarMovement _carMovement;
     [SerializeField]
-    CarTracker _carTracker;
+    LapCounter _carTracker;
 
     void Start()
     {
         _carMovement = CarObject.GetComponent<CarMovement>();
-        _carTracker = CarObject.GetComponent<CarTracker>();
+        _carTracker = CarObject.GetComponent<LapCounter>();
 
         SpeedSlider.minValue = 0;
         SpeedSlider.wholeNumbers = true;

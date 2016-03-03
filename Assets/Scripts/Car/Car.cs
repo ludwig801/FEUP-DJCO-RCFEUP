@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.Car
 {
+    [RequireComponent(typeof(CarMovement))]
+    [RequireComponent(typeof(LapCounter))]
     public class Car : MonoBehaviour
     {
 		public int CarId;
@@ -12,6 +14,28 @@ namespace Assets.Scripts.Car
 
         public float TopSpeedInKmh;
         public float MassInKg;
+        CarMovement _carMovement;
+        LapCounter _lapCounter;
+
+        public CarMovement CarMovement
+        {
+            get
+            {
+                if (_carMovement == null)
+                    _carMovement = GetComponent<CarMovement>();
+                return _carMovement;
+            }
+        }
+
+        public LapCounter LapCounter
+        {
+            get
+            {
+                if (_lapCounter == null)
+                    _lapCounter = GetComponent<LapCounter>();
+                return _lapCounter;
+            }
+        }
 
         void Start()
         {
