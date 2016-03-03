@@ -342,7 +342,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103782}
   m_LocalRotation: {x: 0, y: 0.7071066, z: 0, w: -0.70710695}
-  m_LocalPosition: {x: 18.645044, y: 2.63, z: -32.92}
+  m_LocalPosition: {x: 18.6, y: 4.9, z: -29.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 430842}
@@ -526,8 +526,8 @@ Rigidbody:
   m_GameObject: {fileID: 103782}
   serializedVersion: 2
   m_Mass: 1000
-  m_Drag: 0.01
-  m_AngularDrag: 0.02
+  m_Drag: 0.5
+  m_AngularDrag: 0.5
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -556,9 +556,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47b762bb34e5e1f4eb92cdefbd405d4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PassedCheckpoints: 0
-  _currentLap: 0
-  _currentCheckpoint: 0
   _trackManager: {fileID: 0}
 --- !u!114 &11492248
 MonoBehaviour:
@@ -578,23 +575,26 @@ MonoBehaviour:
   - LeftWheel: {fileID: 416172}
     RightWheel: {fileID: 417474}
     Steering: 0
-  Acceleration: 40
-  ReverseAcceleration: 20
-  TopSpeed: 100
-  AngularAcceleration: 30
-  HandbrakeStrength: 60
+  Acceleration: 4
+  ReverseAcceleration: 2
+  AngularAcceleration: 3
   MaxSteeringAngle: 30
-  TurnThreshold: 10
+  TurnThresholdKMH: 25
+  TopSpeedKMH: 100
+  TopSpeedReverseKMH: 25
   MaxBodySideAngle: 10
   MaxBodyAccelAngle: 5
   MaxBodyBrakeAngle: 5
+  MaxInclinationX: 45
+  MaxInclinationZ: 10
   BodyPivot: {fileID: 461046}
   CenterOfMass: {fileID: 455198}
-  VelocityText: {fileID: 0}
   _rigidbody: {fileID: 0}
   _topVelocity: 0
+  _topVelocityReverse: 0
+  _turnThresholdVelocityMult: 0
+  _trackCount: 0
   _movingForward: 0
-  track: 0
 --- !u!114 &11497312
 MonoBehaviour:
   m_ObjectHideFlags: 1

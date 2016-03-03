@@ -11,31 +11,35 @@ public class CarMovement : MonoBehaviour
     public List<AxleInfo> Axles;
     public float Acceleration;
     public float ReverseAcceleration;
-    public float TopSpeed;
     public float AngularAcceleration;
-    public float HandbrakeStrength;
     public float MaxSteeringAngle;
-    public float TurnThreshold;
+    public float TurnThresholdKMH;
+    public float TopSpeedKMH;
+    public float TopSpeedReverseKMH;
     public float MaxBodySideAngle;
     public float MaxBodyAccelAngle;
     public float MaxBodyBrakeAngle;
+    public float MaxInclinationX, MaxInclinationZ;
     public Transform BodyPivot, CenterOfMass;
-    public Text VelocityText;
 
     [SerializeField]
     Rigidbody _rigidbody;
     [SerializeField]
     float _topVelocity;
     [SerializeField]
-    bool _movingForward;
+    float _topVelocityReverse;
     [SerializeField]
-    int track;
+    float _turnThresholdVelocityMult;
+    [SerializeField]
+    int _trackCount;
+    [SerializeField]
+    bool _movingForward;
 
-    public bool Flying
+    public bool InTrack
     {
         get
         {
-            return track == 0;
+            return _trackCount > 0;
         }
     }
 
@@ -98,22 +102,18 @@ public class CarMovement : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
 
-        track = 0;
+        _trackCount = 0;
     }
 
     void Update()
     {
-        if (VelocityText != null)
-        {
-            VelocityText.text = string.Format("Velocity: {0:0}", SpeedKMH);
-        }
-        _topVelocity = UnitConverter.KmhToVelocity(TopSpeed);
+        _topVelocity = UnitConverter.KmhToVelocity(TopSpeedKMH);
+        _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
+        _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
     }
 
     void FixedUpdate()
     {
-        _rigidbody.centerOfMass = CenterOfMass.localPosition;
-
         var vInput = Input.GetAxis("Vertical");
         var handbrake = Input.GetAxis("Jump");
         var hInput = Input.GetAxis("Horizontal");
@@ -132,6 +132,7 @@ public class CarMovement : MonoBehaviour
         steering = Input.GetAxisRaw("Horizontal");
         handbrake = Mathf.Clamp(handbrake, 0, 1);
 
+        _rigidbody.centerOfMass = CenterOfMass.localPosition;
         _movingForward = Vector3.Dot(transform.forward, Velocity) >= 0;
 
         ApplyDrive(throttle, handbrake);
@@ -145,30 +146,28 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (!Flying)
+        if (InTrack)
         {
-            var realForward = new Vector3(transform.forward.x, 0, transform.forward.z);
-            //var realForward = transform.forward;
             var vectorReference = throttle >= 0 ?
-                (_movingForward ? realForward : -Velocity.normalized) :
-                (_movingForward ? Velocity.normalized : realForward);
-            var accel = throttle > 0 ? Acceleration : ReverseAcceleration;
+                (_movingForward ? transform.forward : -Velocity.normalized) :
+                (_movingForward ? Velocity.normalized : transform.forward);
+            var accel = (throttle > 0) ? (_movingForward ? Acceleration : 0.15f * ReverseAcceleration) : ReverseAcceleration;
 
-            AddForce(throttle * accel * Mass, vectorReference);
+            AddForce(throttle * accel * Mass * 10, vectorReference);
         }
 
-        Velocity = Vector3.ClampMagnitude(Velocity, _topVelocity);
+        Velocity = Vector3.ClampMagnitude(Velocity, _movingForward ? _topVelocity : _topVelocityReverse);
     }
 
     void ApplySteering(float steering)
     {
-        if (!Flying)
+        if (InTrack)
         {
-            AddTorque((_movingForward ? 1 : -1) * steering * AngularAcceleration * Mass, transform.up);
-
-            var turnClamp = Mathf.Clamp01(Speed / TurnThreshold);
-            AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, turnClamp);
+            AddTorque((_movingForward ? 1 : -1) * steering * AngularAcceleration * Mass * 10, transform.up);
         }
+
+        var turnClamp = Mathf.Clamp01(Speed * _turnThresholdVelocityMult);
+        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, turnClamp);
     }
 
     void UpdateWheels(float steering)
@@ -193,8 +192,8 @@ public class CarMovement : MonoBehaviour
     void ClampRotation()
     {
         var rotation = transform.localRotation.eulerAngles;
-        rotation.x = Utils.ClampRotation(rotation.x, 45);
-        rotation.z = Utils.ClampRotation(rotation.z, 10);
+        rotation.x = Utils.ClampRotation(rotation.x, MaxInclinationX);
+        rotation.z = Utils.ClampRotation(rotation.z, MaxInclinationZ);
         transform.localRotation = Quaternion.Euler(rotation);
     }
 
@@ -215,36 +214,18 @@ public class CarMovement : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (Flying)
-        {
-            //AddTorque(800 * Mass, -Vector3.Cross(collision.contacts[0].normal, transform.up));
-            //AddForce(500 * Mass, -transform.up);
-
-            //    //var rotationX = transform.rotation.x;
-            //    //if (rotationX < 45 || rotationX > 315)
-            //    //{
-            //    //    AddForce(250 * Mass, -transform.up);
-            //    //}
-            //    //else if (rotationX > 180)
-            //    //{
-            //    //    var axle = Axles[FRONT_WHEELS];
-            //    //    AddForce(400 * Mass, -transform.up, Vector3.Lerp(axle.LeftWheel.transform.position, axle.RightWheel.transform.position, 0.5f));
-            //    //}
-            //    //else
-            //    //{
-            //    //    var axle = Axles[REAR_WHEELS];
-            //    //    AddForce(400 * Mass, -transform.up, Vector3.Lerp(axle.LeftWheel.transform.position, axle.RightWheel.transform.position, 0.5f));
-            //    //}
-        }
-
         if (collision.gameObject.tag == "Track")
-            track++;
+        {
+            _trackCount++;
+        } 
     }
 
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Track")
-            track--;
+        {
+            _trackCount--;
+        }
     }
 }
 
@@ -254,7 +235,4 @@ public class AxleInfo
     public Transform LeftWheel;
     public Transform RightWheel;
     public bool Steering;
-    //public float Pressure;
-    //public float SpringMaxDistance;
-    //public float Center;
 }

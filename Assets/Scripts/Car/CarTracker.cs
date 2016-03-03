@@ -3,33 +3,45 @@
 [RequireComponent(typeof(Rigidbody))]
 public class CarTracker : MonoBehaviour
 {
-    public int PassedCheckpoints;
-
-    [SerializeField]
-    int _currentLap;
-    [SerializeField]
-    int _currentCheckpoint;
     [SerializeField]
     TrackManager _trackManager;
+
+    public int CurrentLap
+    {
+        get;
+        private set;
+    }
+
+    public int PassedCheckpoints
+    {
+        get;
+        private set;
+    }
+
+    public int NextCheckpoint
+    {
+        get;
+        private set;
+    }
 
     void Start()
     {
         _trackManager = TrackManager.Instance;
 
         PassedCheckpoints = 0;
-        _currentCheckpoint = _trackManager.GetFirstCheckpoint();
+        NextCheckpoint = _trackManager.GetFirstCheckpoint();
     }
     
     void LateUpdate()
     {
-        _currentLap = _trackManager.GetCurrentLap(PassedCheckpoints);
+        CurrentLap = _trackManager.GetCurrentLap(PassedCheckpoints);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (_trackManager.IsColliderOfCheckpoint(other, _currentCheckpoint))
+        if (_trackManager.IsColliderOfCheckpoint(other, NextCheckpoint))
         {
-            _currentCheckpoint = _trackManager.GetNextCheckpoint(_currentCheckpoint);
+            NextCheckpoint = _trackManager.GetNextCheckpoint(NextCheckpoint);
             PassedCheckpoints++;
         }
     }

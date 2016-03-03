@@ -51,6 +51,10 @@ public class TrackManager : MonoBehaviour
 
     public int GetCurrentLap(int passedCheckpoints)
     {
-        return ((passedCheckpoints - 1) / _checkpoints.Count); // account for first checkpoint, which is always passed in the beggining
+        if (passedCheckpoints == 0)
+            return 0;
+
+        // account for first checkpoint, which is always passed in the beggining
+        return ((passedCheckpoints - 1) / _checkpoints.Count) + 1;
     }
 }
