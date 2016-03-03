@@ -21,6 +21,7 @@ public class CarMovement : MonoBehaviour
     public float MaxBodyBrakeAngle;
     public float MaxInclinationX, MaxInclinationZ;
     public Transform BodyPivot, CenterOfMass;
+    public List<PowerUp> PowerUps;
 
     [SerializeField]
     Rigidbody _rigidbody;
@@ -90,6 +91,12 @@ public class CarMovement : MonoBehaviour
         }
     }
 
+    public float CurrentTopSpeedKMH
+    {
+        get;
+        set;
+    }
+
     float Speed
     {
         get
@@ -103,11 +110,12 @@ public class CarMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
 
         _trackCount = 0;
+        CurrentTopSpeedKMH = TopSpeedKMH;
     }
 
     void Update()
     {
-        _topVelocity = UnitConverter.KmhToVelocity(TopSpeedKMH);
+        _topVelocity = UnitConverter.KmhToVelocity(CurrentTopSpeedKMH);
         _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
         _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
     }

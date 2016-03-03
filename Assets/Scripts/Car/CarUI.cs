@@ -22,7 +22,6 @@ public class CarUI : MonoBehaviour
         _carTracker = CarObject.GetComponent<CarTracker>();
 
         SpeedSlider.minValue = 0;
-        SpeedSlider.maxValue = _carMovement.TopSpeedKMH;
         SpeedSlider.wholeNumbers = true;
     }
    
@@ -30,6 +29,7 @@ public class CarUI : MonoBehaviour
     {
         InTrackToggle.isOn = _carMovement.InTrack;
 
+        SpeedSlider.maxValue = _carMovement.TopSpeedKMH;
         if (_carMovement.InTrack)
         {
             SpeedSlider.value = _carMovement.SpeedKMH;
