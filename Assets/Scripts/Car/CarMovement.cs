@@ -20,7 +20,8 @@ public class CarMovement : MonoBehaviour
     public float MaxBodyBrakeAngle;
     public float MaxInclinationX, MaxInclinationZ;
     public Transform BodyPivot, CenterOfMass;
-    public List<PowerUp> PowerUps;
+    public PowerUp PowerUp;
+    public bool CanMove;
 
     [SerializeField]
     Rigidbody _rigidbody;
@@ -117,6 +118,11 @@ public class CarMovement : MonoBehaviour
         _topVelocity = UnitConverter.KmhToVelocity(CurrentTopSpeedKMH);
         _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
         _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
+
+        if (!CanMove)
+            _rigidbody.constraints = (RigidbodyConstraints)10; // Freeze all movement except on Y axis
+        else
+            _rigidbody.constraints = RigidbodyConstraints.None;
     }
 
     void FixedUpdate()
@@ -153,7 +159,7 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (InTrack)
+        if (InTrack && CanMove)
         {
             var vectorReference = throttle >= 0 ?
                 (_movingForward ? transform.forward : -Velocity.normalized) :
@@ -168,7 +174,7 @@ public class CarMovement : MonoBehaviour
 
     void ApplySteering(float steering)
     {
-        if (InTrack)
+        if (InTrack && CanMove)
         {
             AddTorque((_movingForward ? 1 : -1) * steering * AngularAcceleration * Mass * 10, transform.up);
         }

@@ -26,20 +26,17 @@ public class Boost : PowerUp
 
     IEnumerator Execute(CarMovement carMovement)
     {
-        foreach (var powerup in carMovement.PowerUps)
+        if (carMovement.PowerUp != null && carMovement.PowerUp.Type == Type)
         {
-            if (powerup.Type == Type)
-            {
-                if (Accumulable)
-                    ((Boost)powerup).TimeLeft += Duration;
-                else
-                    CanBeTaken = true;
+            CanBeTaken = true;
 
-                yield break;
-            }
+            if (Accumulable)
+                ((Boost)carMovement.PowerUp).TimeLeft += Duration;
+
+            yield break;
         }
 
-        carMovement.PowerUps.Add(this);
+        carMovement.PowerUp = this;
         TimeLeft = Duration;
         var oldValue = carMovement.CurrentTopSpeedKMH;
         carMovement.CurrentTopSpeedKMH = Mathf.Max(carMovement.CurrentTopSpeedKMH, carMovement.CurrentTopSpeedKMH * Percentage);
@@ -51,8 +48,7 @@ public class Boost : PowerUp
         }
 
         carMovement.CurrentTopSpeedKMH = Mathf.Min(oldValue, carMovement.CurrentTopSpeedKMH);
-
-        carMovement.PowerUps.Remove(this);
+        carMovement.PowerUp = null;
         CanBeTaken = true;
         yield break;
     }

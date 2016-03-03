@@ -103,12 +103,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a2900b2f18c2da49a9a71cddc97a830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 1
+  Type: 0
   Accumulable: 1
   CanBeTaken: 1
   Target: {fileID: 0}
-  Percentage: 0
-  Duration: 0
+  Percentage: 1.5
+  Duration: 5
   TimeLeft: 0
 --- !u!136 &13694968
 CapsuleCollider:

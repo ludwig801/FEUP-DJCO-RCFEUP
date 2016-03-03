@@ -6,8 +6,7 @@ public abstract class PowerUp : MonoBehaviour
 {
     public enum Types
     {
-        SPEED_UP = 0,
-        BOOST = 1
+        BOOST = 0
     }
 
     public Types Type;
