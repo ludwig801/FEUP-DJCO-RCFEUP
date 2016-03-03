@@ -5,9 +5,9 @@ using System.Collections;
 
 public class MainMenu : MonoBehaviour {
 
-	public Canvas quitMenu;
-	public Canvas creditsMenu;
-	public Canvas mainMenu;
+	public GameObject quitDialoguePanel;
+	public GameObject creditsPanel;
+	public GameObject startMenu;
 
 	public Button playButton;
 	public Button quitButton;
@@ -15,21 +15,18 @@ public class MainMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		quitMenu = quitMenu.GetComponent<Canvas> ();
-		creditsMenu = creditsMenu.GetComponent<Canvas> ();
-		mainMenu = mainMenu.GetComponent<Canvas> ();
-
 		playButton = playButton.GetComponent<Button> ();
 		quitButton = quitButton.GetComponent<Button> ();
 		creditsButton = creditsButton.GetComponent<Button> ();
 
-		quitMenu.enabled = false;
-		creditsMenu.enabled = false;
+		startMenu.SetActive(true);
+		quitDialoguePanel.SetActive(false);
+		creditsPanel.SetActive (false);
 	}
 	
 	public void PressQuitAtMainMenu(){
-		quitMenu.enabled = true;
-		creditsMenu.enabled = false;
+		quitDialoguePanel.SetActive (true);
+		creditsPanel.SetActive(false);
 
 		playButton.enabled = false;
 		quitButton.enabled = false;
@@ -37,8 +34,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressCreditsAtMainMenu(){
-		quitMenu.enabled = false;
-		creditsMenu.enabled = true;
+		quitDialoguePanel.SetActive(false);
+		creditsPanel.SetActive(true);
 
 		playButton.enabled = false;
 		quitButton.enabled = false;
@@ -46,8 +43,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressBackAtCreditsMenu(){
-		quitMenu.enabled = false;
-		creditsMenu.enabled = false;
+		quitDialoguePanel.SetActive (false);
+		creditsPanel.SetActive (false);
 
 		playButton.enabled = true;
 		quitButton.enabled = true;
@@ -55,8 +52,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressNoAtQuitMenu(){
-		quitMenu.enabled = false;
-		creditsMenu.enabled = false;
+		quitDialoguePanel.SetActive (false);
+		creditsPanel.SetActive (false);
 
 		playButton.enabled = true;
 		quitButton.enabled = true;
