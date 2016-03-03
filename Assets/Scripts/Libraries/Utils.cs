@@ -9,4 +9,9 @@ public abstract class Utils
         else
             return Mathf.Max(value, 360 - spread);
     }
+
+    public static Vector3 DivideVector3(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
+    }
 }

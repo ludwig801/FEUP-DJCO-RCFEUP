@@ -5,8 +5,12 @@ using System.Collections.Generic;
 
 public class CarMovement : MonoBehaviour
 {
+    public const int FRONT_WHEELS = 0;
+    public const int REAR_WHEELS = 1;
+
     public List<AxleInfo> Axles;
     public float Acceleration;
+    public float ReverseAcceleration;
     public float TopSpeed;
     public float AngularAcceleration;
     public float HandbrakeStrength;
@@ -15,7 +19,7 @@ public class CarMovement : MonoBehaviour
     public float MaxBodySideAngle;
     public float MaxBodyAccelAngle;
     public float MaxBodyBrakeAngle;
-    public Transform BodyPivot;
+    public Transform BodyPivot, CenterOfMass;
     public Text VelocityText;
 
     [SerializeField]
@@ -23,11 +27,32 @@ public class CarMovement : MonoBehaviour
     [SerializeField]
     float _topVelocity;
     [SerializeField]
-    bool _flying;
-    [SerializeField]
     bool _movingForward;
+    [SerializeField]
+    int track;
 
-    Vector3 Velocity
+    public bool Flying
+    {
+        get
+        {
+            return track == 0;
+        }
+    }
+
+    public float Mass
+    {
+        get
+        {
+            return _rigidbody.mass;
+        }
+
+        private set
+        {
+            _rigidbody.mass = value;
+        }
+    }
+
+    public Vector3 Velocity
     {
         get
         {
@@ -40,7 +65,20 @@ public class CarMovement : MonoBehaviour
         }
     }
 
-    float SpeedKMH
+    public Vector3 AngularVelocity
+    {
+        get
+        {
+            return _rigidbody.angularVelocity;
+        }
+
+        set
+        {
+            _rigidbody.angularVelocity = value;
+        }
+    }
+
+    public float SpeedKMH
     {
         get
         {
@@ -59,16 +97,23 @@ public class CarMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+
+        track = 0;
     }
 
     void Update()
     {
-        VelocityText.text = string.Format("Velocity: {0:0}", Speed);
+        if (VelocityText != null)
+        {
+            VelocityText.text = string.Format("Velocity: {0:0}", SpeedKMH);
+        }
         _topVelocity = UnitConverter.KmhToVelocity(TopSpeed);
     }
 
     void FixedUpdate()
     {
+        _rigidbody.centerOfMass = CenterOfMass.localPosition;
+
         var vInput = Input.GetAxis("Vertical");
         var handbrake = Input.GetAxis("Jump");
         var hInput = Input.GetAxis("Horizontal");
@@ -78,7 +123,7 @@ public class CarMovement : MonoBehaviour
 
     public void ReduceMass(float value)
     {
-        _rigidbody.mass -= value;
+        Mass -= value;
     }
 
     public void Move(float throttle, float footbrake, float handbrake, float steering)
@@ -100,14 +145,16 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (!_flying)
+        if (!Flying)
         {
             var realForward = new Vector3(transform.forward.x, 0, transform.forward.z);
+            //var realForward = transform.forward;
             var vectorReference = throttle >= 0 ?
                 (_movingForward ? realForward : -Velocity.normalized) :
                 (_movingForward ? Velocity.normalized : realForward);
+            var accel = throttle > 0 ? Acceleration : ReverseAcceleration;
 
-            _rigidbody.AddForce(throttle * vectorReference * Acceleration * _rigidbody.mass);
+            AddForce(throttle * accel * Mass, vectorReference);
         }
 
         Velocity = Vector3.ClampMagnitude(Velocity, _topVelocity);
@@ -115,10 +162,13 @@ public class CarMovement : MonoBehaviour
 
     void ApplySteering(float steering)
     {
-        _rigidbody.AddTorque((_movingForward ? 1 : -1) * (_flying ? 0.25f : 1) * steering * transform.up * AngularAcceleration * _rigidbody.mass);
+        if (!Flying)
+        {
+            AddTorque((_movingForward ? 1 : -1) * steering * AngularAcceleration * Mass, transform.up);
 
-        var turnClamp = Mathf.Clamp01(Speed / TurnThreshold);
-        _rigidbody.angularVelocity = Vector3.ClampMagnitude(_rigidbody.angularVelocity, turnClamp);
+            var turnClamp = Mathf.Clamp01(Speed / TurnThreshold);
+            AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, turnClamp);
+        }
     }
 
     void UpdateWheels(float steering)
@@ -148,19 +198,53 @@ public class CarMovement : MonoBehaviour
         transform.localRotation = Quaternion.Euler(rotation);
     }
 
-    void OnCollisionEnter(Collision other)
+    void AddForce(float force, Vector3 direction)
     {
-        _flying = false;
+        _rigidbody.AddForce(force * direction);
     }
 
-    void OnCollisionStay(Collision other)
+    void AddForce(float force, Vector3 direction, Vector3 point)
     {
-        _flying = false;
+        _rigidbody.AddForceAtPosition(force * direction, point);
     }
 
-    void OnCollisionExit(Collision other)
+    void AddTorque(float Torque, Vector3 axis)
     {
-        _flying = true;
+        _rigidbody.AddTorque(Torque * axis);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (Flying)
+        {
+            //AddTorque(800 * Mass, -Vector3.Cross(collision.contacts[0].normal, transform.up));
+            //AddForce(500 * Mass, -transform.up);
+
+            //    //var rotationX = transform.rotation.x;
+            //    //if (rotationX < 45 || rotationX > 315)
+            //    //{
+            //    //    AddForce(250 * Mass, -transform.up);
+            //    //}
+            //    //else if (rotationX > 180)
+            //    //{
+            //    //    var axle = Axles[FRONT_WHEELS];
+            //    //    AddForce(400 * Mass, -transform.up, Vector3.Lerp(axle.LeftWheel.transform.position, axle.RightWheel.transform.position, 0.5f));
+            //    //}
+            //    //else
+            //    //{
+            //    //    var axle = Axles[REAR_WHEELS];
+            //    //    AddForce(400 * Mass, -transform.up, Vector3.Lerp(axle.LeftWheel.transform.position, axle.RightWheel.transform.position, 0.5f));
+            //    //}
+        }
+
+        if (collision.gameObject.tag == "Track")
+            track++;
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Track")
+            track--;
     }
 }
 
@@ -170,4 +254,7 @@ public class AxleInfo
     public Transform LeftWheel;
     public Transform RightWheel;
     public bool Steering;
+    //public float Pressure;
+    //public float SpringMaxDistance;
+    //public float Center;
 }
