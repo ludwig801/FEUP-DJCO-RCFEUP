@@ -2,17 +2,24 @@
 using Assets.Scripts.Car;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Car))]
 public class CarMovement : MonoBehaviour
 {
     public const int FRONT_WHEELS = 0;
     public const int REAR_WHEELS = 1;
 
     public List<AxleInfo> Axles;
+    [Range(1.5f, 6)]
     public float Acceleration;
-    public float ReverseAcceleration;
+    [Range(1.5f, 6)]
+    public float BrakingPower;
+    [Range(3, 6)]
     public float AngularAcceleration;
+    [Range(0, 20)]
     public float TurnThresholdKMH;
+    [Range(50, 300)]
     public float TopSpeedKMH;
+    [Range(0, 50)]
     public float TopSpeedReverseKMH;
     public float MaxSteeringAngle;
     public float MaxBodySideAngle;
@@ -91,12 +98,6 @@ public class CarMovement : MonoBehaviour
         }
     }
 
-    public float CurrentTopSpeedKMH
-    {
-        get;
-        set;
-    }
-
     float Speed
     {
         get
@@ -110,12 +111,11 @@ public class CarMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
 
         _trackCount = 0;
-        CurrentTopSpeedKMH = TopSpeedKMH;
     }
 
     void Update()
     {
-        _topVelocity = UnitConverter.KmhToVelocity(CurrentTopSpeedKMH);
+        _topVelocity = UnitConverter.KmhToVelocity(TopSpeedKMH);
         _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
         _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
 
@@ -164,7 +164,7 @@ public class CarMovement : MonoBehaviour
             var vectorReference = throttle >= 0 ?
                 (_movingForward ? transform.forward : -Velocity.normalized) :
                 (_movingForward ? Velocity.normalized : transform.forward);
-            var accel = (throttle > 0) ? (_movingForward ? Acceleration : 0.15f * ReverseAcceleration) : ReverseAcceleration;
+            var accel = (throttle > 0) ? (_movingForward ? Acceleration : 0.15f * BrakingPower) : BrakingPower;
 
             AddForce(throttle * accel * Mass * 10, vectorReference);
         }

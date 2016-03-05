@@ -1,19 +1,16 @@
 ﻿using System;
 
-namespace Assets.Scripts.Car.Upgrades
+public class WeightReductionBro : Upgrade
 {
-    public class WeightReductionBro : Upgrade
+    public float WeightReductionInKg;
+
+    public override void Apply(Car car)
     {
-        public float WeightReductionInKg;
+        car.MassInKg -= WeightReductionInKg;
+    }
 
-        public override void Apply(Car car)
-        {
-            car.MassInKg -= WeightReductionInKg;
-        }
-
-        public override void Remove()
-        {
-            throw new NotImplementedException();
-        }
+    public override void Remove()
+    {
+        throw new NotImplementedException();
     }
 }
