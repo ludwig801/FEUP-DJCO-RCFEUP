@@ -5,9 +5,9 @@ using System.Collections;
 
 public class MainMenu : MonoBehaviour {
 
-	public GameObject quitDialoguePanel;
-	public GameObject creditsPanel;
-	public GameObject startMenu;
+	public RectTransform quitDialoguePanel;
+	public RectTransform creditsPanel;
+	public RectTransform startMenu;
 
 	public Button playButton;
 	public Button quitButton;
@@ -19,14 +19,14 @@ public class MainMenu : MonoBehaviour {
 		quitButton = quitButton.GetComponent<Button> ();
 		creditsButton = creditsButton.GetComponent<Button> ();
 
-		startMenu.SetActive(true);
-		quitDialoguePanel.SetActive(false);
-		creditsPanel.SetActive (false);
+		startMenu.gameObject.SetActive(true);
+		quitDialoguePanel.gameObject.SetActive(false);
+		creditsPanel.gameObject.SetActive (false);
 	}
 	
 	public void PressQuitAtMainMenu(){
-		quitDialoguePanel.SetActive (true);
-		creditsPanel.SetActive(false);
+		quitDialoguePanel.gameObject.SetActive (true);
+		creditsPanel.gameObject.SetActive(false);
 
 		playButton.enabled = false;
 		quitButton.enabled = false;
@@ -34,8 +34,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressCreditsAtMainMenu(){
-		quitDialoguePanel.SetActive(false);
-		creditsPanel.SetActive(true);
+		quitDialoguePanel.gameObject.SetActive(false);
+		creditsPanel.gameObject.SetActive(true);
 
 		playButton.enabled = false;
 		quitButton.enabled = false;
@@ -43,8 +43,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressBackAtCreditsMenu(){
-		quitDialoguePanel.SetActive (false);
-		creditsPanel.SetActive (false);
+		quitDialoguePanel.gameObject.SetActive (false);
+		creditsPanel.gameObject.SetActive (false);
 
 		playButton.enabled = true;
 		quitButton.enabled = true;
@@ -52,8 +52,8 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressNoAtQuitMenu(){
-		quitDialoguePanel.SetActive (false);
-		creditsPanel.SetActive (false);
+		quitDialoguePanel.gameObject.SetActive (false);
+		creditsPanel.gameObject.SetActive (false);
 
 		playButton.enabled = true;
 		quitButton.enabled = true;
@@ -61,7 +61,7 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressStart(){
-		SceneManager.LoadScene ("MainMenu");
+		SceneManager.LoadScene ("GameScene");
 	}
 
 	public void PressYesAtQuitMenu(){
