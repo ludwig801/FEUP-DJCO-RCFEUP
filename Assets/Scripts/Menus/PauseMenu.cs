@@ -9,6 +9,7 @@ public class PauseMenu : MonoBehaviour {
 
 	public Button continueButton;
 	public Button quitButton;
+	public Button restartButton;
 
 	private bool isPaused;
 
@@ -16,10 +17,10 @@ public class PauseMenu : MonoBehaviour {
 	void Start () {
 		continueButton = continueButton.GetComponent<Button> ();
 		quitButton = quitButton.GetComponent<Button> ();
+		restartButton = restartButton.GetComponent<Button> ();
 
 		pauseMenu.gameObject.SetActive (false);
 		isPaused = false;
-
 	}
 	
 	// Update is called once per frame
@@ -48,5 +49,10 @@ public class PauseMenu : MonoBehaviour {
 	public void pressQuit(){
 		Time.timeScale = 1;
 		SceneManager.LoadScene ("MainMenu");
+	}
+
+	public void pressRestart(){
+		Time.timeScale = 1;
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 	}
 }
