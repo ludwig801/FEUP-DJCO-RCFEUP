@@ -14,10 +14,4 @@ public abstract class Utils
     {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
-
-    public static string GetCounterFormattedString(float time)
-    {
-        var span = System.TimeSpan.FromSeconds(time);
-        return string.Format("{0:00}:{1:00}:{2:00}", span.Minutes, span.Seconds, (span.Milliseconds % 100));
-    }
 }

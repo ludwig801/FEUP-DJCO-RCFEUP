@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Car;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CarUI : MonoBehaviour
@@ -13,21 +12,16 @@ public class CarUI : MonoBehaviour
     public Text LapsText;
     public Text NextCheckpoint;
     public Color OnBoostColor;
-    public Text CurrentLapTime;
-    public RectTransform LapParcials;
 
     [SerializeField]
-    Car _car;
+    CarMovement _carMovement;
     [SerializeField]
     LapCounter _carTracker;
     Color _oldSpeedSliderFillColor;
-    [SerializeField]
-    RaceManager _raceManager;
 
     void Start()
     {
-        _raceManager = RaceManager.Instance;
-        _car = CarObject.GetComponent<Car>();
+        _carMovement = CarObject.GetComponent<CarMovement>();
         _carTracker = CarObject.GetComponent<LapCounter>();
 
         SpeedSlider.minValue = 0;
@@ -40,28 +34,26 @@ public class CarUI : MonoBehaviour
         UpdateTrackStats();
         UpdateRaceStats();
         UpdateCarSpeedInfo();
-        UpdateCarTimeStats();
     }
 
     void UpdateTrackStats()
     {
-        InTrackToggle.isOn = _car.CarMovement.InTrack;
+        InTrackToggle.isOn = _carMovement.InTrack;
     }
 
     void UpdateRaceStats()
     {
         LapsText.text = string.Concat("Lap: ", _carTracker.CurrentLap);
-        NextCheckpoint.text = string.Concat("Next checkpoint: ", _carTracker.CurrentCheckpoint);
+        NextCheckpoint.text = string.Concat("Next checkpoint: ", _carTracker.NextCheckpoint);
     }
 
     void UpdateCarSpeedInfo()
     {
-        var carMovement = _car.CarMovement;
-        SpeedSlider.maxValue = carMovement.TopSpeedKMH;
-        if (carMovement.InTrack || _raceManager.RaceIsOn)
+        SpeedSlider.maxValue = _carMovement.TopSpeedKMH;
+        if (_carMovement.InTrack)
         {
-            SpeedSlider.value = carMovement.SpeedKMH;
-            SpeedText.text = ((int)carMovement.SpeedKMH).ToString();
+            SpeedSlider.value = _carMovement.SpeedKMH;
+            SpeedText.text = ((int)_carMovement.SpeedKMH).ToString();
         }
         else
         {
@@ -69,15 +61,9 @@ public class CarUI : MonoBehaviour
             SpeedText.text = string.Concat("0");
         }
 
-        if (carMovement.PowerUp != null && carMovement.PowerUp.Type == PowerUp.Types.BOOST)
+        if (_carMovement.PowerUp != null && _carMovement.PowerUp.Type == PowerUp.Types.BOOST)
             SpeedSliderFill.color = Color.Lerp(SpeedSliderFill.color, OnBoostColor, Time.unscaledDeltaTime * 5f);
         else
             SpeedSliderFill.color = Color.Lerp(SpeedSliderFill.color, _oldSpeedSliderFillColor, Time.unscaledDeltaTime * 5f);
-    }
-
-    void UpdateCarTimeStats()
-    {
-        var carTimeCounter = _car.LapTimeCounter;
-        CurrentLapTime.text = string.Concat("Lap time: ", Utils.GetCounterFormattedString(carTimeCounter.CurrentLapTime));
     }
 }

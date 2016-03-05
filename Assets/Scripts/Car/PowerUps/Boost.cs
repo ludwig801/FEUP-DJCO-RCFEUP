@@ -3,13 +3,12 @@ using System.Collections;
 
 public class Boost : PowerUp
 {
-    public float Factor;
+    public float Percentage;
     public float Duration;
     public float TimeLeft;
 
-    public override void Start()
+    void Start()
     {
-        base.Start();
         CanBeTaken = true;
     }
 
@@ -29,23 +28,38 @@ public class Boost : PowerUp
     {
         if (carMovement.PowerUp != null && carMovement.PowerUp.Type == Type)
         {
-            if (Accumulative)
+            CanBeTaken = true;
+
+            if (Accumulable)
                 ((Boost)carMovement.PowerUp).TimeLeft += Duration;
 
-            yield return new WaitForSeconds(Duration);
-            CanBeTaken = true;
+            yield break;
         }
 
         carMovement.PowerUp = this;
         TimeLeft = Duration;
-        var oldValue = carMovement.TopSpeedKMH;
-        carMovement.TopSpeedKMH = Mathf.Max(carMovement.TopSpeedKMH, carMovement.TopSpeedKMH * Factor);
+        var oldValue = carMovement.CurrentTopSpeedKMH;
+        carMovement.CurrentTopSpeedKMH = Mathf.Max(carMovement.CurrentTopSpeedKMH, carMovement.CurrentTopSpeedKMH * Percentage);
 
-        yield return new WaitForSeconds(Duration);
+        while (TimeLeft >= 0)
+        {
+            TimeLeft -= Time.deltaTime;
+            yield return null;
+        }
 
-        carMovement.TopSpeedKMH = Mathf.Min(oldValue, carMovement.TopSpeedKMH);
+        carMovement.CurrentTopSpeedKMH = Mathf.Min(oldValue, carMovement.CurrentTopSpeedKMH);
         carMovement.PowerUp = null;
         CanBeTaken = true;
         yield break;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (CanBeTaken)
+        {
+            CanBeTaken = false;
+            Target = other.gameObject;
+            Apply();
+        }
     }
 }

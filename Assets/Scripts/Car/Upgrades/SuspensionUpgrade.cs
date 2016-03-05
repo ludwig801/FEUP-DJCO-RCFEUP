@@ -1,16 +1,19 @@
 ﻿using System;
 
-public class SuspensionUpgrade : Upgrade
+namespace Assets.Scripts.Car.Upgrades
 {
-    public float LoweringInMm;
-
-    public override void Apply(Car car)
+    public class SuspensionUpgrade : Upgrade
     {
-        throw new NotImplementedException();
-    }
+        public float LoweringInMm;
 
-    public override void Remove()
-    {
-        throw new NotImplementedException();
+        public override void Apply(Car car)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Remove()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

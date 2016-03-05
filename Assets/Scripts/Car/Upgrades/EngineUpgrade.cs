@@ -1,16 +1,19 @@
 ﻿using System;
 
-public class EngineUpgrade : Upgrade
+namespace Assets.Scripts.Car.Upgrades
 {
-    public int TopSpeedIncrement;
-
-    public override void Apply(Car car)
+    public class EngineUpgrade : Upgrade
     {
-        car.TopSpeedInKmh += TopSpeedIncrement;
-    }
+        public int TopSpeedIncrement;
 
-    public override void Remove()
-    {
-        throw new NotImplementedException();
+        public override void Apply(Car car)
+        {
+            car.TopSpeedInKmh += TopSpeedIncrement;
+        }
+
+        public override void Remove()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

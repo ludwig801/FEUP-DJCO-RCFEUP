@@ -1,21 +1,14 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Car))]
 public class LapCounter : MonoBehaviour
 {
     [SerializeField]
     RaceManager _raceManager;
-    [SerializeField]
-    int _currentLap;
-    [SerializeField]
-    Car _car;
 
     public int CurrentLap
     {
-        get
-        {
-            return _currentLap;
-        }
+        get;
+        private set;
     }
 
     public int PassedCheckpoints
@@ -24,7 +17,7 @@ public class LapCounter : MonoBehaviour
         private set;
     }
 
-    public int CurrentCheckpoint
+    public int NextCheckpoint
     {
         get;
         private set;
@@ -33,28 +26,21 @@ public class LapCounter : MonoBehaviour
     void Start()
     {
         _raceManager = RaceManager.Instance;
-        _car = GetComponent<Car>();
 
-        Reset();
-    }
-
-    public void Reset()
-    {
         PassedCheckpoints = 0;
-        CurrentCheckpoint = _raceManager.GetFirstCheckpoint();
+        NextCheckpoint = _raceManager.GetFirstCheckpoint();
     }
     
     void LateUpdate()
     {
-        _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
+        CurrentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (_raceManager.IsColliderOfCheckpoint(other, CurrentCheckpoint))
+        if (_raceManager.IsColliderOfCheckpoint(other, NextCheckpoint))
         {
-            _car.LapTimeCounter.OnCheckpointPassed(CurrentCheckpoint);
-            CurrentCheckpoint = _raceManager.GetNextCheckpoint(CurrentCheckpoint);
+            NextCheckpoint = _raceManager.GetNextCheckpoint(NextCheckpoint);
             PassedCheckpoints++;
         }
     }

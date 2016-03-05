@@ -1,66 +1,58 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Car.Upgrades;
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CarMovement))]
-[RequireComponent(typeof(LapCounter))]
-[RequireComponent(typeof(LapTimeCounter))]
-public class Car : MonoBehaviour
+namespace Assets.Scripts.Car
 {
-	public int CarId;
-
-    public ICollection<Upgrade> Upgrades;
-
-    public float TopSpeedInKmh;
-    public float MassInKg;
-    CarMovement _carMovement;
-    LapCounter _lapCounter;
-    LapTimeCounter _timeCounter;
-
-    public CarMovement CarMovement
+    [RequireComponent(typeof(CarMovement))]
+    [RequireComponent(typeof(LapCounter))]
+    public class Car : MonoBehaviour
     {
-        get
+		public int CarId;
+
+        public ICollection<Upgrade> Upgrades;
+
+        public float TopSpeedInKmh;
+        public float MassInKg;
+        CarMovement _carMovement;
+        LapCounter _lapCounter;
+
+        public CarMovement CarMovement
         {
-            if (_carMovement == null)
-                _carMovement = GetComponent<CarMovement>();
-            return _carMovement;
+            get
+            {
+                if (_carMovement == null)
+                    _carMovement = GetComponent<CarMovement>();
+                return _carMovement;
+            }
         }
-    }
 
-    public LapCounter LapCounter
-    {
-        get
+        public LapCounter LapCounter
         {
-            if (_lapCounter == null)
-                _lapCounter = GetComponent<LapCounter>();
-            return _lapCounter;
+            get
+            {
+                if (_lapCounter == null)
+                    _lapCounter = GetComponent<LapCounter>();
+                return _lapCounter;
+            }
         }
-    }
 
-    public LapTimeCounter LapTimeCounter
-    {
-        get
+        void Start()
         {
-            if (_timeCounter == null)
-                _timeCounter = GetComponent<LapTimeCounter>();
-            return _timeCounter;
+            Upgrades = new List<Upgrade>();
         }
-    }
 
-    void Start()
-    {
-        Upgrades = new List<Upgrade>();
-    }
-
-    public void ApplyUpgrades()
-    {
-        foreach (var upgrade in Upgrades)
+        public void ApplyUpgrades()
         {
-            upgrade.Apply(this);
+            foreach (var upgrade in Upgrades)
+            {
+                upgrade.Apply(this);
+            }
         }
-    }
 
-    public void AddUpgrade(Upgrade upgrade)
-    {
-        Upgrades.Add(upgrade);
+        public void AddUpgrade(Upgrade upgrade)
+        {
+            Upgrades.Add(upgrade);
+        }
     }
 }

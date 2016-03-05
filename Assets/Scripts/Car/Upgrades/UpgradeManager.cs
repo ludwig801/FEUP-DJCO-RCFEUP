@@ -2,17 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class UpgradeManager : MonoBehaviour
-{
+namespace Assets.Scripts.Car.Upgrades {
 
-    public Car Car;
-    private ICollection<Upgrade> _upgrades;
+	public class UpgradeManager : MonoBehaviour {
 
-    public void Save()
-    {
-        _upgrades = new List<Upgrade>();
+		public Car Car;
+		private ICollection<Upgrade> _upgrades;
 
-        UpgradeWriter.Save(Car, _upgrades);
-    }
+		public void Save() {
+			_upgrades = new List<Upgrade> ();
+
+			UpgradeWriter.Save(Car, _upgrades);
+		}
+
+	}
 
 }
+

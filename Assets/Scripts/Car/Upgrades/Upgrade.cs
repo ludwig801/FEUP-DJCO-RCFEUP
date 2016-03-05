@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 
-public abstract class Upgrade : MonoBehaviour
+namespace Assets.Scripts.Car.Upgrades
 {
-    public string Name;
+    public abstract class Upgrade : MonoBehaviour
+    {
+        public string Name;
 
-    public string Description;
+        public string Description;
 
-    public double PriceInEuros;
+        public double PriceInEuros;
 
-    public abstract void Apply(Car car);
-    public abstract void Remove();
+        public abstract void Apply(Car car);
+        public abstract void Remove();
+    }
 }
