@@ -26,19 +26,27 @@ public class RaceManager : MonoBehaviour
     public List<Transform> StartingPositions;
     public RaceTypes RaceType;
     public List<Car> Cars;
+    public int FastestCarCurrentLap;
     public int CountdownCount, CurrentCount;
     public bool RaceIsOn;
 
     Coroutine _lastCountdown;
+    [SerializeField]
+    IRaceType _currentRace;
 
-    void Start()
+    protected virtual void Start()
     {
         RaceIsOn = false;
+    }
+
+    protected virtual void Update()
+    {
     }
 
     public void NewRace()
     {
         RaceIsOn = false;
+        FastestCarCurrentLap = 0;
 
         for (int i = 0; i < Cars.Count; i++)
         {
@@ -46,16 +54,27 @@ public class RaceManager : MonoBehaviour
             car.transform.position = StartingPositions[i].position;
             car.transform.rotation = StartingPositions[i].rotation;
             car.CarMovement.CanMove = false;
+            car.LapCounter.Reset();
+            car.LapTimeCounter.Reset();
+        }
+
+        switch (RaceType)
+        {
+            case RaceTypes.TIME_TRIAL:
+                _currentRace = GetComponent<TimeTrial>() as IRaceType;
+                break;
         }
 
         if (_lastCountdown != null)
             StopCoroutine(_lastCountdown);
+
         _lastCountdown = StartCoroutine(CountdownAndStart());
     }
 
     IEnumerator CountdownAndStart()
     {
         RaceIsOn = true;
+        _currentRace.OnRaceStart();
 
         CurrentCount = CountdownCount;
         float timePassed = CountdownCount;
@@ -68,6 +87,8 @@ public class RaceManager : MonoBehaviour
             timePassed -= Time.deltaTime;
             yield return null;
         }
+
+        CurrentCount = 0;
 
         foreach (var car in Cars)
         {

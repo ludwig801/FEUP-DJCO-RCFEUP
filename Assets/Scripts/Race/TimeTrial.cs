@@ -1,17 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(RaceManager))]
-public class TimeTrial : MonoBehaviour
+public class TimeTrial : MonoBehaviour, IRaceType
 {
     public int NumLaps;
 
-    void Start()
+    public bool IsRaceOver()
     {
-
+        return false;
     }
 
-    void Update()
+    public void OnRaceStart()
     {
-
     }
 }
