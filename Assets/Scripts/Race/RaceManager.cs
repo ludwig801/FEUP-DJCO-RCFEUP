@@ -117,9 +117,9 @@ public class RaceManager : MonoBehaviour
     public int GetCurrentLap(int passedCheckpoints)
     {
         if (passedCheckpoints == 0)
-            return 0;
+            return -1;
 
         // account for first checkpoint, which is always passed in the beggining
-        return ((passedCheckpoints - 1) / Checkpoints.Count) + 1;
+        return ((passedCheckpoints - 1) / Checkpoints.Count);
     }
 }

@@ -42,6 +42,57 @@ public class CarMovement : MonoBehaviour
     int _trackCount;
     [SerializeField]
     bool _movingForward;
+    [SerializeField]
+    bool _movingBackwards;
+    [SerializeField]
+    bool _stopped;
+    [SerializeField]
+    Vector3 _oldVelocity;
+
+    public bool MovingForward
+    {
+        get
+        {
+            return _movingForward;
+        }
+
+        set
+        {
+            _movingForward = value;
+            _movingBackwards = _movingBackwards && !value;
+            _stopped = _stopped && !value;
+        }
+    }
+
+    public bool MovingBackwards
+    {
+        get
+        {
+            return _movingBackwards;
+        }
+
+        set
+        {
+            _movingBackwards = value;
+            _movingForward = _movingForward && !value;
+            _stopped = _stopped && !value;
+        }
+    }
+
+    public bool Stopped
+    {
+        get
+        {
+            return _stopped;
+        }
+
+        set
+        {
+            _stopped = value;
+            _movingBackwards = _movingBackwards && !value;
+            _movingForward = _movingForward && !value;
+        }
+    }
 
     public bool InTrack
     {
@@ -111,6 +162,8 @@ public class CarMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
 
         _trackCount = 0;
+        Stopped = true;
+        _oldVelocity = _rigidbody.velocity;
     }
 
     void Update()
@@ -131,7 +184,12 @@ public class CarMovement : MonoBehaviour
         var handbrake = Input.GetAxis("Jump");
         var hInput = Input.GetAxis("Horizontal");
 
+        if (Vector3.Dot(_rigidbody.velocity, _oldVelocity) < 0)
+            _movingForward = !_movingForward;
+
         Move(vInput, vInput, handbrake, hInput);
+
+        _oldVelocity = _rigidbody.velocity;
     }
 
     public void ReduceMass(float value)
@@ -144,9 +202,6 @@ public class CarMovement : MonoBehaviour
         throttle = Input.GetAxisRaw("Vertical");
         steering = Input.GetAxisRaw("Horizontal");
         handbrake = Mathf.Clamp(handbrake, 0, 1);
-
-        _rigidbody.centerOfMass = CenterOfMass.localPosition;
-        _movingForward = Vector3.Dot(transform.forward, Velocity) >= 0;
 
         ApplyDrive(throttle, handbrake);
         ApplySteering(steering);
@@ -161,15 +216,52 @@ public class CarMovement : MonoBehaviour
     {
         if (InTrack && CanMove)
         {
-            var vectorReference = throttle >= 0 ?
-                (_movingForward ? transform.forward : -Velocity.normalized) :
-                (_movingForward ? Velocity.normalized : transform.forward);
-            var accel = (throttle > 0) ? (_movingForward ? Acceleration : 0.15f * BrakingPower) : BrakingPower;
+            var accel = 0f;
+            var vectorReference = Vector3.zero;
+            if (throttle >= 0)
+            {
+                if (Stopped)
+                {
+                    MovingForward = true;
+                    accel = Acceleration;
+                    vectorReference = transform.forward;
+                }
+                else if (MovingForward)
+                {
+                    accel = Acceleration;
+                    vectorReference = transform.forward;
+                }
+                else
+                {
+                    accel = BrakingPower;
+                    vectorReference = -Velocity.normalized;
+                }
+            }
+            else
+            {
+                if (Stopped)
+                {
+                    MovingBackwards = true;
+                    accel = Acceleration;
+                    vectorReference = transform.forward;
+                }
+                else if (MovingBackwards)
+                {
+                    accel = Acceleration;
+                    vectorReference = transform.forward;
+                }
+                else
+                {
+                    accel = BrakingPower;
+                    vectorReference = Velocity.normalized;
+                }
+            }
 
             AddForce(throttle * accel * Mass * 10, vectorReference);
         }
 
-        Velocity = Vector3.ClampMagnitude(Velocity, _movingForward ? _topVelocity : _topVelocityReverse);
+        Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
+        Stopped = Speed < 0.05f;
     }
 
     void ApplySteering(float steering)
@@ -230,7 +322,7 @@ public class CarMovement : MonoBehaviour
         if (collision.gameObject.tag == "Track")
         {
             _trackCount++;
-        } 
+        }
     }
 
     void OnCollisionExit(Collision collision)

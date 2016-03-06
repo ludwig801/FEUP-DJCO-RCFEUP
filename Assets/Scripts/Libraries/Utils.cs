@@ -18,6 +18,6 @@ public abstract class Utils
     public static string GetCounterFormattedString(float time)
     {
         var span = System.TimeSpan.FromSeconds(time);
-        return string.Format("{0:00}:{1:00}:{2:00}", span.Minutes, span.Seconds, (span.Milliseconds % 100));
+        return string.Format("{0:D2}:{1:D2}:{2:D2}", span.Minutes, span.Seconds, (span.Milliseconds % 100));
     }
 }

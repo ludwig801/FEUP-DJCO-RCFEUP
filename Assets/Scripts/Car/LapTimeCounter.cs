@@ -22,7 +22,7 @@ public class LapTimeCounter : MonoBehaviour
         {
             if (PartialTimes.Count > 0)
             {
-                var currentLap = _car.LapCounter.CurrentLapZeroIndexed;
+                var currentLap = _car.LapCounter.CurrentLap;
                 if (PartialTimes.Count > currentLap)
                 {
                     return PartialTimes[currentLap];
@@ -81,7 +81,12 @@ public class LapTimeCounter : MonoBehaviour
         }
         else
         {
-            PartialTimes[_car.LapCounter.CurrentLapZeroIndexed].Add(CurrentLapTime);
+            PartialTimes[_car.LapCounter.CurrentLap].Add(CurrentLapTime);
         }
+    }
+
+    public float GetPartial(int lap, int checkpoint)
+    {
+        return PartialTimes[lap][checkpoint];
     }
 }

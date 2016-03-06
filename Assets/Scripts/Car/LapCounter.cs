@@ -10,19 +10,19 @@ public class LapCounter : MonoBehaviour
     [SerializeField]
     Car _car;
 
+    public int CurrentLapPlusOne
+    {
+        get
+        {
+            return _currentLap + 1;
+        }
+    }
+
     public int CurrentLap
     {
         get
         {
             return _currentLap;
-        }
-    }
-
-    public int CurrentLapZeroIndexed
-    {
-        get
-        {
-            return CurrentLap - 1;
         }
     }
 
@@ -50,6 +50,7 @@ public class LapCounter : MonoBehaviour
     {
         PassedCheckpoints = 0;
         CurrentCheckpoint = _raceManager.GetFirstCheckpoint();
+        _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
     }
 
     void OnTriggerEnter(Collider other)
