@@ -1,1 +1,5 @@
-69
+<Upgrades>
+  <Upgrade id="1" level="1" />
+  <Upgrade id="2" level="0" />
+  <Upgrade id="3" level="0" />
+</Upgrades>

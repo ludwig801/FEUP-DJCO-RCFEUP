@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class Upgrade : MonoBehaviour
+public class Upgrade : MonoBehaviour
 {
     public int UpgradeId;
 
@@ -10,6 +10,19 @@ public abstract class Upgrade : MonoBehaviour
 
     public double PriceForNextLevel;
 
-    public abstract void Apply(CarMovement car);
-    public abstract void Remove();
+    public int GetIncrementByLevel()
+    {
+        switch(UpgradeId)
+        {
+            case 1:
+                return Level * 10;
+            case 2:
+                return Level * 10;
+            case 3:
+                return (Level * 10) * (-1);
+            default:
+                return 0;
+        }
+    }
+
 }
