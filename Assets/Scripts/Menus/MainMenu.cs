@@ -64,6 +64,11 @@ public class MainMenu : MonoBehaviour {
 		SceneManager.LoadScene ("GameScene");
 	}
 
+    public void PressUpgrades()
+    {
+        SceneManager.LoadScene("UpgradesMenuScene");
+    }
+
 	public void PressYesAtQuitMenu(){
 		Application.Quit();
 	}
