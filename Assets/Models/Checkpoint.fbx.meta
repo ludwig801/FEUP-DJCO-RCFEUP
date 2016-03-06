@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 36d4af9a672eccf469b1760f3f7b3915
-timeCreated: 1457022136
+timeCreated: 1457267138
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -22,9 +22,6 @@ ModelImporter:
     4300000: Pillar1
     4300002: Pillar2
     4300004: Banner
-    6400000: Banner
-    6400002: Pillar1
-    6400004: Pillar2
   materials:
     importMaterials: 1
     materialName: 0
@@ -51,7 +48,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
