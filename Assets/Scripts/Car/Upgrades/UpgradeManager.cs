@@ -10,9 +10,6 @@ public class UpgradeManager : MonoBehaviour
 
     public void Save()
     {
-        _upgrades = new List<Upgrade>();
-
-        UpgradeWriter.Save(Car, _upgrades);
     }
 
 }

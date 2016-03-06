@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class SuspensionUpgrade : Upgrade
+public class HandlingUpgrade : Upgrade
 {
     public float LoweringInMm;
 

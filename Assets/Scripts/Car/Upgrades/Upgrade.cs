@@ -4,11 +4,11 @@ public abstract class Upgrade : MonoBehaviour
 {
     public int UpgradeId;
 
-    public string Name;
+    public int Level;
 
-    public string Description;
+    public int Increment;
 
-    public double PriceInEuros;
+    public double PriceForNextLevel;
 
     public abstract void Apply(CarMovement car);
     public abstract void Remove();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class WeightReductionBro : Upgrade
+public class WeightUpgrade : Upgrade
 {
     public float WeightReductionInKg;
 

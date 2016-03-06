@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class EngineUpgrade : Upgrade
+public class SpeedUpgrade : Upgrade
 {
     public int TopSpeedIncrement;
 
