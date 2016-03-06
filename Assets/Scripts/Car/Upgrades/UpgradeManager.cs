@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -16,6 +17,11 @@ public class UpgradeManager : MonoBehaviour
     public void UpgradeWeight()
     {
         Debug.Log("WEIGHT+++");
+    }
+
+    public void Exit()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
 }
