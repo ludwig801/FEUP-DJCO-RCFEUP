@@ -28,7 +28,7 @@ public class RaceManager : MonoBehaviour
     public List<Car> Cars;
     public int FastestCarCurrentLap;
     public int CountdownCount, CurrentCount;
-    public bool RaceIsOn;
+    public bool RaceIsOn, CountdownIsOn;
 
     Coroutine _lastCountdown;
     [SerializeField]
@@ -37,15 +37,13 @@ public class RaceManager : MonoBehaviour
     protected virtual void Start()
     {
         RaceIsOn = false;
-    }
-
-    protected virtual void Update()
-    {
+        CountdownIsOn = false;
     }
 
     public void NewRace()
     {
         RaceIsOn = false;
+        CountdownIsOn = false;
         FastestCarCurrentLap = 0;
 
         for (int i = 0; i < Cars.Count; i++)
@@ -74,6 +72,7 @@ public class RaceManager : MonoBehaviour
     IEnumerator CountdownAndStart()
     {
         RaceIsOn = true;
+        CountdownIsOn = true;
         _currentRace.OnRaceStart();
 
         CurrentCount = CountdownCount;
@@ -89,6 +88,7 @@ public class RaceManager : MonoBehaviour
         }
 
         CurrentCount = 0;
+        CountdownIsOn = false;
 
         foreach (var car in Cars)
         {
