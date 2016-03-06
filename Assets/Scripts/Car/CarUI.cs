@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.Car;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class CarUI : MonoBehaviour
 {
@@ -14,7 +14,9 @@ public class CarUI : MonoBehaviour
     public Text NextCheckpoint;
     public Color OnBoostColor;
     public Text CurrentLapTime;
-    public RectTransform LapParcials;
+    public RectTransform PartialsRect;
+    public RectTransform PartialPrefab;
+    public List<Text> Partials;
 
     [SerializeField]
     Car _car;
@@ -23,6 +25,8 @@ public class CarUI : MonoBehaviour
     Color _oldSpeedSliderFillColor;
     [SerializeField]
     RaceManager _raceManager;
+    [SerializeField]
+    int _usedPartials;
 
     void Start()
     {
@@ -33,6 +37,7 @@ public class CarUI : MonoBehaviour
         SpeedSlider.minValue = 0;
         SpeedSlider.wholeNumbers = true;
         _oldSpeedSliderFillColor = SpeedSliderFill.color;
+        _usedPartials = 0;
     }
 
     void Update()
@@ -79,5 +84,51 @@ public class CarUI : MonoBehaviour
     {
         var carTimeCounter = _car.LapTimeCounter;
         CurrentLapTime.text = string.Concat("Lap time: ", Utils.GetCounterFormattedString(carTimeCounter.CurrentLapTime));
+
+        var carLapCounter = _car.LapCounter;
+        if (_raceManager.RaceIsOn && carTimeCounter.PartialTimes.Count > 0)
+        {
+            var currentLapPartials = carTimeCounter.CurrentLapPartials;
+            if (currentLapPartials != null)
+            {
+                for (int i = 0; i < currentLapPartials.Count; i++)
+                {
+                    if (Partials.Count <= i)
+                    {
+                        var tPartial = Instantiate(PartialPrefab);
+                        tPartial.SetParent(PartialsRect);
+                        tPartial.name = string.Concat("Partial ", i);
+                        Partials.Add(tPartial.GetComponent<Text>());
+                    }
+
+                    var partial = Partials[i];
+                    partial.text = string.Concat(Utils.GetCounterFormattedString(currentLapPartials[i]));
+                    partial.gameObject.SetActive(true);
+                }
+
+                for (int i = currentLapPartials.Count; i < Partials.Count; i++)
+                {
+                    Partials[i].gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < Partials.Count; i++)
+            {
+                Partials[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    Text CreatePartial()
+    {
+        var partial = new GameObject().AddComponent<RectTransform>();
+        partial.SetParent(PartialsRect);
+        partial.name = "Lap Partial";
+
+        _usedPartials++;
+
+        return partial.gameObject.AddComponent<Text>();
     }
 }

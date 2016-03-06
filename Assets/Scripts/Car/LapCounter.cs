@@ -18,6 +18,14 @@ public class LapCounter : MonoBehaviour
         }
     }
 
+    public int CurrentLapZeroIndexed
+    {
+        get
+        {
+            return CurrentLap - 1;
+        }
+    }
+
     public int PassedCheckpoints
     {
         get;
@@ -43,11 +51,6 @@ public class LapCounter : MonoBehaviour
         PassedCheckpoints = 0;
         CurrentCheckpoint = _raceManager.GetFirstCheckpoint();
     }
-    
-    void LateUpdate()
-    {
-        _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
-    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -56,6 +59,7 @@ public class LapCounter : MonoBehaviour
             _car.LapTimeCounter.OnCheckpointPassed(CurrentCheckpoint);
             CurrentCheckpoint = _raceManager.GetNextCheckpoint(CurrentCheckpoint);
             PassedCheckpoints++;
+            _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
         }
     }
 }

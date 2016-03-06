@@ -5,9 +5,12 @@ public class TrackTrigger : MonoBehaviour
 {
     public Transform PointA, PointB;
     public BoxCollider TriggerCollider;
+    public float DeltaY;
     public float Depth, Height;
     public bool Visible;
     public Color OnTriggerEnterColor, OnTriggerExitColor;
+    //public Transform PillarA, PillarB;
+    //public Transform Banner;
 
     [SerializeField]
     List<MeshRenderer> _meshRenderers;
@@ -38,6 +41,11 @@ public class TrackTrigger : MonoBehaviour
             }
             _oldVisible = Visible;
         }
+
+        //PillarA.position = PointA.position + new Vector3(0, DeltaY, 0);
+        //PillarB.position = PointB.position + new Vector3(0, DeltaY, 0);
+        //Banner.position = Vector3.Lerp(PointA.position, PointB.position, 0.5f) + new Vector3(0, Height, 0);
+        //Banner.rotation = Quaternion.LookRotation(Vector3.Cross(PointB.position - PointA.position, Vector3.up), Vector3.up);
     }
 
     void OnTriggerEnter(Collider other)

@@ -8,13 +8,30 @@ public class LapTimeCounter : MonoBehaviour
     public float TotalTime;
     public float CurrentLapStartTime;
     public float CurrentLapTime;
-    public List<float> LapTimes;
+    public List<float> LapsTimes;
     public List<List<float>> PartialTimes;
 
     [SerializeField]
     bool _timeCounting;
     [SerializeField]
     Car _car;
+
+    public List<float> CurrentLapPartials
+    {
+        get
+        {
+            if (PartialTimes.Count > 0)
+            {
+                var currentLap = _car.LapCounter.CurrentLapZeroIndexed;
+                if (PartialTimes.Count > currentLap)
+                {
+                    return PartialTimes[currentLap];
+                }
+            }
+
+            return null;
+        }
+    }
 
     void Start()
     {
@@ -37,7 +54,7 @@ public class LapTimeCounter : MonoBehaviour
         TotalTime = 0;
         CurrentLapTime = 0;
         _timeCounting = false;
-        LapTimes.Clear();
+        LapsTimes.Clear();
         PartialTimes.Clear();
     }
 
@@ -50,12 +67,12 @@ public class LapTimeCounter : MonoBehaviour
                 _timeCounting = true;
                 StartTime = Time.time;
                 TotalTime = 0;
-                LapTimes.Clear();
+                LapsTimes.Clear();
                 PartialTimes.Clear();
             }
             else
             {
-                LapTimes.Add(CurrentLapTime);
+                LapsTimes.Add(CurrentLapTime);
             }
 
             CurrentLapStartTime = Time.time;
@@ -64,7 +81,7 @@ public class LapTimeCounter : MonoBehaviour
         }
         else
         {
-            PartialTimes[_car.LapCounter.CurrentLap - 1].Add(CurrentLapTime);
+            PartialTimes[_car.LapCounter.CurrentLapZeroIndexed].Add(CurrentLapTime);
         }
     }
 }
