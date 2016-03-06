@@ -1,23 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Menus.Upgrades {
 
 	public class ButtonManager : MonoBehaviour {
+
+        public Button AirFilterBtn;
 		
-		Camera mainCamera;
-		
-		// Use this for initialization
 		void Start () {
-			//mainCamera = Camera.main;
-			//mainCamera.transform.position = new Vector3 (0f, 1000f, 0f);
+            AirFilterBtn = AirFilterBtn.GetComponent<Button>();
 		}
 	
-		// Update is called once per frame
 		void Update () {
-			
 		}
 		
+
+
 		
 	}
 }

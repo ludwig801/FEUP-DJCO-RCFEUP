@@ -4,9 +4,9 @@ public class EngineUpgrade : Upgrade
 {
     public int TopSpeedIncrement;
 
-    public override void Apply(Car car)
+    public override void Apply(CarMovement carMovement)
     {
-        car.TopSpeedInKmh += TopSpeedIncrement;
+        carMovement.TopSpeedKMH += TopSpeedIncrement;
     }
 
     public override void Remove()

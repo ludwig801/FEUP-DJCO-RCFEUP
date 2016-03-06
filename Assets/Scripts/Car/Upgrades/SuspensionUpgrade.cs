@@ -4,7 +4,7 @@ public class SuspensionUpgrade : Upgrade
 {
     public float LoweringInMm;
 
-    public override void Apply(Car car)
+    public override void Apply(CarMovement car)
     {
         throw new NotImplementedException();
     }

@@ -10,8 +10,6 @@ public class Car : MonoBehaviour
 
     public ICollection<Upgrade> Upgrades;
 
-    public float TopSpeedInKmh;
-    public float MassInKg;
     CarMovement _carMovement;
     LapCounter _lapCounter;
     LapTimeCounter _timeCounter;
@@ -49,18 +47,5 @@ public class Car : MonoBehaviour
     void Start()
     {
         Upgrades = new List<Upgrade>();
-    }
-
-    public void ApplyUpgrades()
-    {
-        foreach (var upgrade in Upgrades)
-        {
-            upgrade.Apply(this);
-        }
-    }
-
-    public void AddUpgrade(Upgrade upgrade)
-    {
-        Upgrades.Add(upgrade);
     }
 }

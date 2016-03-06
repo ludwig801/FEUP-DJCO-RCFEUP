@@ -4,9 +4,9 @@ public class WeightReductionBro : Upgrade
 {
     public float WeightReductionInKg;
 
-    public override void Apply(Car car)
+    public override void Apply(CarMovement car)
     {
-        car.MassInKg -= WeightReductionInKg;
+        throw new NotImplementedException();
     }
 
     public override void Remove()
