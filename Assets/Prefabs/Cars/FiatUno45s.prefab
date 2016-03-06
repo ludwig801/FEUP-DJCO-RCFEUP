@@ -442,26 +442,35 @@ MonoBehaviour:
   Axles:
   - LeftWheel: {fileID: 14643734}
     RightWheel: {fileID: 14691390}
-    Motor: 0
     Steering: 1
   - LeftWheel: {fileID: 14605134}
     RightWheel: {fileID: 14673810}
-    Motor: 1
     Steering: 0
-  MaxMotorTorqueNM: 0
-  MaxReverseTorqueNM: 0
-  BrakeTorque: 20000
-  MaxHandbrakeTorque: 0
+  Acceleration: 0
+  BrakingPower: 0
+  AngularAcceleration: 0
+  TurnThresholdKMH: 0
+  TopSpeedKMH: 0
+  TopSpeedReverseKMH: 0
   MaxSteeringAngle: 35
-  Downforce: 100
-  SteeringHelp: 0
-  TractionControl: 1
-  TCSlipLimit: 0.3
+  MaxBodySideAngle: 0
+  MaxBodyAccelAngle: 0
+  MaxBodyBrakeAngle: 0
+  MaxInclinationX: 0
+  MaxInclinationZ: 0
+  BodyPivot: {fileID: 0}
   CenterOfMass: {fileID: 418662}
-  Car: {fileID: 0}
+  PowerUp: {fileID: 0}
+  CanMove: 0
   _rigidbody: {fileID: 0}
-  _currentMotorTorque: 0
-  _forwardSlips: []
+  _topVelocity: 0
+  _topVelocityReverse: 0
+  _turnThresholdVelocityMult: 0
+  _trackCount: 0
+  _movingForward: 0
+  _movingBackwards: 0
+  _stopped: 0
+  _oldVelocity: {x: 0, y: 0, z: 0}
 --- !u!124 &12460298
 Behaviour:
   m_ObjectHideFlags: 1

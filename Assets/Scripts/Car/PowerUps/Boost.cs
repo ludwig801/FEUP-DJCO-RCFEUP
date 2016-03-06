@@ -34,6 +34,7 @@ public class Boost : PowerUp
 
             yield return new WaitForSeconds(Duration);
             CanBeTaken = true;
+            yield break;
         }
 
         carMovement.PowerUp = this;
@@ -41,7 +42,11 @@ public class Boost : PowerUp
         var oldValue = carMovement.TopSpeedKMH;
         carMovement.TopSpeedKMH = Mathf.Max(carMovement.TopSpeedKMH, carMovement.TopSpeedKMH * Factor);
 
-        yield return new WaitForSeconds(Duration);
+        while (TimeLeft > 0)
+        {
+            TimeLeft -= Time.deltaTime;
+            yield return null;
+        }
 
         carMovement.TopSpeedKMH = Mathf.Min(oldValue, carMovement.TopSpeedKMH);
         carMovement.PowerUp = null;

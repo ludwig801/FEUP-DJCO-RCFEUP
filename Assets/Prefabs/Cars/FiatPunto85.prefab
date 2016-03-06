@@ -602,9 +602,9 @@ MonoBehaviour:
   TotalTime: 0
   CurrentLapStartTime: 0
   CurrentLapTime: 0
-  LapTimes: []
-  PartialTimes: []
+  LapsTimes: []
   _timeCounting: 0
+  _car: {fileID: 0}
 --- !u!114 &11490560
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -618,7 +618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _raceManager: {fileID: 0}
   _currentLap: 0
-  _timeCounter: {fileID: 0}
+  _car: {fileID: 0}
 --- !u!114 &11492248
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -659,6 +659,9 @@ MonoBehaviour:
   _turnThresholdVelocityMult: 0
   _trackCount: 0
   _movingForward: 0
+  _movingBackwards: 0
+  _stopped: 0
+  _oldVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &11497312
 MonoBehaviour:
   m_ObjectHideFlags: 1

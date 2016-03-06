@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 public class TrackTrigger : MonoBehaviour
 {
-    public Transform PointA, PointB;
+    public Transform PointA, PointB, Banner;
     public BoxCollider TriggerCollider;
-    public float DeltaY;
-    public float Depth, Height;
-    public bool Visible;
+    public float DeltaY, Depth, Height;
+    [Range(0, 2)]
+    public float ScaleY;
     public Color OnTriggerEnterColor, OnTriggerExitColor;
-    //public Transform PillarA, PillarB;
-    //public Transform Banner;
+    public bool Visible;
 
     [SerializeField]
     List<MeshRenderer> _meshRenderers;
     [SerializeField]
     List<string> _tagsToIgnore;
     bool _oldVisible;
+    Vector3 _aOrigin, _bOrigin, _bannerOrigin;
 
     void Start()
     {
@@ -29,6 +29,10 @@ public class TrackTrigger : MonoBehaviour
 
         _oldVisible = Visible;
         SetColor(OnTriggerExitColor);
+
+        _aOrigin = PointA.position;
+        _bOrigin = PointB.position;
+        _bannerOrigin = Vector3.Lerp(_aOrigin, _bOrigin, 0.5f);
     }
 
     void Update()
@@ -42,10 +46,14 @@ public class TrackTrigger : MonoBehaviour
             _oldVisible = Visible;
         }
 
-        //PillarA.position = PointA.position + new Vector3(0, DeltaY, 0);
-        //PillarB.position = PointB.position + new Vector3(0, DeltaY, 0);
-        //Banner.position = Vector3.Lerp(PointA.position, PointB.position, 0.5f) + new Vector3(0, Height, 0);
-        //Banner.rotation = Quaternion.LookRotation(Vector3.Cross(PointB.position - PointA.position, Vector3.up), Vector3.up);
+        PointA.position = _aOrigin + new Vector3(0, DeltaY, 0);
+        PointB.position = _bOrigin + new Vector3(0, DeltaY, 0);
+        PointA.localScale = new Vector3(1, ScaleY, 1);
+        PointB.localScale = PointA.localScale;
+        //var delta = (PointB.position - PointA.position);
+        //Banner.localScale = new Vector3(1, ScaleY, delta.magnitude * 0.06f);
+        //Banner.position = _bannerOrigin + new Vector3(0, Height, 0);
+        //Banner.rotation = Quaternion.LookRotation(delta, Vector3.up);
     }
 
     void OnTriggerEnter(Collider other)
@@ -63,7 +71,11 @@ public class TrackTrigger : MonoBehaviour
     {
         foreach (var renderer in _meshRenderers)
         {
-            renderer.material.color = newColor;
+            var mats = renderer.materials;
+            foreach (var material in mats)
+            {
+                material.color = newColor;
+            }
         }
     }
 }

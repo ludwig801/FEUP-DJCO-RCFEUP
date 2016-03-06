@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider))]
 public abstract class PowerUp : MonoBehaviour
 {
     public enum Types
