@@ -10,6 +10,8 @@ public class UpgradeManager : MonoBehaviour
 
     public Text[] Values;
 
+    public UpgradeLevelHandler[] LevelHandlers;
+
     void Start()
     {
         SetAttributeValues();
@@ -41,19 +43,19 @@ public class UpgradeManager : MonoBehaviour
     public void UpgradeSpeed()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Speed });
-        Values[0].text = "" + (100 + GetAttributeValue(1));
+        LevelHandlers[0].IncrementLevelIfNotMax();
     }
 
     public void UpgradeHandling()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Handling });
-        Values[1].text = "" + (100 + GetAttributeValue(2));
+        LevelHandlers[1].IncrementLevelIfNotMax();
     }
 
     public void UpgradeWeight()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Weight });
-        Values[2].text = "" + (100 + GetAttributeValue(3));
+        LevelHandlers[2].IncrementLevelIfNotMax();
     }
 
     public void Exit()
