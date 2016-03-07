@@ -276,14 +276,33 @@ public class CarMovement : MonoBehaviour
         {
             if (axle.Steering)
             {
-                var euler = axle.LeftWheel.localRotation.eulerAngles;
-                var rotateTo = Quaternion.Euler(euler.x, steering * MaxSteeringAngle, euler.z);
-                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, rotateTo, Time.fixedDeltaTime * 5f);
-
-                euler = axle.RightWheel.localRotation.eulerAngles;
-                rotateTo = Quaternion.Euler(euler.x, steering * MaxSteeringAngle, euler.z);
-                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, rotateTo, Time.fixedDeltaTime * 5f);
+                // Steering
+                var localRot = axle.LeftWheel.localRotation.eulerAngles;
+                localRot.y = steering * MaxSteeringAngle;
+                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
+                localRot = axle.RightWheel.localRotation.eulerAngles;
+                localRot.y = steering * MaxSteeringAngle;
+                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
             }
+
+            // Motor movement
+            var axleRot = axle.LeftWheel.localRotation.eulerAngles;
+            axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
+            if (axleRot.x > 90)
+                axleRot.x = axleRot.x % 90;
+            else if (axleRot.x < 0)
+                axleRot.x = (90 + axleRot.x) % 90;
+            axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
+            axle.LeftWheel.localRotation = Quaternion.Euler(axleRot);
+
+            axleRot = axle.RightWheel.localRotation.eulerAngles;
+            axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
+            if (axleRot.x > 90)
+                axleRot.x = axleRot.x % 90;
+            else if (axleRot.x < 0)
+                axleRot.x = (90 + axleRot.x) % 90;
+            axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
+            axle.RightWheel.localRotation = Quaternion.Euler(axleRot);
         }
     }
 
