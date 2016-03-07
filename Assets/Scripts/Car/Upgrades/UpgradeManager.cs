@@ -9,6 +9,7 @@ public class UpgradeManager : MonoBehaviour
     private int Weight = 2;
 
     public UpgradeLevelHandler[] LevelHandlers;
+    public Button[] UpgradeButtons;
 
     private Upgrade[] Upgrades;
 
@@ -50,6 +51,11 @@ public class UpgradeManager : MonoBehaviour
             UpgradeWriter.Save(Upgrades[Speed]);
             LevelHandlers[Speed].IncrementLevelIfNotMax();
         }
+
+        if(!Upgrades[Speed].CanIncrementLevel)
+        {
+            UpgradeButtons[Speed].gameObject.SetActive(false);
+        }
     }
 
     public void UpgradeHandling()
@@ -60,6 +66,11 @@ public class UpgradeManager : MonoBehaviour
             UpgradeWriter.Save(Upgrades[Handling]);
             LevelHandlers[Handling].IncrementLevelIfNotMax();
         }
+
+        if (!Upgrades[Handling].CanIncrementLevel)
+        {
+            UpgradeButtons[Handling].gameObject.SetActive(false);
+        }
     }
 
     public void UpgradeWeight()
@@ -69,6 +80,11 @@ public class UpgradeManager : MonoBehaviour
             Upgrades[Weight].Level++;
             UpgradeWriter.Save(Upgrades[Weight]);
             LevelHandlers[Weight].IncrementLevelIfNotMax();
+        }
+
+        if (!Upgrades[Weight].CanIncrementLevel)
+        {
+            UpgradeButtons[Weight].gameObject.SetActive(false);
         }
     }
 
