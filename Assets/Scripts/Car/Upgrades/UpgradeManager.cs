@@ -40,7 +40,7 @@ public class UpgradeManager : MonoBehaviour
 
     private int GetLevel(int upgradeId)
     {
-        return UpgradeReader.GetUpgradeLevel(upgradeId);
+        return UpgradeWriter.GetUpgradeLevel(upgradeId);
     }
 
     public void UpgradeSpeed()
@@ -48,7 +48,7 @@ public class UpgradeManager : MonoBehaviour
         if (Upgrades[Speed].CanIncrementLevel)
         {
             Upgrades[Speed].Level++;
-            UpgradeWriter.Save(Upgrades[Speed]);
+            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Speed].UpgradeId);
             LevelHandlers[Speed].IncrementLevelIfNotMax();
         }
 
@@ -63,7 +63,7 @@ public class UpgradeManager : MonoBehaviour
         if (Upgrades[Handling].CanIncrementLevel)
         {
             Upgrades[Handling].Level++;
-            UpgradeWriter.Save(Upgrades[Handling]);
+            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Handling].UpgradeId);
             LevelHandlers[Handling].IncrementLevelIfNotMax();
         }
 
@@ -78,7 +78,7 @@ public class UpgradeManager : MonoBehaviour
         if(Upgrades[Weight].CanIncrementLevel)
         {
             Upgrades[Weight].Level++;
-            UpgradeWriter.Save(Upgrades[Weight]);
+            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Weight].UpgradeId);
             LevelHandlers[Weight].IncrementLevelIfNotMax();
         }
 

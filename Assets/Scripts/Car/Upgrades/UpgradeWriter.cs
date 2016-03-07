@@ -5,63 +5,69 @@ using UnityEngine;
 
 public static class UpgradeWriter
 {
-    private static string Filename = "Upgrades.sav";
-
-    public static void Save(Upgrade upgrade)
-    {
-
-        if(!FileExists(Filename))
-        {
-            InitializeUpgradesFile(Filename);
-        }
-
-        SaveUpgrade(upgrade);
-    }
-
-    private static bool FileExists(string filenameWithExtension)
-    {
-        return File.Exists(filenameWithExtension);
-    }
-
-    private static void InitializeUpgradesFile(string filenameWithExtension)
+    public static void InitializeUpgradesNode(string filenameWithExtension)
     {
         using (var streamWriter = new StreamWriter(filenameWithExtension))
         {
-            streamWriter.WriteLine("<?xml version='1.0' encoding='utf-8'?>");
+            streamWriter.WriteLine(GetOpeningParentNode());
 
-            streamWriter.WriteLine("<Upgrades>");
+            streamWriter.WriteLine(GetChildNode(0, 0));
+            streamWriter.WriteLine(GetChildNode(1, 0));
+            streamWriter.WriteLine(GetChildNode(2, 0));
 
-                streamWriter.WriteLine("    <Upgrade id='" + 0 + "' level='" + 0 + "' />");
-                streamWriter.WriteLine("    <Upgrade id='" + 1 + "' level='" + 0 + "' />");
-                streamWriter.WriteLine("    <Upgrade id='" + 2 + "' level='" + 0 + "' />");
-
-            streamWriter.WriteLine("</Upgrades>");
+            streamWriter.WriteLine(GetClosingParentNode());
         }
     }
 
-    private static void SaveUpgrade(Upgrade upgrade)
+    private static string GetOpeningParentNode()
     {
-        IncrementLevelInLine(upgrade.UpgradeId);
+        return "<Upgrades>";
     }
 
-    private static void IncrementLevelInLine(int upgradeId)
+    private static string GetClosingParentNode()
     {
-        var xml = new XmlDocument();
+        return "</Upgrades>";
+    }
 
-        xml.Load(Filename);
+    private static string GetChildNode(int id, int level)
+    {
+        return "    <Upgrade id='" + id + "' level='" + level + "' />";
+    }
 
-        var elements = xml.SelectSingleNode("/Upgrades").ChildNodes;
+    public static void IncrementUpgradeLevel(int upgradeId)
+    {
+        var xmlDoc = SaveGameFile.OpenSaveGameFile();
+
+        var node = GetUpgradeNode(xmlDoc, upgradeId);
+
+        node.Attributes[1].Value = "" + (int.Parse(node.Attributes[1].Value) + 1);
+
+        xmlDoc.Save(SaveGameFile.Filename);
+
+    }
+
+    public static int GetUpgradeLevel(int upgradeId)
+    {
+        var xmlDoc = SaveGameFile.OpenSaveGameFile();
+
+        var node = GetUpgradeNode(xmlDoc, upgradeId);
+
+        return int.Parse(node.Attributes[1].Value);
+    }
+
+    private static XmlNode GetUpgradeNode(XmlDocument xmlDoc, int upgradeId)
+    {
+        var elements = xmlDoc.SelectSingleNode("/Upgrades").ChildNodes;
 
         foreach (XmlNode element in elements)
         {
             if (int.Parse(element.Attributes[0].Value) == upgradeId)
             {
-                element.Attributes[1].Value = "" + (int.Parse(element.Attributes[1].Value) + 1);
+                return element;
             }
         }
 
-        xml.Save(Filename);
+        return null;
 
     }
 }
-
