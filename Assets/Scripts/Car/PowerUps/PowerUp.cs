@@ -17,6 +17,7 @@ public abstract class PowerUp : MonoBehaviour
     public float RotationSpeed;
     public float Duration;
     public float TimeLeft;
+    public MeshRenderer Renderer;
     public Sprite Sprite;
     public Color AccentColor;
 
@@ -30,18 +31,21 @@ public abstract class PowerUp : MonoBehaviour
 
     public virtual void Start()
     {
-        _meshTransform = GetComponentInChildren<MeshRenderer>().transform;
+        _meshTransform = Renderer.transform;
         _goingUp = true;
 
         _particlesOnCatch = GetComponentInChildren<ParticleSystem>();
 
         _initialPos = _meshTransform.position;
         StartCoroutine(FloatMesh());
+
+        Renderer.materials[1].color = AccentColor;
     }
 
     public virtual void Update()
     {
         _meshTransform.gameObject.SetActive(CanBeTaken);
+        transform.Rotate(new Vector3(0, Time.deltaTime * RotationSpeed * 10, 0));
     }
 
     IEnumerator FloatMesh()
@@ -102,7 +106,6 @@ public abstract class PowerUp : MonoBehaviour
                 StopCoroutine(_lastShowCatch);
             _lastShowCatch = StartCoroutine(ShowCatch());
 
-            CanBeTaken = false;
             Target = other.gameObject;
             Apply();
         }

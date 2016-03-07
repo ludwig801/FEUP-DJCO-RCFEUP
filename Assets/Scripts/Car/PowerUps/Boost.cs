@@ -22,7 +22,6 @@ public class Boost : PowerUp
             return;
         }
 
-        
         Stop();
         _applied = StartCoroutine(Execute(carMovement));
     }
@@ -37,6 +36,7 @@ public class Boost : PowerUp
 
     IEnumerator Execute(CarMovement carMovement)
     {
+        CanBeTaken = false;
         carMovement.PowerUp = this;
         TimeLeft = Duration;
         carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH * Factor;
