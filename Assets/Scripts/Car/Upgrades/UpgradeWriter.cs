@@ -7,7 +7,7 @@ public static class UpgradeWriter
 {
     public static void InitializeUpgradesNode(string filenameWithExtension)
     {
-        using (var streamWriter = new StreamWriter(filenameWithExtension))
+        using (var streamWriter = new StreamWriter(filenameWithExtension, true))
         {
             streamWriter.WriteLine(GetOpeningParentNode());
 

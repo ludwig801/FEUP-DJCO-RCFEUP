@@ -20,7 +20,7 @@ public static class SaveGameFile {
 
     private static void CreateSaveGameFile()
     {
-        using (var streamWriter = new StreamWriter(Filename))
+        using (var streamWriter = new StreamWriter(Filename, true))
         {
             streamWriter.WriteLine(GetXmlVersion());
         }
