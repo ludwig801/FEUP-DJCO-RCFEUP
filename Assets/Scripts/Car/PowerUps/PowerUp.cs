@@ -15,6 +15,10 @@ public abstract class PowerUp : MonoBehaviour
     public float FloatingSpeed;
     public float FloatingDelta;
     public float RotationSpeed;
+    public float Duration;
+    public float TimeLeft;
+    public Sprite Sprite;
+    public Color AccentColor;
 
     [SerializeField]
     Transform _meshTransform;
@@ -71,6 +75,8 @@ public abstract class PowerUp : MonoBehaviour
     }
 
     public abstract void Apply();
+
+    public abstract void Stop();
 
     IEnumerator ShowCatch()
     {

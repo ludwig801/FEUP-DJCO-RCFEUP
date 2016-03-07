@@ -61,7 +61,7 @@ GameObject:
   - 114: {fileID: 11439306}
   - 54: {fileID: 5411904}
   m_Layer: 0
-  m_Name: Bigodes
+  m_Name: Vidal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,11 +186,11 @@ MonoBehaviour:
   RotationSpeed: 0
   Duration: 5
   TimeLeft: 0
-  Sprite: {fileID: 21300000, guid: e435429e56d319a4fa16e0ce1173e3ec, type: 3}
-  AccentColor: {r: 0, g: 0.75735295, b: 0.16191679, a: 1}
+  Sprite: {fileID: 21300000, guid: 1b93929dba2e01646bf37d9c52b3654a, type: 3}
+  AccentColor: {r: 0.9044118, g: 0, b: 0, a: 1}
   _meshTransform: {fileID: 0}
   _particlesOnCatch: {fileID: 0}
-  Factor: 1.5
+  Factor: 0.75
 --- !u!135 &13571378
 SphereCollider:
   m_ObjectHideFlags: 1

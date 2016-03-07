@@ -4,8 +4,8 @@ using System.Collections;
 public class Boost : PowerUp
 {
     public float Factor;
-    public float Duration;
-    public float TimeLeft;
+
+    Coroutine _applied;
 
     public override void Start()
     {
@@ -22,33 +22,38 @@ public class Boost : PowerUp
             return;
         }
 
-        StartCoroutine(Execute(carMovement));
+        
+        Stop();
+        _applied = StartCoroutine(Execute(carMovement));
+    }
+
+    public override void Stop()
+    {
+        if (_applied != null)
+            StopCoroutine(_applied);
+
+        CanBeTaken = true;
     }
 
     IEnumerator Execute(CarMovement carMovement)
     {
-        if (carMovement.PowerUp != null && carMovement.PowerUp.Type == Type)
-        {
-            if (Accumulative)
-                ((Boost)carMovement.PowerUp).TimeLeft += Duration;
-
-            yield return new WaitForSeconds(Duration);
-            CanBeTaken = true;
-            yield break;
-        }
-
         carMovement.PowerUp = this;
         TimeLeft = Duration;
-        var oldValue = carMovement.TopSpeedKMH;
-        carMovement.TopSpeedKMH = Mathf.Max(carMovement.TopSpeedKMH, carMovement.TopSpeedKMH * Factor);
+        carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH * Factor;
 
         while (TimeLeft > 0)
         {
             TimeLeft -= Time.deltaTime;
             yield return null;
+
+            if (carMovement.PowerUp != this)
+            {
+                Stop();
+                yield break;
+            }
         }
 
-        carMovement.TopSpeedKMH = Mathf.Min(oldValue, carMovement.TopSpeedKMH);
+        carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH;
         carMovement.PowerUp = null;
         CanBeTaken = true;
         yield break;

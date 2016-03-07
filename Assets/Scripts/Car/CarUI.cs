@@ -16,24 +16,22 @@ public class CarUI : MonoBehaviour
     public List<Text> Partials;
     public List<Text> BestPartials;
     public Color BestPartialColor, WorstPartialColor;
+    public Image CurrentPowerUp, CurrentPowerUpMask, CurrentPowerUpDuration;
+    public Sprite PowerUpDefaultSprite;
+    public Color PowerUpDurationColor;
 
     [SerializeField]
     Car _car;
     [SerializeField]
-    LapCounter _carTracker;
-    Color _oldSpeedSliderFillColor;
+    LapCounter _carLapCounter;
     [SerializeField]
     RaceManager _raceManager;
-    [SerializeField]
-    int _usedPartials;
 
     void Start()
     {
         _raceManager = RaceManager.Instance;
         _car = CarObject.GetComponent<Car>();
-        _carTracker = CarObject.GetComponent<LapCounter>();
-
-        _usedPartials = 0;
+        _carLapCounter = CarObject.GetComponent<LapCounter>();
     }
 
     void Update()
@@ -41,6 +39,7 @@ public class CarUI : MonoBehaviour
         UpdateTrackStats();
         UpdateRaceStats();
         UpdateCarTimeStats();
+        UpdateCarPowerUp();
     }
 
     void UpdateTrackStats()
@@ -50,8 +49,8 @@ public class CarUI : MonoBehaviour
 
     void UpdateRaceStats()
     {
-        CurrentLap.text = string.Concat("Lap: ", _carTracker.CurrentLapPlusOne);
-        NextCheckpoint.text = string.Concat("Next checkpoint: ", _carTracker.CurrentCheckpoint);
+        CurrentLap.text = string.Concat("Lap: ", _carLapCounter.CurrentLapPlusOne);
+        NextCheckpoint.text = string.Concat("Next checkpoint: ", _carLapCounter.CurrentCheckpoint);
     }
 
     void UpdateCarTimeStats()
@@ -122,13 +121,33 @@ public class CarUI : MonoBehaviour
         }
     }
 
+    void UpdateCarPowerUp()
+    {
+        var carMovement = _car.CarMovement;
+        if (carMovement.PowerUp != null)
+        {
+            var powerUp = carMovement.PowerUp;
+            CurrentPowerUp.enabled = true;
+            CurrentPowerUp.sprite = powerUp.Sprite;
+            CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, powerUp.AccentColor, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, PowerUpDurationColor, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.fillAmount = powerUp.TimeLeft / powerUp.Duration;
+        }
+        else
+        {
+            CurrentPowerUp.enabled = false;
+            CurrentPowerUp.sprite = PowerUpDefaultSprite;
+            CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, Color.grey, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, Color.grey, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.fillAmount = 1;
+        }
+    }
+
     Text CreatePartial()
     {
         var partial = new GameObject().AddComponent<RectTransform>();
         partial.SetParent(PartialsRect);
         partial.name = "Lap Partial";
-
-        _usedPartials++;
 
         return partial.gameObject.AddComponent<Text>();
     }

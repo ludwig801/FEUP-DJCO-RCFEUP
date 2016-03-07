@@ -19,6 +19,8 @@ public class CarMovement : MonoBehaviour
     public float TurnThresholdKMH;
     [Range(50, 300)]
     public float TopSpeedKMH;
+    [Range(50, 300)]
+    public float CurrentTopSpeedKMH;
     [Range(0, 50)]
     public float TopSpeedReverseKMH;
     public float MaxSteeringAngle;
@@ -161,11 +163,12 @@ public class CarMovement : MonoBehaviour
 
         _trackCount = 0;
         Stopped = true;
+        CurrentTopSpeedKMH = TopSpeedKMH;
     }
 
     void Update()
     {
-        _topVelocity = UnitConverter.KmhToVelocity(TopSpeedKMH);
+        _topVelocity = UnitConverter.KmhToVelocity(CurrentTopSpeedKMH);
         _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
         _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
 
@@ -253,7 +256,7 @@ public class CarMovement : MonoBehaviour
         }
 
         Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
-        Stopped = Speed < 0.05f;
+        Stopped = Speed < 1f;
     }
 
     void ApplySteering(float steering)
