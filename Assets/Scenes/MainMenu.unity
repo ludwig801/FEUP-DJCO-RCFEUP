@@ -704,7 +704,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Heroes
+  m_Text: RACERS
 --- !u!222 &779784244
 CanvasRenderer:
   m_ObjectHideFlags: 0

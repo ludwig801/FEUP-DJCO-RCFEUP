@@ -4,56 +4,88 @@ using UnityEngine.UI;
 
 public class UpgradeManager : MonoBehaviour
 {
-    private int Speed = 1;
-    private int Handling = 2;
-    private int Weight = 3;
+    private int Speed = 0;
+    private int Handling = 1;
+    private int Weight = 2;
 
-    public Text[] Values;
+    public UpgradeLevelHandler[] LevelHandlers;
+    public Button[] UpgradeButtons;
+
+    private Upgrade[] Upgrades;
 
     void Start()
     {
-        SetAttributeValues();
+        SetUpgradeLevels();
     }
 
-    private void SetAttributeValues()
+    private void SetUpgradeLevels()
     {
-        var minId = 1;
-        var maxId = 3;
+        var minId = 0;
+        var maxId = 2;
+
+        Upgrades = new Upgrade[maxId + 1];
 
         for (int i = minId; i <= maxId; i++)
         {
-            SetAttributeValueForId(i);
+            SetLevelForUpgradeWithId(i);
         }
     }
 
-    private void SetAttributeValueForId(int upgradeId)
+    private void SetLevelForUpgradeWithId(int upgradeId)
     {
-        Values[upgradeId-1].text = "" + (100 + GetAttributeValue(upgradeId));
+        var currentLevel = GetLevel(upgradeId);
+        Upgrades[upgradeId] = new Upgrade() { UpgradeId = upgradeId, Level = currentLevel };
+        LevelHandlers[upgradeId].SetLevelTo(currentLevel);
     }
 
-    private int GetAttributeValue(int upgradeId)
+    private int GetLevel(int upgradeId)
     {
-        int level = UpgradeReader.GetUpgradeLevel(upgradeId);
-
-        return (new Upgrade() { UpgradeId = upgradeId, Level = level }).GetIncrementByLevel();
+        return UpgradeReader.GetUpgradeLevel(upgradeId);
     }
 
     public void UpgradeSpeed()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Speed });
-        Values[0].text = "" + (100 + GetAttributeValue(1));
+        if (Upgrades[Speed].CanIncrementLevel)
+        {
+            Upgrades[Speed].Level++;
+            UpgradeWriter.Save(Upgrades[Speed]);
+            LevelHandlers[Speed].IncrementLevelIfNotMax();
+        }
+
+        if(!Upgrades[Speed].CanIncrementLevel)
+        {
+            UpgradeButtons[Speed].gameObject.SetActive(false);
+        }
     }
 
     public void UpgradeHandling()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Handling });
-        Values[1].text = "" + (100 + GetAttributeValue(2));
+        if (Upgrades[Handling].CanIncrementLevel)
+        {
+            Upgrades[Handling].Level++;
+            UpgradeWriter.Save(Upgrades[Handling]);
+            LevelHandlers[Handling].IncrementLevelIfNotMax();
+        }
+
+        if (!Upgrades[Handling].CanIncrementLevel)
+        {
+            UpgradeButtons[Handling].gameObject.SetActive(false);
+        }
     }
 
     public void UpgradeWeight()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Weight });
-        Values[2].text = "" + (100 + GetAttributeValue(3));
+        if(Upgrades[Weight].CanIncrementLevel)
+        {
+            Upgrades[Weight].Level++;
+            UpgradeWriter.Save(Upgrades[Weight]);
+            LevelHandlers[Weight].IncrementLevelIfNotMax();
+        }
+
+        if (!Upgrades[Weight].CanIncrementLevel)
+        {
+            UpgradeButtons[Weight].gameObject.SetActive(false);
+        }
     }
 
     public void Exit()
