@@ -18,6 +18,15 @@ public class UpgradeManager : MonoBehaviour
         SetUpgradeLevels();
     }
 
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     private void SetUpgradeLevels()
     {
         var minId = 0;
@@ -86,11 +95,6 @@ public class UpgradeManager : MonoBehaviour
         {
             UpgradeButtons[Weight].gameObject.SetActive(false);
         }
-    }
-
-    public void Exit()
-    {
-        SceneManager.LoadScene("MainMenu");
     }
 
 }
