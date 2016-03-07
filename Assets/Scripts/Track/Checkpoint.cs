@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class TrackTrigger : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
     public Transform PointA, PointB, Banner;
     public BoxCollider TriggerCollider;

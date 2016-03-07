@@ -129,6 +129,7 @@ public class CarUI : MonoBehaviour
                         var bestPartialText = BestPartials[i];
                         bestPartialText.text = partialText.text;
                         bestPartialText.color = partialText.color;
+                        bestPartialText.gameObject.SetActive(true);
                     }
                     partialText.gameObject.SetActive(true);
                 }
@@ -144,6 +145,7 @@ public class CarUI : MonoBehaviour
             for (int i = 0; i < Partials.Count; i++)
             {
                 Partials[i].gameObject.SetActive(false);
+                BestPartials[i].gameObject.SetActive(false);
             }
         }
     }

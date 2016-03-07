@@ -21,7 +21,7 @@ public class RaceManager : MonoBehaviour
         TIME_TRIAL = 0
     }
 
-    public List<TrackTrigger> Checkpoints;
+    public List<Checkpoint> Checkpoints;
     public int StartCheckpoint;
     public List<Transform> StartingPositions;
     public RaceTypes RaceType;

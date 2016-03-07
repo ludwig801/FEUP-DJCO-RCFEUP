@@ -20,7 +20,7 @@ public class ChaseCam : MonoBehaviour
         _oldDistance = -1;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (_oldDistance != DistanceToTarget)
         {
