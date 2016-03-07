@@ -31,9 +31,9 @@ public static class UpgradeWriter
 
             streamWriter.WriteLine("<Upgrades>");
 
+                streamWriter.WriteLine("    <Upgrade id='" + 0 + "' level='" + 0 + "' />");
                 streamWriter.WriteLine("    <Upgrade id='" + 1 + "' level='" + 0 + "' />");
                 streamWriter.WriteLine("    <Upgrade id='" + 2 + "' level='" + 0 + "' />");
-                streamWriter.WriteLine("    <Upgrade id='" + 3 + "' level='" + 0 + "' />");
 
             streamWriter.WriteLine("</Upgrades>");
         }

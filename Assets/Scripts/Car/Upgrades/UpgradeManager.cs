@@ -4,11 +4,13 @@ using UnityEngine.UI;
 
 public class UpgradeManager : MonoBehaviour
 {
-    private int Speed = 1;
-    private int Handling = 2;
-    private int Weight = 3;
+    private int Speed = 0;
+    private int Handling = 1;
+    private int Weight = 2;
 
     public UpgradeLevelHandler[] LevelHandlers;
+
+    private Upgrade[] Upgrades;
 
     void Start()
     {
@@ -17,8 +19,10 @@ public class UpgradeManager : MonoBehaviour
 
     private void SetUpgradeLevels()
     {
-        var minId = 1;
-        var maxId = 3;
+        var minId = 0;
+        var maxId = 2;
+
+        Upgrades = new Upgrade[maxId + 1];
 
         for (int i = minId; i <= maxId; i++)
         {
@@ -28,7 +32,9 @@ public class UpgradeManager : MonoBehaviour
 
     private void SetLevelForUpgradeWithId(int upgradeId)
     {
-        LevelHandlers[upgradeId - 1].SetLevelTo(GetLevel(upgradeId));
+        var currentLevel = GetLevel(upgradeId);
+        Upgrades[upgradeId] = new Upgrade() { UpgradeId = upgradeId, Level = currentLevel };
+        LevelHandlers[upgradeId].SetLevelTo(currentLevel);
     }
 
     private int GetLevel(int upgradeId)
@@ -38,20 +44,32 @@ public class UpgradeManager : MonoBehaviour
 
     public void UpgradeSpeed()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Speed });
-        LevelHandlers[0].IncrementLevelIfNotMax();
+        if (Upgrades[Speed].CanIncrementLevel)
+        {
+            Upgrades[Speed].Level++;
+            UpgradeWriter.Save(Upgrades[Speed]);
+            LevelHandlers[Speed].IncrementLevelIfNotMax();
+        }
     }
 
     public void UpgradeHandling()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Handling });
-        LevelHandlers[1].IncrementLevelIfNotMax();
+        if (Upgrades[Handling].CanIncrementLevel)
+        {
+            Upgrades[Handling].Level++;
+            UpgradeWriter.Save(Upgrades[Handling]);
+            LevelHandlers[Handling].IncrementLevelIfNotMax();
+        }
     }
 
     public void UpgradeWeight()
     {
-        UpgradeWriter.Save(new Upgrade() { UpgradeId = Weight });
-        LevelHandlers[2].IncrementLevelIfNotMax();
+        if(Upgrades[Weight].CanIncrementLevel)
+        {
+            Upgrades[Weight].Level++;
+            UpgradeWriter.Save(Upgrades[Weight]);
+            LevelHandlers[Weight].IncrementLevelIfNotMax();
+        }
     }
 
     public void Exit()

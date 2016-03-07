@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Upgrades>
-  <Upgrade id="1" level="1" />
-  <Upgrade id="2" level="0" />
-  <Upgrade id="3" level="0" />
+  <Upgrade id="0" level="5" />
+  <Upgrade id="1" level="2" />
+  <Upgrade id="2" level="1" />
 </Upgrades>
