@@ -8,6 +8,8 @@ public class UpgradeManager : MonoBehaviour
     private int Handling = 2;
     private int Weight = 3;
 
+    public Text[] Values;
+
     void Start()
     {
         SetAttributeValues();
@@ -18,7 +20,7 @@ public class UpgradeManager : MonoBehaviour
         var minId = 1;
         var maxId = 3;
 
-        for(int i = minId; i <= maxId; i++)
+        for (int i = minId; i <= maxId; i++)
         {
             SetAttributeValueForId(i);
         }
@@ -26,19 +28,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void SetAttributeValueForId(int upgradeId)
     {
-        string[] attributesNames = { "SpeedAttribute", "HandlingAttribute", "WeightAttribute" };
-
-        var attributeObj = GameObject.Find(attributesNames[upgradeId - 1]);
-
-        var childrens = attributeObj.GetComponentsInChildren<Text>();
-
-        foreach (var item in childrens)
-        {
-            if (item.name == "AttributeValue")
-            {
-                item.text = "" + (100 + GetAttributeValue(upgradeId));
-            }
-        }
+        Values[upgradeId-1].text = "" + (100 + GetAttributeValue(upgradeId));
     }
 
     private int GetAttributeValue(int upgradeId)
@@ -51,16 +41,19 @@ public class UpgradeManager : MonoBehaviour
     public void UpgradeSpeed()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Speed });
+        Values[0].text = "" + (100 + GetAttributeValue(1));
     }
 
     public void UpgradeHandling()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Handling });
+        Values[1].text = "" + (100 + GetAttributeValue(2));
     }
 
     public void UpgradeWeight()
     {
         UpgradeWriter.Save(new Upgrade() { UpgradeId = Weight });
+        Values[2].text = "" + (100 + GetAttributeValue(3));
     }
 
     public void Exit()
