@@ -6,9 +6,6 @@ public class CarUI : MonoBehaviour
 {
     public GameObject CarObject;
 
-    public Slider SpeedSlider;
-    public Image SpeedSliderFill;
-    public Text SpeedText;
     public Toggle InTrackToggle;
     public Text CurrentLap;
     public Text NextCheckpoint;
@@ -36,9 +33,6 @@ public class CarUI : MonoBehaviour
         _car = CarObject.GetComponent<Car>();
         _carTracker = CarObject.GetComponent<LapCounter>();
 
-        SpeedSlider.minValue = 0;
-        SpeedSlider.wholeNumbers = true;
-        _oldSpeedSliderFillColor = SpeedSliderFill.color;
         _usedPartials = 0;
     }
 
@@ -46,7 +40,6 @@ public class CarUI : MonoBehaviour
     {
         UpdateTrackStats();
         UpdateRaceStats();
-        UpdateCarSpeedInfo();
         UpdateCarTimeStats();
     }
 
@@ -59,27 +52,6 @@ public class CarUI : MonoBehaviour
     {
         CurrentLap.text = string.Concat("Lap: ", _carTracker.CurrentLapPlusOne);
         NextCheckpoint.text = string.Concat("Next checkpoint: ", _carTracker.CurrentCheckpoint);
-    }
-
-    void UpdateCarSpeedInfo()
-    {
-        var carMovement = _car.CarMovement;
-        SpeedSlider.maxValue = carMovement.TopSpeedKMH;
-        if (carMovement.InTrack || _raceManager.RaceIsOn)
-        {
-            SpeedSlider.value = carMovement.SpeedKMH;
-            SpeedText.text = ((int)carMovement.SpeedKMH).ToString();
-        }
-        else
-        {
-            SpeedSlider.value = 0;
-            SpeedText.text = string.Concat("0");
-        }
-
-        if (carMovement.PowerUp != null && carMovement.PowerUp.Type == PowerUp.Types.BOOST)
-            SpeedSliderFill.color = Color.Lerp(SpeedSliderFill.color, OnBoostColor, Time.unscaledDeltaTime * 5f);
-        else
-            SpeedSliderFill.color = Color.Lerp(SpeedSliderFill.color, _oldSpeedSliderFillColor, Time.unscaledDeltaTime * 5f);
     }
 
     void UpdateCarTimeStats()

@@ -281,8 +281,13 @@ public class CarMovement : MonoBehaviour
         {
             if (axle.Steering)
             {
-                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(steering * MaxSteeringAngle, 0, 0), Time.fixedDeltaTime * 5f);
-                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, Quaternion.Euler(steering * MaxSteeringAngle, 0, 0), Time.fixedDeltaTime * 5f);
+                var euler = axle.LeftWheel.localRotation.eulerAngles;
+                var rotateTo = Quaternion.Euler(euler.x, steering * MaxSteeringAngle, euler.z);
+                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, rotateTo, Time.fixedDeltaTime * 5f);
+
+                euler = axle.RightWheel.localRotation.eulerAngles;
+                rotateTo = Quaternion.Euler(euler.x, steering * MaxSteeringAngle, euler.z);
+                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, rotateTo, Time.fixedDeltaTime * 5f);
             }
         }
     }

@@ -1,58 +1,62 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : MonoBehaviour
+{
+    public RectTransform Background;
 
-	public RectTransform pauseMenu;
+    public Button ResumeBtn;
+    public Button RestartBtn;
+    public Button QuitRaceBtn;
 
-	public Button continueButton;
-	public Button quitButton;
-	public Button restartButton;
+    [SerializeField]
+    private bool _isPaused;
 
-	private bool isPaused;
+    void Start()
+    {
+        ResumeBtn = ResumeBtn.GetComponent<Button>();
+        QuitRaceBtn = QuitRaceBtn.GetComponent<Button>();
+        RestartBtn = RestartBtn.GetComponent<Button>();
 
-	// Use this for initialization
-	void Start () {
-		continueButton = continueButton.GetComponent<Button> ();
-		quitButton = quitButton.GetComponent<Button> ();
-		restartButton = restartButton.GetComponent<Button> ();
+        Background.gameObject.SetActive(false);
+        _isPaused = false;
+    }
 
-		pauseMenu.gameObject.SetActive (false);
-		isPaused = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			if (isPaused) {
-				isPaused = false;
-				Time.timeScale = 1;
-				pauseMenu.gameObject.SetActive (false);
-			} else {
-				isPaused = true;
-				Time.timeScale = 0;
-				pauseMenu.gameObject.SetActive (true);
-			}
-		}
-	}
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (_isPaused)
+                OnResume();
+            else
+                OnPause();
+        }
+    }
 
-	public void pressContinue(){
-		if (isPaused) {
-			isPaused = false;
-			Time.timeScale = 1;
-			pauseMenu.gameObject.SetActive (false);
-		}
-	}
+    public void OnPause()
+    {
+        _isPaused = true;
+        Time.timeScale = 0;
+        Background.gameObject.SetActive(true);
+    }
 
-	public void pressQuit(){
-		Time.timeScale = 1;
-		SceneManager.LoadScene ("MainMenu");
-	}
+    public void OnResume()
+    {
+        _isPaused = false;
+        Time.timeScale = 1;
+        Background.gameObject.SetActive(false);
+    }
 
-	public void pressRestart(){
-		Time.timeScale = 1;
-		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
-	}
+    public void OnQuitRace()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void OnRestart()
+    {
+        Time.timeScale = 1;
+        _isPaused = false;
+    }
 }

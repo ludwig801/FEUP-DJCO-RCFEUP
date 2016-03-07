@@ -51,7 +51,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &113910
 GameObject:
   m_ObjectHideFlags: 1
@@ -79,22 +79,6 @@ GameObject:
   - 23: {fileID: 2353138}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &134262
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 456490}
-  - 65: {fileID: 6563818}
-  m_Layer: 0
-  m_Name: Front Bumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,7 +254,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 456490}
   - {fileID: 473556}
   m_Father: {fileID: 474446}
   m_RootOrder: 0
@@ -298,18 +281,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 474446}
   m_RootOrder: 2
---- !u!4 &456490
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 134262}
-  m_LocalRotation: {x: 0.50000054, y: -0.000000099717944, z: -0.000000041711672, w: 0.86602515}
-  m_LocalPosition: {x: -0, y: -0.172, z: 1.45}
-  m_LocalScale: {x: 1, y: 0.76290894, z: 1.3587881}
-  m_Children: []
-  m_Father: {fileID: 430842}
-  m_RootOrder: 0
 --- !u!4 &460284
 Transform:
   m_ObjectHideFlags: 1
@@ -364,7 +335,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 430842}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &474446
 Transform:
   m_ObjectHideFlags: 1
@@ -372,7 +343,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103782}
   m_LocalRotation: {x: 0, y: 0.7071066, z: 0, w: -0.70710695}
-  m_LocalPosition: {x: 12.72, y: 2.46, z: -47.7}
+  m_LocalPosition: {x: 12.72, y: 2.46, z: -37.4}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 430842}
@@ -556,8 +527,8 @@ Rigidbody:
   m_GameObject: {fileID: 103782}
   serializedVersion: 2
   m_Mass: 1000
-  m_Drag: 0.1
-  m_AngularDrag: 0.25
+  m_Drag: 0.2
+  m_AngularDrag: 0.5
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -573,20 +544,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.05, y: 1.9, z: 2.92}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &6563818
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 134262}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.05, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2.05, y: 1, z: 4.21}
+  m_Center: {x: 0, y: -0.44, z: 0}
 --- !u!114 &11431760
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -639,12 +598,12 @@ MonoBehaviour:
     Steering: 0
   Acceleration: 4
   BrakingPower: 2
-  AngularAcceleration: 5
+  AngularAcceleration: 4.5
   TurnThresholdKMH: 25
   TopSpeedKMH: 100
   TopSpeedReverseKMH: 25
   MaxSteeringAngle: 30
-  MaxBodySideAngle: 10
+  MaxBodySideAngle: 4
   MaxBodyAccelAngle: 5
   MaxBodyBrakeAngle: 5
   MaxInclinationX: 45
@@ -674,8 +633,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CarId: 0
-  TopSpeedInKmh: 120
-  MassInKg: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
