@@ -8,36 +8,32 @@ public class UpgradeManager : MonoBehaviour
     private int Handling = 2;
     private int Weight = 3;
 
-    public Text[] Values;
-
     public UpgradeLevelHandler[] LevelHandlers;
 
     void Start()
     {
-        SetAttributeValues();
+        SetUpgradeLevels();
     }
 
-    private void SetAttributeValues()
+    private void SetUpgradeLevels()
     {
         var minId = 1;
         var maxId = 3;
 
         for (int i = minId; i <= maxId; i++)
         {
-            SetAttributeValueForId(i);
+            SetLevelForUpgradeWithId(i);
         }
     }
 
-    private void SetAttributeValueForId(int upgradeId)
+    private void SetLevelForUpgradeWithId(int upgradeId)
     {
-        Values[upgradeId-1].text = "" + (100 + GetAttributeValue(upgradeId));
+        LevelHandlers[upgradeId - 1].SetLevelTo(GetLevel(upgradeId));
     }
 
-    private int GetAttributeValue(int upgradeId)
+    private int GetLevel(int upgradeId)
     {
-        int level = UpgradeReader.GetUpgradeLevel(upgradeId);
-
-        return (new Upgrade() { UpgradeId = upgradeId, Level = level }).GetIncrementByLevel();
+        return UpgradeReader.GetUpgradeLevel(upgradeId);
     }
 
     public void UpgradeSpeed()

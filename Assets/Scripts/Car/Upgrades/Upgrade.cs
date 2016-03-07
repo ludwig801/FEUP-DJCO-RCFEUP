@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Upgrade : MonoBehaviour
+﻿public class Upgrade
 {
     public int UpgradeId;
 

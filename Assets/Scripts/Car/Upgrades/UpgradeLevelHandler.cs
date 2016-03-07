@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UpgradeLevelHandler : MonoBehaviour {
@@ -21,6 +22,16 @@ public class UpgradeLevelHandler : MonoBehaviour {
         {
             Levels[_currentLevel].color = ActiveColor;
             _currentLevel++;
+        }
+    }
+
+    public void SetLevelTo(int levelToSetTo)
+    {
+        _currentLevel = levelToSetTo;
+
+        for (int i = 0; i < levelToSetTo; i++)
+        {
+            Levels[i].color = ActiveColor;
         }
     }
 
