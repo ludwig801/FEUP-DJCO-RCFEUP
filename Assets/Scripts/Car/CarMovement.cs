@@ -46,8 +46,6 @@ public class CarMovement : MonoBehaviour
     bool _movingBackwards;
     [SerializeField]
     bool _stopped;
-    [SerializeField]
-    Vector3 _oldVelocity;
 
     public bool MovingForward
     {
@@ -163,7 +161,6 @@ public class CarMovement : MonoBehaviour
 
         _trackCount = 0;
         Stopped = true;
-        _oldVelocity = _rigidbody.velocity;
     }
 
     void Update()
@@ -184,12 +181,7 @@ public class CarMovement : MonoBehaviour
         var handbrake = Input.GetAxis("Jump");
         var hInput = Input.GetAxis("Horizontal");
 
-        if (Vector3.Dot(_rigidbody.velocity, _oldVelocity) < 0)
-            _movingForward = !_movingForward;
-
         Move(vInput, vInput, handbrake, hInput);
-
-        _oldVelocity = _rigidbody.velocity;
     }
 
     public void ReduceMass(float value)
