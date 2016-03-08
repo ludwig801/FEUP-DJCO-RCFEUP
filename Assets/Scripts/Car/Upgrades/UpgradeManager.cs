@@ -45,6 +45,11 @@ public class UpgradeManager : MonoBehaviour
         var currentLevel = GetLevel(upgradeId);
         Upgrades[upgradeId] = new Upgrade() { UpgradeId = upgradeId, Level = currentLevel };
         LevelHandlers[upgradeId].SetLevelTo(currentLevel);
+
+        if (!Upgrades[upgradeId].CanIncrementLevel)
+        {
+            UpgradeButtons[upgradeId].gameObject.SetActive(false);
+        }
     }
 
     private int GetLevel(int upgradeId)
