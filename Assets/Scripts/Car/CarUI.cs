@@ -7,7 +7,6 @@ public class CarUI : MonoBehaviour
     public GameObject CarObject;
 
     public Toggle InTrackToggle;
-    public Text Speed;
     public Text CurrentLap;
     public Text NextCheckpoint;
     public Color OnBoostColor;
@@ -17,7 +16,7 @@ public class CarUI : MonoBehaviour
     public List<Text> Partials;
     public List<Text> BestPartials;
     public Color BestPartialColor, WorstPartialColor;
-    public Image CurrentPowerUp, CurrentPowerUpMask, CurrentPowerUpDuration;
+    public Image CurrentPowerUp, CurrentPowerUpBackground, CurrentPowerUpDuration;
     public Sprite PowerUpDefaultSprite;
     public Color PowerUpDurationColor;
 
@@ -27,12 +26,15 @@ public class CarUI : MonoBehaviour
     LapCounter _carLapCounter;
     [SerializeField]
     RaceManager _raceManager;
+    Color _initialPowerUpDurationColor;
 
     void Start()
     {
         _raceManager = RaceManager.Instance;
         _car = CarObject.GetComponent<Car>();
         _carLapCounter = CarObject.GetComponent<LapCounter>();
+
+        _initialPowerUpDurationColor = CurrentPowerUpBackground.color;
     }
 
     void Update()
@@ -41,8 +43,6 @@ public class CarUI : MonoBehaviour
         UpdateRaceStats();
         UpdateCarTimeStats();
         UpdateCarPowerUp();
-
-        Speed.text = _car.CarMovement.AngularVelocity.magnitude.ToString();
     }
 
     void UpdateTrackStats()
@@ -132,16 +132,16 @@ public class CarUI : MonoBehaviour
             var powerUp = carMovement.PowerUp;
             CurrentPowerUp.enabled = true;
             CurrentPowerUp.sprite = powerUp.Sprite;
-            CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, powerUp.AccentColor, Time.deltaTime * 5f);
-            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, PowerUpDurationColor, Time.deltaTime * 5f);
+            //CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, powerUp.AccentColor, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, powerUp.AccentColor, Time.deltaTime * 5f);
             CurrentPowerUpDuration.fillAmount = powerUp.TimeLeft / powerUp.Duration;
         }
         else
         {
             CurrentPowerUp.enabled = false;
             CurrentPowerUp.sprite = PowerUpDefaultSprite;
-            CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, Color.grey, Time.deltaTime * 5f);
-            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, Color.grey, Time.deltaTime * 5f);
+            //CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, Color.grey, Time.deltaTime * 5f);
+            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, _initialPowerUpDurationColor, Time.deltaTime * 10f);
             CurrentPowerUpDuration.fillAmount = 1;
         }
     }

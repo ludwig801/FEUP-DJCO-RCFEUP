@@ -39,7 +39,7 @@ public abstract class PowerUp : MonoBehaviour
         _initialPos = _meshTransform.position;
         StartCoroutine(FloatMesh());
 
-        Renderer.materials[1].color = AccentColor;
+        Renderer.material.color = AccentColor;
     }
 
     public virtual void Update()
