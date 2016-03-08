@@ -7,6 +7,7 @@ public class CarUI : MonoBehaviour
     public GameObject CarObject;
 
     public Toggle InTrackToggle;
+    public Text Speed;
     public Text CurrentLap;
     public Text NextCheckpoint;
     public Color OnBoostColor;
@@ -40,6 +41,8 @@ public class CarUI : MonoBehaviour
         UpdateRaceStats();
         UpdateCarTimeStats();
         UpdateCarPowerUp();
+
+        Speed.text = _car.CarMovement.AngularVelocity.magnitude.ToString();
     }
 
     void UpdateTrackStats()

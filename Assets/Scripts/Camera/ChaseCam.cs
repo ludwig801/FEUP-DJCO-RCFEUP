@@ -5,32 +5,20 @@ public class ChaseCam : MonoBehaviour
     public Transform Pivot;
     public Camera Cam;
     public Transform Target;
-    public float SmoothTime;
-    public float DistanceToTarget;
+    public float FollowSmoothTime;
+    public float RotateSmoothTime;
+    public float Height, Depth;
     public float InclinationAngle;
 
-    [SerializeField]
-    float _height;
-    [SerializeField]
-    float _depth;
-    float _oldDistance;
-
-    void Start()
+    void Update()
     {
-        _oldDistance = -1;
+        Cam.transform.localPosition = new Vector3(0, Height, Depth);
     }
 
     void LateUpdate()
     {
-        if (_oldDistance != DistanceToTarget)
-        {
-            _depth = -Mathf.Sin(45) * DistanceToTarget;
-            _height = Mathf.Cos(45) * DistanceToTarget;
-            _oldDistance = DistanceToTarget;
-        }
-
-        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.rotation, Time.deltaTime * SmoothTime);
-        Pivot.position = Target.position;
-        Cam.transform.localPosition = new Vector3(0, _height, _depth);
+        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.rotation, Time.deltaTime * RotateSmoothTime);
+        Pivot.position = Vector3.Lerp(Pivot.position, Target.position, Time.deltaTime * FollowSmoothTime);
+        
     }
 }

@@ -183,7 +183,7 @@ MonoBehaviour:
   CanBeTaken: 1
   Target: {fileID: 0}
   FloatingSpeed: 1
-  FloatingDelta: 1
+  FloatingDelta: 0
   RotationSpeed: 0
   Duration: 5
   TimeLeft: 0

@@ -9,24 +9,12 @@ public class CarMovement : MonoBehaviour
     public const int REAR_WHEELS = 1;
 
     public List<AxleInfo> Axles;
-    [Range(1.5f, 6)]
-    public float Acceleration;
-    [Range(1.5f, 6)]
-    public float BrakingPower;
-    [Range(3, 6)]
-    public float AngularAcceleration;
-    [Range(0, 20)]
+    public float LinearDrag, AngularDrag;
+    public float LinearDragOnAir, AngularDragOnAir;
+    public float Acceleration, BrakingPower, AngularAcceleration;
     public float TurnThresholdKMH;
-    [Range(50, 300)]
-    public float TopSpeedKMH;
-    [Range(50, 300)]
-    public float CurrentTopSpeedKMH;
-    [Range(0, 50)]
-    public float TopSpeedReverseKMH;
-    public float MaxSteeringAngle;
-    public float MaxBodySideAngle;
-    public float MaxBodyAccelAngle;
-    public float MaxBodyBrakeAngle;
+    public float TopSpeedKMH, CurrentTopSpeedKMH, TopSpeedReverseKMH;
+    public float MaxSteeringAngle, MaxBodySideAngle, MaxBodyAccelAngle, MaxBodyBrakeAngle;
     public float MaxInclinationX, MaxInclinationZ;
     public Transform BodyPivot, CenterOfMass;
     public PowerUp PowerUp;
@@ -48,6 +36,8 @@ public class CarMovement : MonoBehaviour
     bool _movingBackwards;
     [SerializeField]
     bool _stopped;
+    [SerializeField]
+    bool _braking;
 
     public bool MovingForward
     {
@@ -159,7 +149,7 @@ public class CarMovement : MonoBehaviour
 
     void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = transform.GetComponent<Rigidbody>();
 
         _trackCount = 0;
         Stopped = true;
@@ -209,65 +199,52 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (InTrack && CanMove)
+        if (!(InTrack && CanMove && throttle != 0))
+            return;
+
+        var forceVector = Vector3.one;
+
+        if (throttle >= 0)
         {
-            var accel = 0f;
-            var vectorReference = Vector3.zero;
-            if (throttle >= 0)
+            if (Stopped || MovingForward)
             {
-                if (Stopped)
-                {
-                    MovingForward = true;
-                    accel = Acceleration;
-                    vectorReference = transform.forward;
-                }
-                else if (MovingForward)
-                {
-                    accel = Acceleration;
-                    vectorReference = transform.forward;
-                }
-                else
-                {
-                    accel = BrakingPower;
-                    vectorReference = -Velocity.normalized;
-                }
+                MovingForward = true;
+                forceVector = Acceleration * transform.forward;
             }
             else
             {
-                if (Stopped)
-                {
-                    MovingBackwards = true;
-                    accel = Acceleration;
-                    vectorReference = transform.forward;
-                }
-                else if (MovingBackwards)
-                {
-                    accel = Acceleration;
-                    vectorReference = transform.forward;
-                }
-                else
-                {
-                    accel = BrakingPower;
-                    vectorReference = Velocity.normalized;
-                }
+                forceVector = BrakingPower * Velocity.normalized;
             }
-
-            AddForce(throttle * accel * Mass * 10, vectorReference);
+        }
+        else
+        {
+            if (Stopped || MovingBackwards)
+            {
+                MovingBackwards = true;
+                forceVector = Acceleration * transform.forward;
+            }
+            else
+            {
+                forceVector = BrakingPower * Velocity.normalized;
+            }
         }
 
+        _rigidbody.AddForce(forceVector * throttle, ForceMode.Acceleration);
+
         Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
-        Stopped = Speed < 1f;
+        Stopped = Speed < 1;
     }
 
     void ApplySteering(float steering)
     {
-        if (InTrack && CanMove)
-        {
-            AddTorque((_movingForward ? 1 : -1) * steering * AngularAcceleration * Mass * 10, transform.up);
-        }
+        if (!(InTrack && CanMove))
+            return;
 
-        var turnClamp = Mathf.Clamp01(Speed * _turnThresholdVelocityMult);
-        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, turnClamp);
+        var forceVector = (MovingForward ? 1 : -1) * AngularAcceleration * transform.up;
+
+        _rigidbody.AddTorque(forceVector * steering, ForceMode.Acceleration);
+
+        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, Mathf.Clamp01(Speed * _turnThresholdVelocityMult));
     }
 
     void UpdateWheels(float steering)
@@ -285,24 +262,24 @@ public class CarMovement : MonoBehaviour
                 axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
             }
 
-            // Motor movement
-            var axleRot = axle.LeftWheel.localRotation.eulerAngles;
-            axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
-            if (axleRot.x > 90)
-                axleRot.x = axleRot.x % 90;
-            else if (axleRot.x < 0)
-                axleRot.x = (90 + axleRot.x) % 90;
-            axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
-            axle.LeftWheel.localRotation = Quaternion.Euler(axleRot);
+            //// Motor movement
+            //var axleRot = axle.LeftWheel.localRotation.eulerAngles;
+            //axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
+            //if (axleRot.x > 90)
+            //    axleRot.x = axleRot.x % 90;
+            //else if (axleRot.x < 0)
+            //    axleRot.x = (90 + axleRot.x) % 90;
+            //axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
+            //axle.LeftWheel.localRotation = Quaternion.Euler(axleRot);
 
-            axleRot = axle.RightWheel.localRotation.eulerAngles;
-            axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
-            if (axleRot.x > 90)
-                axleRot.x = axleRot.x % 90;
-            else if (axleRot.x < 0)
-                axleRot.x = (90 + axleRot.x) % 90;
-            axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
-            axle.RightWheel.localRotation = Quaternion.Euler(axleRot);
+            //axleRot = axle.RightWheel.localRotation.eulerAngles;
+            //axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
+            //if (axleRot.x > 90)
+            //    axleRot.x = axleRot.x % 90;
+            //else if (axleRot.x < 0)
+            //    axleRot.x = (90 + axleRot.x) % 90;
+            //axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
+            //axle.RightWheel.localRotation = Quaternion.Euler(axleRot);
         }
     }
 
@@ -321,16 +298,6 @@ public class CarMovement : MonoBehaviour
         transform.localRotation = Quaternion.Euler(rotation);
     }
 
-    void AddForce(float force, Vector3 direction)
-    {
-        _rigidbody.AddForce(force * direction);
-    }
-
-    void AddForce(float force, Vector3 direction, Vector3 point)
-    {
-        _rigidbody.AddForceAtPosition(force * direction, point);
-    }
-
     void AddTorque(float Torque, Vector3 axis)
     {
         _rigidbody.AddTorque(Torque * axis);
@@ -341,6 +308,11 @@ public class CarMovement : MonoBehaviour
         if (collision.gameObject.tag == "Track")
         {
             _trackCount++;
+            if (InTrack)
+            {
+                _rigidbody.drag = LinearDrag;
+                _rigidbody.angularDrag = AngularDrag;
+            }
         }
     }
 
@@ -349,6 +321,11 @@ public class CarMovement : MonoBehaviour
         if (collision.gameObject.tag == "Track")
         {
             _trackCount--;
+            if (!InTrack)
+            {
+                _rigidbody.drag = LinearDragOnAir;
+                _rigidbody.angularDrag = AngularDragOnAir;
+            }
         }
     }
 }
