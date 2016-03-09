@@ -38,6 +38,8 @@ public class RaceManager : MonoBehaviour
     {
         RaceIsOn = false;
         CountdownIsOn = false;
+
+        NewRace();
     }
 
     public void NewRace()

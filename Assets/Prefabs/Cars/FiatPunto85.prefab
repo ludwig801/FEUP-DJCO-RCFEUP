@@ -647,7 +647,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103782}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 12.72, y: 2.46, z: -37.4}
+  m_LocalPosition: {x: 20.79, y: 1.12, z: -29.3}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 430842}
@@ -1177,7 +1177,7 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0.7
   m_AngularDrag: 0.7
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
@@ -1244,6 +1244,10 @@ MonoBehaviour:
   - LeftWheel: {fileID: 455160}
     RightWheel: {fileID: 499738}
     Steering: 0
+  LinearDrag: 0
+  AngularDrag: 0
+  LinearDragOnAir: 0
+  AngularDragOnAir: 0
   Acceleration: 50
   BrakingPower: 2
   AngularAcceleration: 50
