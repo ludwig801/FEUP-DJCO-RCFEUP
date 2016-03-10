@@ -596,7 +596,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 565493684}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2077596105}
+        m_MethodName: PressRankings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &565493684
@@ -2225,7 +2236,6 @@ GameObject:
   - 114: {fileID: 2077596102}
   - 114: {fileID: 2077596101}
   - 114: {fileID: 2077596105}
-  - 114: {fileID: 2077596106}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2325,19 +2335,4 @@ MonoBehaviour:
   playButton: {fileID: 1739152811}
   quitButton: {fileID: 1216021445}
   creditsButton: {fileID: 1782231510}
---- !u!114 &2077596106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2077596100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb54a62f82633e94a8db9a745d934580, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Background: {fileID: 0}
-  ResumeBtn: {fileID: 0}
-  RestartBtn: {fileID: 0}
-  QuitRaceBtn: {fileID: 0}
-  _isPaused: 0
+  rankingsButton: {fileID: 565493683}
