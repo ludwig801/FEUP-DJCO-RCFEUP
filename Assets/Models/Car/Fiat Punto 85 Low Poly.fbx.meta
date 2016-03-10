@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1de6d15a578f18647b76a912ca892596
-timeCreated: 1457281580
+guid: ea5c4378869e3e346a0c383c03201d77
+timeCreated: 1457563088
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Banner
+    4300000: Car
   materials:
     importMaterials: 1
     materialName: 0

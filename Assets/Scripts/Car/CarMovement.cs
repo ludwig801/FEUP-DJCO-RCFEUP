@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Car;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Car))]
@@ -135,7 +134,7 @@ public class CarMovement : MonoBehaviour
     {
         get
         {
-            return UnitConverter.VelocityToKmh(Velocity.magnitude);
+            return UnitConverter.VelocityToKMH(Velocity.magnitude);
         }
     }
 
@@ -253,7 +252,6 @@ public class CarMovement : MonoBehaviour
         {
             if (axle.Steering)
             {
-                // Steering
                 var localRot = axle.LeftWheel.localRotation.eulerAngles;
                 localRot.y = steering * MaxSteeringAngle;
                 axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);

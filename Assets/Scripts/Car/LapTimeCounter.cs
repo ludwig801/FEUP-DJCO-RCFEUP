@@ -89,4 +89,15 @@ public class LapTimeCounter : MonoBehaviour
     {
         return PartialTimes[lap][checkpoint];
     }
+
+    public bool IsBestPartial(int checkpoint, float value)
+    {
+        for(int i = 0; i < PartialTimes.Count - 1; i++)
+        {
+            if (PartialTimes[i][checkpoint] <= value)
+                return false;
+        }
+
+        return true;
+    }
 }
