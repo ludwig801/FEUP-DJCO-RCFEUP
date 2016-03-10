@@ -10,7 +10,7 @@ public class CarMovement : MonoBehaviour
     public List<AxleInfo> Axles;
     public float LinearDrag, AngularDrag;
     public float LinearDragOnAir, AngularDragOnAir;
-    public float Acceleration, BrakingPower, AngularAcceleration;
+    public float Acceleration, BrakingPower, AngularAcceleration, Downforce;
     public float TurnThresholdKMH;
     public float TopSpeedKMH, CurrentTopSpeedKMH, TopSpeedReverseKMH;
     public float MaxSteeringAngle, MaxBodySideAngle, MaxBodyAccelAngle, MaxBodyBrakeAngle;
@@ -189,8 +189,9 @@ public class CarMovement : MonoBehaviour
 
         ApplyDrive(throttle, handbrake);
         ApplySteering(steering);
+        ApplyDownforce();
 
-        UpdateWheels(steering);
+        //UpdateWheels(steering);
         UpdateBody(throttle, steering);
 
         ClampRotation();
@@ -212,7 +213,7 @@ public class CarMovement : MonoBehaviour
             }
             else
             {
-                forceVector = BrakingPower * Velocity.normalized;
+                forceVector = BrakingPower * -Velocity.normalized;
             }
         }
         else
@@ -228,7 +229,7 @@ public class CarMovement : MonoBehaviour
             }
         }
 
-        _rigidbody.AddForce(forceVector * throttle, ForceMode.Acceleration);
+        _rigidbody.AddForce(forceVector * throttle, ForceMode.VelocityChange);
 
         Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
         Stopped = Speed < 1;
@@ -241,9 +242,15 @@ public class CarMovement : MonoBehaviour
 
         var forceVector = (MovingForward ? 1 : -1) * AngularAcceleration * transform.up;
 
-        _rigidbody.AddTorque(forceVector * steering, ForceMode.Acceleration);
+        _rigidbody.AddTorque(forceVector * steering, ForceMode.VelocityChange);
 
         AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, Mathf.Clamp01(Speed * _turnThresholdVelocityMult));
+    }
+
+    void ApplyDownforce()
+    {
+        var vector = new Vector3(0, -transform.up.y, 0);
+        _rigidbody.AddForce(vector * Downforce, ForceMode.Acceleration);
     }
 
     void UpdateWheels(float steering)

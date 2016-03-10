@@ -1,24 +1,16 @@
 fileFormatVersion: 2
-guid: 50767411297b3a94480a79b793b7d955
-timeCreated: 1456766130
+guid: d4ce9bde10ce3254896fad21dec1a721
+timeCreated: 1457607835
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Camera
-    100002: Cube
-    100004: //RootNode
-    100006: Lamp
-    400000: Camera
-    400002: Cube
-    400004: //RootNode
-    400006: Lamp
-    2300000: Cube
-    2300002: //RootNode
-    3300000: Cube
-    3300002: //RootNode
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Cube
-    4300002: Car
+    6400000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -40,15 +32,15 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 2
+    globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
@@ -59,9 +51,9 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 45
+    normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 0
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
