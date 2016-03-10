@@ -31,4 +31,49 @@ public abstract class Utils
         var span = System.TimeSpan.FromSeconds(time);
         return string.Format("{0:D2}:{1:D2}:{2:D2}", span.Minutes, span.Seconds, (span.Milliseconds % 100));
     }
+
+    public static string GetOrdinalEnding(int value)
+    {
+        if (value > 3 && value < 21)
+        {
+            return "TH";
+        }
+        else
+        {
+            var lastDigit = GetRightmostDigit(value);
+
+            if (lastDigit == 1)
+            {
+                return "ST";
+            }
+            else if (lastDigit == 2)
+            {
+                return "ND";
+            }
+            else if (lastDigit == 3)
+            {
+                return "RD";
+            }
+        }
+
+        return "TH";
+    }
+
+    public static int GetRightmostDigit(int value)
+    {
+        return value % 10;
+    }
+
+    public static bool IsColorLike(Color a, Color b, float toleranceFactor = 0.01f)
+    {
+        var deltaR = Mathf.Abs(a.r - b.r);
+        var deltaG = Mathf.Abs(a.g - b.g);
+        var deltaB = Mathf.Abs(a.b - b.b);
+        var deltaA = Mathf.Abs(a.a - b.a);
+
+        return deltaR < toleranceFactor &&
+            deltaG < toleranceFactor &&
+            deltaB < toleranceFactor &&
+            deltaA < toleranceFactor;
+    }
 }
