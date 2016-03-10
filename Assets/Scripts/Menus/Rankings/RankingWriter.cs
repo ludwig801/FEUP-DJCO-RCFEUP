@@ -35,17 +35,51 @@ public static class RankingWriter
 		return "\t<Ranking place='" + place + "' name='" + name + "' time='" + time.ToString() + "'/>\n";
 	}
 
-	public static void ReplaceRanking(int place, string name, float time)
+	public static int GetPlayerPosition(float playerTime)
 	{
 		var xmlDoc = RankingsFile.OpenRankigsFile ();
 
+		var currentRankings = xmlDoc.SelectSingleNode ("/Rankings").ChildNodes;
+
+		int currentPosition = 10;
+
+		foreach (XmlNode rank in currentRankings)
+		{
+			if (currentPosition < 0)
+				break;
+			float rankTime = float.Parse (currentRankings[currentPosition-1].Attributes[2].Value);
+			if (playerTime < rankTime)
+			{
+				currentPosition -= 1;
+			}
+		}
+
+		int playerPosition = currentPosition + 1;
+
+		return playerPosition;
+	}
+
+	public static int UpdateRankings(int playerPosition, string playerName, float playerTime)
+	{
+		return 0;
+	}
+
+	private static void ReplaceRanking(XmlDocument xmlDoc, int place, string name, float time)
+	{
 		var node = GetRankingsNode (xmlDoc, place);
 
 		node.Attributes [1].Value = name;
 		node.Attributes [2].Value = time.ToString ();
 	}
 
-	public static XmlNode GetRankingsNode(XmlDocument xmlDoc, int place)
+	public static XmlNode GetRanking(int place)
+	{
+		var xmlDoc = RankingsFile.OpenRankigsFile ();
+
+		return GetRankingsNode (xmlDoc, place);
+	}
+
+	private static XmlNode GetRankingsNode(XmlDocument xmlDoc, int place)
 	{
 		var elements = xmlDoc.SelectSingleNode ("/Rankings").ChildNodes;
 
@@ -58,12 +92,5 @@ public static class RankingWriter
 		}
 
 		return null;
-	}
-
-	public static XmlNode GetRanking(int place)
-	{
-		var xmlDoc = RankingsFile.OpenRankigsFile ();
-
-		return GetRankingsNode (xmlDoc, place);
 	}
 }
