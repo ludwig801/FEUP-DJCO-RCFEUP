@@ -8,8 +8,6 @@ public class CarMovement : MonoBehaviour
     public const int REAR_WHEELS = 1;
 
     public List<AxleInfo> Axles;
-    public float LinearDrag, AngularDrag;
-    public float LinearDragOnAir, AngularDragOnAir;
     public float Acceleration, BrakingPower, AngularAcceleration, Downforce;
     public float TurnThresholdKMH;
     public float TopSpeedKMH, CurrentTopSpeedKMH, TopSpeedReverseKMH;
@@ -317,11 +315,6 @@ public class CarMovement : MonoBehaviour
             //_currentNormal = Utils.ProjectVector3(Vector3.up, collision.contacts[0].normal);
 
             _trackCount++;
-            if (InTrack)
-            {
-                _rigidbody.drag = LinearDrag;
-                _rigidbody.angularDrag = AngularDrag;
-            }
         }
     }
 
@@ -331,11 +324,6 @@ public class CarMovement : MonoBehaviour
         {
             _currentNormal = Vector3.up;
             _trackCount--;
-            if (!InTrack)
-            {
-                _rigidbody.drag = LinearDragOnAir;
-                _rigidbody.angularDrag = AngularDragOnAir;
-            }
         }
     }
 }

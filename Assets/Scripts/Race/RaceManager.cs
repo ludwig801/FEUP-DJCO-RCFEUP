@@ -10,6 +10,7 @@ public class RaceManager : MonoBehaviour
         {
             if (_instance == null)
                 _instance = FindObjectOfType<RaceManager>();
+
             return _instance;
         }
     }
@@ -33,12 +34,22 @@ public class RaceManager : MonoBehaviour
     [SerializeField]
     IRaceType _currentRace;
 
+    protected void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else if (_instance != this)
+        {
+            Destroy(this);
+        }
+    }
+
     protected virtual void Start()
     {
         RaceIsOn = false;
         CountdownIsOn = false;
-
-        NewRace();
     }
 
     public void NewRace()
