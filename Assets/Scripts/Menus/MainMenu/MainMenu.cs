@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour {
 	public Button playButton;
 	public Button quitButton;
 	public Button creditsButton;
+	public Button rankingsButton;
 
 	// Use this for initialization
 	void Start () {
@@ -71,5 +72,9 @@ public class MainMenu : MonoBehaviour {
 
 	public void PressYesAtQuitMenu(){
 		Application.Quit();
+	}
+
+	public void PressRankings(){
+		SceneManager.LoadScene ("RankingScreen");
 	}
 }
