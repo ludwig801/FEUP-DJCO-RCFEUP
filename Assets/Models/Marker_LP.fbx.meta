@@ -1,22 +1,15 @@
 fileFormatVersion: 2
-guid: 14f687667a6dcba4e88a694e79325abc
-timeCreated: 1457637242
+guid: 60541f9c55bbb5f4aa20d5a5a3355839
+timeCreated: 1457653899
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Mouse
-    100004: Wheel
     400000: //RootNode
-    400002: Mouse
-    400004: Wheel
-    2300000: Mouse
-    2300002: Wheel
-    3300000: Mouse
-    3300002: Wheel
-    4300000: Mouse
-    4300002: Wheel
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cylinder
   materials:
     importMaterials: 1
     materialName: 0

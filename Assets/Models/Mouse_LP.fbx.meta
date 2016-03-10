@@ -1,15 +1,22 @@
 fileFormatVersion: 2
-guid: 99e840ce4348c5b44a8e1ff5c84a9484
-timeCreated: 1457637768
+guid: bfcf5905db1a72c408ab2f9decefdd82
+timeCreated: 1457653807
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Cylinder
+    100000: Mouse
+    100002: //RootNode
+    100004: Wheel
+    400000: Mouse
+    400002: //RootNode
+    400004: Wheel
+    2300000: Mouse
+    2300002: Wheel
+    3300000: Mouse
+    3300002: Wheel
+    4300000: Wheel
+    4300002: Mouse
   materials:
     importMaterials: 1
     materialName: 0
@@ -41,7 +48,7 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
+    optimizeMeshForGPU: 0
     keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
