@@ -15,6 +15,17 @@ public abstract class Utils
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 
+    public static Vector3 ProjectVector3(Vector3 a, Vector3 b)
+    {
+        return (Vector3.Dot(a,b) * a / a.sqrMagnitude);
+    }
+
+    public static Vector3 ProjectVector3OnlyXZ(Vector3 a, Vector3 b)
+    {
+        var projected = Vector3.Dot(a, b) * a / a.sqrMagnitude;
+        return new Vector3(projected.x, b.y, projected.z);
+    }
+
     public static string GetCounterFormattedString(float time)
     {
         var span = System.TimeSpan.FromSeconds(time);

@@ -37,6 +37,8 @@ public class CarMovement : MonoBehaviour
     bool _stopped;
     [SerializeField]
     bool _braking;
+    [SerializeField]
+    Vector3 _currentNormal;
 
     public bool MovingForward
     {
@@ -138,17 +140,11 @@ public class CarMovement : MonoBehaviour
         }
     }
 
-    float Speed
-    {
-        get
-        {
-            return Velocity.magnitude;
-        }
-    }
-
     void Start()
     {
         _rigidbody = transform.GetComponent<Rigidbody>();
+
+        _currentNormal = Vector3.up;
 
         _trackCount = 0;
         Stopped = true;
@@ -191,7 +187,7 @@ public class CarMovement : MonoBehaviour
         ApplySteering(steering);
         ApplyDownforce();
 
-        //UpdateWheels(steering);
+        UpdateWheels(steering);
         UpdateBody(throttle, steering);
 
         ClampRotation();
@@ -199,7 +195,7 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (!(InTrack && CanMove && throttle != 0))
+        if (!InTrack || !CanMove || throttle == 0)
             return;
 
         var forceVector = Vector3.one;
@@ -231,26 +227,31 @@ public class CarMovement : MonoBehaviour
 
         _rigidbody.AddForce(forceVector * throttle, ForceMode.VelocityChange);
 
+        Velocity = Utils.ProjectVector3OnlyXZ(transform.forward, Velocity);
         Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
-        Stopped = Speed < 1;
+        Stopped = Velocity.magnitude < 1;
     }
 
     void ApplySteering(float steering)
     {
-        if (!(InTrack && CanMove))
+        if (!InTrack || !CanMove || Velocity.magnitude < 0.5f)
             return;
 
         var forceVector = (MovingForward ? 1 : -1) * AngularAcceleration * transform.up;
 
-        _rigidbody.AddTorque(forceVector * steering, ForceMode.VelocityChange);
+        // The faster the car goes, the less it is its steering power
+        var factor = 1 - Mathf.Min(SpeedKMH / TopSpeedKMH, 0.10f);
 
-        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, Mathf.Clamp01(Speed * _turnThresholdVelocityMult));
+        _rigidbody.AddTorque(forceVector * steering * factor, ForceMode.VelocityChange);
+        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, 1.25f);
     }
 
     void ApplyDownforce()
     {
-        var vector = new Vector3(0, -transform.up.y, 0);
-        _rigidbody.AddForce(vector * Downforce, ForceMode.Acceleration);
+        //if (!InTrack)
+        //    return;
+
+        _rigidbody.AddForce(_currentNormal * -Downforce, ForceMode.VelocityChange);
     }
 
     void UpdateWheels(float steering)
@@ -312,6 +313,9 @@ public class CarMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Track")
         {
+            _currentNormal = collision.contacts[0].normal;
+            //_currentNormal = Utils.ProjectVector3(Vector3.up, collision.contacts[0].normal);
+
             _trackCount++;
             if (InTrack)
             {
@@ -325,6 +329,7 @@ public class CarMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Track")
         {
+            _currentNormal = Vector3.up;
             _trackCount--;
             if (!InTrack)
             {
