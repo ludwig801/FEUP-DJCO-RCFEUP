@@ -4,31 +4,35 @@ using UnityEngine.UI;
 
 public class RaceOver : MonoBehaviour {
 
-	public Text inputField;
+	public InputField input;
+	private InputField.SubmitEvent se;
 	public Text playerMessage;
 	public Text raceTime;
-
+	public GameObject empObj;
 	private int playerPosition;
+	private float playerTime;
+
 	void Start(){
+		input = input.GetComponent<InputField> ();
+		se = new InputField.SubmitEvent ();
+		se.AddListener (SubmitPlayerName);
+		input.onEndEdit = se;
 		//GET SINGLETON TIME INFORMATION
-		playerPosition = RankingWriter.GetPlayerPosition(4000f); // time goes here
+		playerPosition = RankingWriter.GetPlayerPosition(250f);
+		playerTime = 250f;
 		if (playerPosition > 10) {
 			playerMessage.text = "YOU DIDN'T GET INTO THE TOP TEN";
+			empObj.SetActive (false);
 		} else {
 			playerMessage.text = "CONGRATULATIONS! YOU ARE IN " + GetPositionString (playerPosition) + " PLACE!"; 
 		}
 	}
 
-	void Update()
+	private void SubmitPlayerName(string arg0)
 	{
-		if (Input.GetKeyDown (KeyCode.Return))
-		{
-			string playerName = inputField.text.Trim ();
-			if (playerName != "")
-			{
-				
-			}
-		}
+		string playername = input.text.Trim();
+		Debug.Log(playername.ToUpper());
+		RankingWriter.UpdateRankings (playerPosition, playername, playerTime);
 	}
 
 	private string GetPositionString(int position){

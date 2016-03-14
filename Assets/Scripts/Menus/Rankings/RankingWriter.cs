@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using UnityEngine;
 
 public static class RankingWriter
 {
@@ -11,7 +12,7 @@ public static class RankingWriter
 
 			for (int i = 1; i <= 10; i++) 
 			{
-				writer.Write (ChildNode (i, "Player", (float)5940.99));
+				writer.Write (ChildNode (i, "Player", (float)500));
 			}
 
 			writer.WriteLine (OlosingParentNode ());
@@ -57,9 +58,19 @@ public static class RankingWriter
 		return playerPosition;
 	}
 
-	public static int UpdateRankings(int playerPosition, string playerName, float playerTime)
+	public static void UpdateRankings(int playerPosition, string playerName, float playerTime)
 	{
-		return 0;
+		var xmlDoc = RankingsFile.OpenRankigsFile ();
+
+		for(int i = 10; i > playerPosition; i--)
+		{
+			var node = GetRankingsNode (xmlDoc, i-1);
+			ReplaceRanking(xmlDoc, i, node.Attributes[1].Value, float.Parse(node.Attributes[2].Value));
+		}
+
+		ReplaceRanking(xmlDoc, playerPosition, playerName, playerTime);
+
+		xmlDoc.Save (RankingsFile.Filename);
 	}
 
 	private static void ReplaceRanking(XmlDocument xmlDoc, int place, string name, float time)

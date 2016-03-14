@@ -460,7 +460,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -180.25}
+  m_AnchoredPosition: {x: 0, y: -143}
   m_SizeDelta: {x: 1309, y: 194.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1188845572
@@ -488,16 +488,16 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1188845572}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 117693272}
   - {fileID: 315537637}
-  m_Father: {fileID: 1346553001}
-  m_RootOrder: 2
+  m_Father: {fileID: 1436632970}
+  m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -41.5}
+  m_AnchoredPosition: {x: -22.091797, y: -60.980774}
   m_SizeDelta: {x: 354.5, y: 83}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1188845574
@@ -698,7 +698,7 @@ RectTransform:
   m_Children:
   - {fileID: 1233282989}
   - {fileID: 778892062}
-  - {fileID: 1188845573}
+  - {fileID: 1436632970}
   - {fileID: 866362559}
   m_Father: {fileID: 1698800429}
   m_RootOrder: 0
@@ -740,6 +740,34 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1346553000}
+--- !u!1 &1436632969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1436632970}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1436632970
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1436632969}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.091797, y: 19.480774, z: -156}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1188845573}
+  m_Father: {fileID: 1346553001}
+  m_RootOrder: 2
 --- !u!1 &1698800425
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,9 +947,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14359c3443500048ac66aa9f5bca530, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 315537638}
+  input: {fileID: 1188845574}
   playerMessage: {fileID: 866362557}
   raceTime: {fileID: 778892063}
+  empObj: {fileID: 1436632969}
 --- !u!4 &2066900158
 Transform:
   m_ObjectHideFlags: 0
