@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Car;
 
 public class RaceManager : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class RaceManager : MonoBehaviour
         {
             if (_instance == null)
                 _instance = FindObjectOfType<RaceManager>();
+
             return _instance;
         }
     }
@@ -33,6 +33,18 @@ public class RaceManager : MonoBehaviour
     Coroutine _lastCountdown;
     [SerializeField]
     IRaceType _currentRace;
+
+    protected void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else if (_instance != this)
+        {
+            Destroy(this);
+        }
+    }
 
     protected virtual void Start()
     {

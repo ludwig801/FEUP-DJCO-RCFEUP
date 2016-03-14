@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PauseMenu : MonoBehaviour
 {
-    public RectTransform Background;
+    public RectTransform Container;
 
-    public Button ResumeBtn;
-    public Button RestartBtn;
-    public Button QuitRaceBtn;
+    public Button ResumeBtn, RestartBtn, QuitRaceBtn;
 
-    [SerializeField]
-    private bool _isPaused;
+    public bool IsPaused;
+
+    public bool Pause
+    {
+        get;
+        set;
+    }
 
     void Start()
     {
@@ -19,44 +23,41 @@ public class PauseMenu : MonoBehaviour
         QuitRaceBtn = QuitRaceBtn.GetComponent<Button>();
         RestartBtn = RestartBtn.GetComponent<Button>();
 
-        Background.gameObject.SetActive(false);
-        _isPaused = false;
+        ResumeBtn.interactable = false;
+
+        Pause = true;
+        IsPaused = !Pause;
+
+        StartCoroutine(UpdateMenu());
     }
 
-    void Update()
+    IEnumerator UpdateMenu()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        while (true)
         {
-            if (_isPaused)
-                OnResume();
-            else
-                OnPause();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Pause = !Pause;
+            }
+
+            if (Pause != IsPaused)
+            {
+                IsPaused = Pause;
+
+                Container.gameObject.SetActive(IsPaused);
+                Time.timeScale = IsPaused ? 0 : 1;
+
+                if (!ResumeBtn.interactable && !IsPaused)
+                    ResumeBtn.interactable = true;
+            }
+
+            yield return null;
         }
-    }
-
-    public void OnPause()
-    {
-        _isPaused = true;
-        Time.timeScale = 0;
-        Background.gameObject.SetActive(true);
-    }
-
-    public void OnResume()
-    {
-        _isPaused = false;
-        Time.timeScale = 1;
-        Background.gameObject.SetActive(false);
     }
 
     public void OnQuitRace()
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
-    }
-
-    public void OnRestart()
-    {
-        Time.timeScale = 1;
-        _isPaused = false;
     }
 }

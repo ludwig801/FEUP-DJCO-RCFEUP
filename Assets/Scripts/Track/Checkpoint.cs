@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Checkpoint : MonoBehaviour
 {
-    public Transform PointA, PointB, Banner;
+    public Transform PointA, PointB;
     public BoxCollider TriggerCollider;
     public float DeltaY, Depth, Height;
     [Range(0, 2)]
@@ -16,7 +16,7 @@ public class Checkpoint : MonoBehaviour
     [SerializeField]
     List<string> _tagsToIgnore;
     bool _oldVisible;
-    Vector3 _aOrigin, _bOrigin, _bannerOrigin;
+    Vector3 _aOrigin, _bOrigin;
 
     void Start()
     {
@@ -32,7 +32,6 @@ public class Checkpoint : MonoBehaviour
 
         _aOrigin = PointA.position;
         _bOrigin = PointB.position;
-        _bannerOrigin = Vector3.Lerp(_aOrigin, _bOrigin, 0.5f);
     }
 
     void Update()
@@ -50,10 +49,6 @@ public class Checkpoint : MonoBehaviour
         PointB.position = _bOrigin + new Vector3(0, DeltaY, 0);
         PointA.localScale = new Vector3(1, ScaleY, 1);
         PointB.localScale = PointA.localScale;
-        //var delta = (PointB.position - PointA.position);
-        //Banner.localScale = new Vector3(1, ScaleY, delta.magnitude * 0.06f);
-        //Banner.position = _bannerOrigin + new Vector3(0, Height, 0);
-        //Banner.rotation = Quaternion.LookRotation(delta, Vector3.up);
     }
 
     void OnTriggerEnter(Collider other)

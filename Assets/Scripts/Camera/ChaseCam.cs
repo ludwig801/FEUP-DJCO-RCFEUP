@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class ChaseCam : MonoBehaviour
 {
@@ -8,17 +9,44 @@ public class ChaseCam : MonoBehaviour
     public float FollowSmoothTime;
     public float RotateSmoothTime;
     public float Height, Depth;
-    public float InclinationAngle;
+    public bool Follow;
 
-    void Update()
+    void Start()
     {
-        Cam.transform.localPosition = new Vector3(0, Height, Depth);
+        StartCoroutine(UpdateParameters());
+        StartCoroutine(FollowTarget());
     }
 
-    void LateUpdate()
+    IEnumerator FollowTarget()
     {
-        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.rotation, Time.deltaTime * RotateSmoothTime);
-        Pivot.position = Vector3.Lerp(Pivot.position, Target.position, Time.deltaTime * FollowSmoothTime);
-        
+        while (true)
+        {
+            if (Follow)
+            {
+                Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.rotation, Time.deltaTime * RotateSmoothTime);
+                Pivot.position = Vector3.Lerp(Pivot.position, Target.position, Time.deltaTime * FollowSmoothTime);
+            }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator UpdateParameters()
+    {
+        float h = -1;
+        float d = -1;
+
+        while (true)
+        {
+            if (Height != d || Depth != h)
+            {
+                //Cam.transform.localPosition.Set(0, Height, Depth);
+                Cam.transform.localPosition = new Vector3(0, Height, Depth);
+                h = Height;
+                d = Depth;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 }

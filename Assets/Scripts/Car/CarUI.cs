@@ -1,126 +1,127 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class CarUI : MonoBehaviour
 {
-    public GameObject CarObject;
-
-    public Toggle InTrackToggle;
-    public Text CurrentLap;
-    public Text NextCheckpoint;
-    public Color OnBoostColor;
-    public Text CurrentLapTime;
-    public RectTransform PartialsRect, BestPartialsRect;
-    public RectTransform PartialPrefab;
-    public List<Text> Partials;
-    public List<Text> BestPartials;
+    public int CarIndex;
+    public RectTransform LapPartialPrefab;
+    public Text Checkpoint, Lap, LapTime;
+    public RectTransform LapPartialsRect, BestPartialsRect;
     public Color BestPartialColor, WorstPartialColor;
-    public Image CurrentPowerUp, CurrentPowerUpBackground, CurrentPowerUpDuration;
-    public Sprite PowerUpDefaultSprite;
-    public Color PowerUpDurationColor;
+    public Image PowerUp, PowerUpBackground, PowerUpFill;
+    public bool RunLapStats, RunTimeStats, RunPowerUpStats;
 
-    [SerializeField]
-    Car _car;
-    [SerializeField]
-    LapCounter _carLapCounter;
-    [SerializeField]
-    RaceManager _raceManager;
-    Color _initialPowerUpDurationColor;
+    private Car _car;
+    private RaceManager _raceManager;
+    private List<Text> _lapPartials, _bestPartials;
 
     void Start()
     {
         _raceManager = RaceManager.Instance;
-        _car = CarObject.GetComponent<Car>();
-        _carLapCounter = CarObject.GetComponent<LapCounter>();
+        _car = _raceManager.Cars[CarIndex];
+        _lapPartials = new List<Text>();
+        _bestPartials = new List<Text>();
 
-        _initialPowerUpDurationColor = CurrentPowerUpBackground.color;
+        StartCoroutine(ShowLapStats());
+        StartCoroutine(ShowTimeStats());
     }
 
-    void Update()
+    IEnumerator ShowLapStats()
     {
-        UpdateTrackStats();
-        UpdateRaceStats();
-        UpdateCarTimeStats();
-        UpdateCarPowerUp();
-    }
+        var oldLap = -1;
+        var oldCheckpoint = -1;
+        var lapCounter = _car.LapCounter;
 
-    void UpdateTrackStats()
-    {
-        InTrackToggle.isOn = _car.CarMovement.InTrack;
-    }
-
-    void UpdateRaceStats()
-    {
-        CurrentLap.text = string.Concat("Lap: ", _carLapCounter.CurrentLapPlusOne);
-        NextCheckpoint.text = string.Concat("Next checkpoint: ", _carLapCounter.CurrentCheckpoint);
-    }
-
-    void UpdateCarTimeStats()
-    {
-        var carTimeCounter = _car.LapTimeCounter;
-        CurrentLapTime.text = string.Concat("Lap time: ", Utils.GetCounterFormattedString(carTimeCounter.CurrentLapTime));
-
-        if (_raceManager.RaceIsOn && carTimeCounter.PartialTimes.Count > 0)
+        if (Lap == null || Checkpoint == null)
         {
-            var currentLap = _car.LapCounter.CurrentLap;
-            var currentLapPartials = carTimeCounter.CurrentLapPartials;
-            if (currentLapPartials != null)
-            {
-                for (int i = 0; i < currentLapPartials.Count; i++)
-                {
-                    if (Partials.Count <= i)
-                    {
-                        var tPartial = Instantiate(PartialPrefab);
-                        tPartial.SetParent(PartialsRect);
-                        tPartial.name = string.Concat("Partial ", i);
-                        Partials.Add(tPartial.GetComponent<Text>());
-                        var bPartial = Instantiate(PartialPrefab);
-                        bPartial.SetParent(BestPartialsRect);
-                        bPartial.name = string.Concat("Best ", i);
-                        BestPartials.Add(bPartial.GetComponent<Text>());
-                    }
+            Debug.LogWarning(string.Concat(Lap.name, " or ", Checkpoint.name, " is null. Coroutine will not proceed and UI values will not be updated."));
+            yield break;
+        }
 
-                    var partialTime = currentLapPartials[i];
-                    var partialText = Partials[i];
-                    var best = true;
-                    if (currentLap > 0)
+        while (true)
+        {
+            if (oldLap != lapCounter.CurrentLap)
+            {
+                oldLap = lapCounter.CurrentLap;
+                Lap.text = string.Concat("Lap: ", lapCounter.CurrentLapPlusOne);
+            }
+
+            if (oldCheckpoint != lapCounter.CurrentCheckpoint)
+            {
+                oldCheckpoint = lapCounter.CurrentCheckpoint;
+                Checkpoint.text = string.Concat("Checkpoint: ", oldCheckpoint);
+            }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator ShowTimeStats()
+    {
+        var oldCheckpoint = -1;
+        var lapCounter = _car.LapCounter;
+        var lapTimeCounter = _car.LapTimeCounter;
+        var oldPartialsCount = 0;
+
+        while (true)
+        {
+            if (_raceManager.RaceIsOn && lapTimeCounter.CurrentLapPartials != null)
+            {
+                if (oldCheckpoint != lapCounter.CurrentCheckpoint)
+                {
+                    oldCheckpoint = lapCounter.CurrentCheckpoint;
+                    var partialsCount = lapTimeCounter.CurrentLapPartials.Count;
+
+                    if (oldPartialsCount > partialsCount)
                     {
-                        for (int j = 0; j < currentLap; j++)
+                        for (var i = 0; i < _lapPartials.Count; i++)
                         {
-                            if (partialTime > carTimeCounter.GetPartial(j, i))
-                            {
-                                best = false;
-                                break;
-                            }
+                            _lapPartials[i].enabled = false;
+                            //_bestPartials[i].enabled = false;
                         }
                     }
-
-                    partialText.text = string.Concat(Utils.GetCounterFormattedString(partialTime));
-                    partialText.color = best ? BestPartialColor : WorstPartialColor;
-                    if (best)
+                    else if (partialsCount > 0)
                     {
-                        var bestPartialText = BestPartials[i];
-                        bestPartialText.text = partialText.text;
-                        bestPartialText.color = partialText.color;
-                        bestPartialText.gameObject.SetActive(true);
+                        var currentPartials = lapTimeCounter.CurrentLapPartials;
+
+                        if (_lapPartials.Count < partialsCount)
+                        {
+                            var partial = Instantiate(LapPartialPrefab).GetComponent<Text>();
+                            partial.transform.SetParent(LapPartialsRect);
+                            partial.name = string.Concat("Partial ", partialsCount);
+                            _lapPartials.Add(partial);
+
+                            partial = Instantiate(LapPartialPrefab).GetComponent<Text>();
+                            partial.transform.SetParent(BestPartialsRect);
+                            partial.name = string.Concat("Best ", partialsCount);
+                            partial.enabled = true;
+                            _bestPartials.Add(partial);
+                        }
+
+                        var checkpoint = partialsCount - 1;
+                        var currentPartialText = _lapPartials[checkpoint];
+                        var currentPartialValue = currentPartials[checkpoint];
+                        currentPartialText.text = Utils.GetCounterFormattedString(currentPartialValue);
+                        currentPartialText.enabled = true;
+                        if (lapTimeCounter.IsBestPartial(checkpoint, currentPartialValue))
+                        {
+                            _bestPartials[checkpoint].text = currentPartialText.text;
+                            _bestPartials[checkpoint].color = BestPartialColor;
+                            currentPartialText.color = BestPartialColor;
+                        }
+                        else
+                        {
+                            currentPartialText.color = WorstPartialColor;
+                        }
                     }
-                    partialText.gameObject.SetActive(true);
                 }
 
-                for (int i = currentLapPartials.Count; i < Partials.Count; i++)
-                {
-                    Partials[i].gameObject.SetActive(false);
-                }
+                LapTime.text = string.Concat("Time: ", Utils.GetCounterFormattedString(lapTimeCounter.CurrentLapTime));
             }
-        }
-        else
-        {
-            for (int i = 0; i < Partials.Count; i++)
-            {
-                Partials[i].gameObject.SetActive(false);
-                BestPartials[i].gameObject.SetActive(false);
-            }
+
+            yield return null;
         }
     }
 
@@ -130,28 +131,15 @@ public class CarUI : MonoBehaviour
         if (carMovement.PowerUp != null)
         {
             var powerUp = carMovement.PowerUp;
-            CurrentPowerUp.enabled = true;
-            CurrentPowerUp.sprite = powerUp.Sprite;
-            //CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, powerUp.AccentColor, Time.deltaTime * 5f);
-            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, powerUp.AccentColor, Time.deltaTime * 5f);
-            CurrentPowerUpDuration.fillAmount = powerUp.TimeLeft / powerUp.Duration;
+            PowerUp.enabled = true;
+            PowerUp.sprite = powerUp.Sprite;
+            PowerUpFill.color = Color.Lerp(PowerUpFill.color, powerUp.AccentColor, Time.deltaTime * 5f);
+            PowerUpFill.fillAmount = powerUp.TimeLeft / powerUp.Duration;
         }
         else
         {
-            CurrentPowerUp.enabled = false;
-            CurrentPowerUp.sprite = PowerUpDefaultSprite;
-            //CurrentPowerUpMask.color = Color.Lerp(CurrentPowerUpMask.color, Color.grey, Time.deltaTime * 5f);
-            CurrentPowerUpDuration.color = Color.Lerp(CurrentPowerUpDuration.color, _initialPowerUpDurationColor, Time.deltaTime * 10f);
-            CurrentPowerUpDuration.fillAmount = 1;
+            PowerUp.enabled = false;
+            PowerUpFill.fillAmount = 0;
         }
-    }
-
-    Text CreatePartial()
-    {
-        var partial = new GameObject().AddComponent<RectTransform>();
-        partial.SetParent(PartialsRect);
-        partial.name = "Lap Partial";
-
-        return partial.gameObject.AddComponent<Text>();
     }
 }

@@ -11,3 +11,5 @@ EditorBuildSettings:
     path: Assets/Scenes/GameScene.unity
   - enabled: 1
     path: Assets/Scenes/UpgradesMenuScene.unity
+  - enabled: 1
+    path: Assets/Scenes/RankingScreen.unity

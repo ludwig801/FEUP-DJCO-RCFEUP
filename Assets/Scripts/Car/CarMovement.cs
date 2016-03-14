@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Car;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Car))]
@@ -9,9 +8,7 @@ public class CarMovement : MonoBehaviour
     public const int REAR_WHEELS = 1;
 
     public List<AxleInfo> Axles;
-    public float LinearDrag, AngularDrag;
-    public float LinearDragOnAir, AngularDragOnAir;
-    public float Acceleration, BrakingPower, AngularAcceleration;
+    public float Acceleration, BrakingPower, AngularAcceleration, Downforce;
     public float TurnThresholdKMH;
     public float TopSpeedKMH, CurrentTopSpeedKMH, TopSpeedReverseKMH;
     public float MaxSteeringAngle, MaxBodySideAngle, MaxBodyAccelAngle, MaxBodyBrakeAngle;
@@ -38,6 +35,8 @@ public class CarMovement : MonoBehaviour
     bool _stopped;
     [SerializeField]
     bool _braking;
+    [SerializeField]
+    Vector3 _currentNormal;
 
     public bool MovingForward
     {
@@ -135,21 +134,15 @@ public class CarMovement : MonoBehaviour
     {
         get
         {
-            return UnitConverter.VelocityToKmh(Velocity.magnitude);
-        }
-    }
-
-    float Speed
-    {
-        get
-        {
-            return Velocity.magnitude;
+            return UnitConverter.VelocityToKMH(Velocity.magnitude);
         }
     }
 
     void Start()
     {
         _rigidbody = transform.GetComponent<Rigidbody>();
+
+        _currentNormal = Vector3.up;
 
         _trackCount = 0;
         Stopped = true;
@@ -190,6 +183,7 @@ public class CarMovement : MonoBehaviour
 
         ApplyDrive(throttle, handbrake);
         ApplySteering(steering);
+        ApplyDownforce();
 
         UpdateWheels(steering);
         UpdateBody(throttle, steering);
@@ -199,7 +193,7 @@ public class CarMovement : MonoBehaviour
 
     void ApplyDrive(float throttle, float handbrake)
     {
-        if (!(InTrack && CanMove && throttle != 0))
+        if (!InTrack || !CanMove || throttle == 0)
             return;
 
         var forceVector = Vector3.one;
@@ -213,7 +207,7 @@ public class CarMovement : MonoBehaviour
             }
             else
             {
-                forceVector = BrakingPower * Velocity.normalized;
+                forceVector = BrakingPower * -Velocity.normalized;
             }
         }
         else
@@ -229,22 +223,33 @@ public class CarMovement : MonoBehaviour
             }
         }
 
-        _rigidbody.AddForce(forceVector * throttle, ForceMode.Acceleration);
+        _rigidbody.AddForce(forceVector * throttle, ForceMode.VelocityChange);
 
+        Velocity = Utils.ProjectVector3OnlyXZ(transform.forward, Velocity);
         Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
-        Stopped = Speed < 1;
+        Stopped = Velocity.magnitude < 1;
     }
 
     void ApplySteering(float steering)
     {
-        if (!(InTrack && CanMove))
+        if (!InTrack || !CanMove || Velocity.magnitude < 0.5f)
             return;
 
         var forceVector = (MovingForward ? 1 : -1) * AngularAcceleration * transform.up;
 
-        _rigidbody.AddTorque(forceVector * steering, ForceMode.Acceleration);
+        // The faster the car goes, the less it is its steering power
+        var factor = 1 - Mathf.Min(SpeedKMH / TopSpeedKMH, 0.10f);
 
-        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, Mathf.Clamp01(Speed * _turnThresholdVelocityMult));
+        _rigidbody.AddTorque(forceVector * steering * factor, ForceMode.VelocityChange);
+        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, 1.25f);
+    }
+
+    void ApplyDownforce()
+    {
+        //if (!InTrack)
+        //    return;
+
+        _rigidbody.AddForce(_currentNormal * -Downforce, ForceMode.VelocityChange);
     }
 
     void UpdateWheels(float steering)
@@ -253,7 +258,6 @@ public class CarMovement : MonoBehaviour
         {
             if (axle.Steering)
             {
-                // Steering
                 var localRot = axle.LeftWheel.localRotation.eulerAngles;
                 localRot.y = steering * MaxSteeringAngle;
                 axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
@@ -307,12 +311,10 @@ public class CarMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Track")
         {
+            _currentNormal = collision.contacts[0].normal;
+            //_currentNormal = Utils.ProjectVector3(Vector3.up, collision.contacts[0].normal);
+
             _trackCount++;
-            if (InTrack)
-            {
-                _rigidbody.drag = LinearDrag;
-                _rigidbody.angularDrag = AngularDrag;
-            }
         }
     }
 
@@ -320,12 +322,8 @@ public class CarMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Track")
         {
+            _currentNormal = Vector3.up;
             _trackCount--;
-            if (!InTrack)
-            {
-                _rigidbody.drag = LinearDragOnAir;
-                _rigidbody.angularDrag = AngularDragOnAir;
-            }
         }
     }
 }
