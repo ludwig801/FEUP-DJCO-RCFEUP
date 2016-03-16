@@ -63,7 +63,7 @@ public class RaceManager : MonoBehaviour
             var car = Cars[i];
             car.transform.position = StartingPositions[i].position;
             car.transform.rotation = StartingPositions[i].rotation;
-            car.CarMovement.CanMove = false;
+            car.CarMovement.State.CanMove = false;
             car.LapCounter.Reset();
             car.LapTimeCounter.Reset();
         }
@@ -103,10 +103,7 @@ public class RaceManager : MonoBehaviour
         CountdownIsOn = false;
 
         foreach (var car in Cars)
-        {
-            car.CarMovement.Velocity = Vector3.zero;
-            car.CarMovement.CanMove = true;
-        }
+            car.CarMovement.State.CanMove = true;
 
         yield break;
     }

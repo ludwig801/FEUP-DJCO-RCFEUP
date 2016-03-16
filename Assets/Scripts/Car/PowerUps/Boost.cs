@@ -36,26 +36,26 @@ public class Boost : PowerUp
 
     IEnumerator Execute(CarMovement carMovement)
     {
-        CanBeTaken = false;
-        carMovement.PowerUp = this;
-        TimeLeft = Duration;
-        carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH * Factor;
+        //CanBeTaken = false;
+        //carMovement.PowerUp = this;
+        //TimeLeft = Duration;
+        //carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH * Factor;
 
-        while (TimeLeft > 0)
-        {
-            TimeLeft -= Time.deltaTime;
-            yield return null;
+        //while (TimeLeft > 0)
+        //{
+        //    TimeLeft -= Time.deltaTime;
+        //    yield return null;
 
-            if (carMovement.PowerUp != this)
-            {
-                Stop();
-                yield break;
-            }
-        }
+        //    if (carMovement.PowerUp != this)
+        //    {
+        //        Stop();
+        //        yield break;
+        //    }
+        //}
 
-        carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH;
-        carMovement.PowerUp = null;
-        CanBeTaken = true;
+        //carMovement.CurrentTopSpeedKMH = carMovement.TopSpeedKMH;
+        //carMovement.PowerUp = null;
+        //CanBeTaken = true;
         yield break;
     }
 }

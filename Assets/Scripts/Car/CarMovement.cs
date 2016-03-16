@@ -1,42 +1,192 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
-[RequireComponent(typeof(Car))]
 public class CarMovement : MonoBehaviour
 {
-    public const int FRONT_WHEELS = 0;
-    public const int REAR_WHEELS = 1;
+    public Rigidbody Rigidbody;
+    public Transform CenterOfMass, MotorForcePosition;
+    public float TopSpeedKMH, TopSpeedReverseKMH;
+    public float TopAngularSpeedKMH;
+    [Range(0, 2)]
+    public float TractionControl;
+    public Axle[] Axles;
+    public TorqueSystem TorqueSystem;
+    public Drag LinearDrag, AngularDrag;
+    public VehicleState State;
 
-    public List<AxleInfo> Axles;
-    public float Acceleration, BrakingPower, AngularAcceleration, Downforce;
-    public float TurnThresholdKMH;
-    public float TopSpeedKMH, CurrentTopSpeedKMH, TopSpeedReverseKMH;
-    public float MaxSteeringAngle, MaxBodySideAngle, MaxBodyAccelAngle, MaxBodyBrakeAngle;
-    public float MaxInclinationX, MaxInclinationZ;
-    public Transform BodyPivot, CenterOfMass;
-    public PowerUp PowerUp;
-    public bool CanMove;
+    private void FixedUpdate()
+    {
+        Rigidbody.centerOfMass = CenterOfMass.localPosition;
 
+        var throttle = Mathf.Clamp(Input.GetAxis("Vertical"), -1, 1);
+        var steering = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+
+        UpdateCarState();
+
+        ApplyMotor(throttle);
+        ApplyTorque(steering);
+
+        ApplyLinearDrag(throttle, steering);
+        ApplyAngularDrag(throttle, steering);
+
+        //ApplyTractionControl();
+
+        EvaluateAndClampMovement();
+    }
+
+    private void ApplyMotor(float throttle)
+    {
+        if (!State.CanMove || !State.Grounded || !TorqueSystem.UseMotorTorque || throttle == 0)
+            return;
+
+        State.MovingForward = (throttle > 0 && !State.MovingReverse);
+        State.MovingReverse = (throttle < 0 && !State.MovingForward);
+
+        var forceVector = TorqueSystem.MotorTorque * State.GroundForward;
+
+        if (State.MovingForward && throttle < 0 || State.MovingReverse && throttle < 0)
+            forceVector *= TorqueSystem.BrakeFactor;
+
+        Rigidbody.AddForceAtPosition(forceVector * Rigidbody.mass * throttle, MotorForcePosition.position, ForceMode.Force);
+    }
+
+    private void ApplyTorque(float steering)
+    {
+        if (!State.CanMove || !State.Grounded || !State.GroundedOnSteering || !TorqueSystem.UseAngularTorque || steering == 0)
+            return;
+
+        if (State.MovingReverse)
+            steering = -steering;
+
+        Rigidbody.AddTorque(steering * Rigidbody.mass * TorqueSystem.AngularTorque * transform.up, ForceMode.Force);
+    }
+
+    private void ApplyLinearDrag(float throttle, float steering)
+    {
+        if (!State.CanMove || !State.Grounded)
+            Rigidbody.drag = 0;
+        else if (steering != 0 || throttle != 0)
+            Rigidbody.drag = LinearDrag.MinValue;
+        else if (throttle == 0 && steering == 0)
+            Rigidbody.drag = Mathf.Clamp(Rigidbody.drag + LinearDrag.Increment, LinearDrag.MinValue, LinearDrag.MaxValue);
+
+    }
+
+    private void ApplyAngularDrag(float throttle, float steering)
+    {
+        if (!State.CanMove || !State.Grounded)
+            Rigidbody.angularDrag = 0;
+        else if (steering != 0 || throttle != 0)
+            Rigidbody.angularDrag = AngularDrag.MinValue;
+        else if (steering == 0)
+            Rigidbody.angularVelocity = Vector3.Lerp(Rigidbody.angularVelocity, Vector3.zero, Time.fixedDeltaTime * 2.5f);
+    }
+
+    private void ApplyTractionControl()
+    {
+        if (!State.CanMove || !State.Grounded || State.Stopped || TractionControl <= 0)
+            return;
+
+        var forwardComponent = Vector3.Project(Rigidbody.velocity, State.GroundForward);
+        var sideComponent = Vector3.Project(Rigidbody.velocity, Rigidbody.transform.right);
+        var clampedSideComponent = Vector3.ClampMagnitude(sideComponent, TractionControl * sideComponent.magnitude);
+        //Rigidbody.velocity = forwardComponent + sideComponent;
+        Debug.DrawRay(Rigidbody.transform.position, sideComponent, Color.white);
+        Debug.DrawRay(Rigidbody.transform.position, -clampedSideComponent, Color.blue);
+        Rigidbody.AddForce(-0.25f * clampedSideComponent, ForceMode.VelocityChange);
+        sideComponent = Vector3.Project(Rigidbody.velocity, Rigidbody.transform.right);
+        Debug.DrawRay(Rigidbody.transform.position, sideComponent, Color.yellow);
+    }
+
+    private void EvaluateAndClampMovement()
+    {
+        if (State.MovingForward)
+            Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(TopSpeedKMH));
+        else if (State.MovingReverse)
+            Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(TopSpeedReverseKMH));
+
+        if (State.Stopped)
+            Rigidbody.angularVelocity = Vector3.zero;
+        else
+            Rigidbody.angularVelocity = Vector3.ClampMagnitude(Rigidbody.angularVelocity, UnitConverter.KmhToVelocity(TopAngularSpeedKMH) / Mathf.PI);
+
+        State.Stopped = Rigidbody.velocity.magnitude < 1;
+        //if (State.Stopped && State.CanMove)
+        //    Rigidbody.velocity = Vector3.Lerp(Rigidbody.velocity, Vector3.zero, Time.fixedDeltaTime);
+    }
+
+    private void UpdateCarState()
+    {
+        State.Grounded = false;
+        State.GroundedOnSteering = false;
+
+        var groundNormal = Vector3.zero;
+        var groundedCount = 0;
+
+        foreach (var axle in Axles)
+        {
+            if (axle.LeftWheel.Grounded || axle.RightWheel.Grounded)
+            {
+                if (axle.LeftWheel.Grounded)
+                {
+                    groundNormal += axle.LeftWheel.Normal;
+                    groundedCount++;
+                }
+
+                if (axle.RightWheel.Grounded)
+                {
+                    groundNormal += axle.LeftWheel.Normal;
+                    groundedCount++;
+                }
+
+                State.Grounded = true;
+                if (axle.Steering)
+                    State.GroundedOnSteering = true;
+            }
+        }
+
+        groundNormal /= groundedCount;
+        State.GroundForward = Vector3.Cross(Rigidbody.transform.right, groundNormal);
+    }
+}
+
+[System.Serializable]
+public class Axle
+{
+    public CarWheel LeftWheel;
+    public CarWheel RightWheel;
+    public bool Steering;
+}
+
+[System.Serializable]
+public class Drag
+{
+    [Range(0, 10)]
+    public float MinValue;
+
+    [Range(0, 10)]
+    public float MaxValue;
+
+    [Range(0, 1)]
+    public float Increment;
+}
+
+[System.Serializable]
+public class TorqueSystem
+{
+    public float MotorTorque;
+    public float BrakeFactor;
+    public float AngularTorque;
+    public bool UseMotorTorque;
+    public bool UseAngularTorque;
+}
+
+[System.Serializable]
+public class VehicleState
+{
+    public Vector3 GroundForward;
+    public bool CanMove, Grounded, GroundedOnSteering;
     [SerializeField]
-    Rigidbody _rigidbody;
-    [SerializeField]
-    float _topVelocity;
-    [SerializeField]
-    float _topVelocityReverse;
-    [SerializeField]
-    float _turnThresholdVelocityMult;
-    [SerializeField]
-    int _trackCount;
-    [SerializeField]
-    bool _movingForward;
-    [SerializeField]
-    bool _movingBackwards;
-    [SerializeField]
-    bool _stopped;
-    [SerializeField]
-    bool _braking;
-    [SerializeField]
-    Vector3 _currentNormal;
+    private bool _movingForward, _movingReverse, _stopped;
 
     public bool MovingForward
     {
@@ -48,21 +198,21 @@ public class CarMovement : MonoBehaviour
         set
         {
             _movingForward = value;
-            _movingBackwards = _movingBackwards && !value;
+            _movingReverse = _movingReverse && !value;
             _stopped = _stopped && !value;
         }
     }
 
-    public bool MovingBackwards
+    public bool MovingReverse
     {
         get
         {
-            return _movingBackwards;
+            return _movingReverse;
         }
 
         set
         {
-            _movingBackwards = value;
+            _movingReverse = value;
             _movingForward = _movingForward && !value;
             _stopped = _stopped && !value;
         }
@@ -78,260 +228,8 @@ public class CarMovement : MonoBehaviour
         set
         {
             _stopped = value;
-            _movingBackwards = _movingBackwards && !value;
+            _movingReverse = _movingReverse && !value;
             _movingForward = _movingForward && !value;
         }
     }
-
-    public bool InTrack
-    {
-        get
-        {
-            return _trackCount > 0;
-        }
-    }
-
-    public float Mass
-    {
-        get
-        {
-            return _rigidbody.mass;
-        }
-
-        private set
-        {
-            _rigidbody.mass = value;
-        }
-    }
-
-    public Vector3 Velocity
-    {
-        get
-        {
-            return _rigidbody.velocity;
-        }
-
-        set
-        {
-            _rigidbody.velocity = value;
-        }
-    }
-
-    public Vector3 AngularVelocity
-    {
-        get
-        {
-            return _rigidbody.angularVelocity;
-        }
-
-        set
-        {
-            _rigidbody.angularVelocity = value;
-        }
-    }
-
-    public float SpeedKMH
-    {
-        get
-        {
-            return UnitConverter.VelocityToKMH(Velocity.magnitude);
-        }
-    }
-
-    void Start()
-    {
-        _rigidbody = transform.GetComponent<Rigidbody>();
-
-        _currentNormal = Vector3.up;
-
-        _trackCount = 0;
-        Stopped = true;
-        CurrentTopSpeedKMH = TopSpeedKMH;
-    }
-
-    void Update()
-    {
-        _topVelocity = UnitConverter.KmhToVelocity(CurrentTopSpeedKMH);
-        _topVelocityReverse = UnitConverter.KmhToVelocity(TopSpeedReverseKMH);
-        _turnThresholdVelocityMult = 1f / UnitConverter.KmhToVelocity(TurnThresholdKMH);
-
-        if (!CanMove)
-            _rigidbody.constraints = (RigidbodyConstraints)10; // Freeze all movement except on Y axis
-        else
-            _rigidbody.constraints = RigidbodyConstraints.None;
-    }
-
-    void FixedUpdate()
-    {
-        var vInput = Input.GetAxis("Vertical");
-        var handbrake = Input.GetAxis("Jump");
-        var hInput = Input.GetAxis("Horizontal");
-
-        Move(vInput, vInput, handbrake, hInput);
-    }
-
-    public void ReduceMass(float value)
-    {
-        Mass -= value;
-    }
-
-    public void Move(float throttle, float footbrake, float handbrake, float steering)
-    {
-        throttle = Input.GetAxisRaw("Vertical");
-        steering = Input.GetAxisRaw("Horizontal");
-        handbrake = Mathf.Clamp(handbrake, 0, 1);
-
-        ApplyDrive(throttle, handbrake);
-        ApplySteering(steering);
-        ApplyDownforce();
-
-        UpdateWheels(steering);
-        UpdateBody(throttle, steering);
-
-        ClampRotation();
-    }
-
-    void ApplyDrive(float throttle, float handbrake)
-    {
-        if (!InTrack || !CanMove || throttle == 0)
-            return;
-
-        var forceVector = Vector3.one;
-
-        if (throttle >= 0)
-        {
-            if (Stopped || MovingForward)
-            {
-                MovingForward = true;
-                forceVector = Acceleration * transform.forward;
-            }
-            else
-            {
-                forceVector = BrakingPower * -Velocity.normalized;
-            }
-        }
-        else
-        {
-            if (Stopped || MovingBackwards)
-            {
-                MovingBackwards = true;
-                forceVector = Acceleration * transform.forward;
-            }
-            else
-            {
-                forceVector = BrakingPower * Velocity.normalized;
-            }
-        }
-
-        _rigidbody.AddForce(forceVector * throttle, ForceMode.VelocityChange);
-
-        Velocity = Utils.ProjectVector3OnlyXZ(transform.forward, Velocity);
-        Velocity = Vector3.ClampMagnitude(Velocity, MovingForward ? _topVelocity : _topVelocityReverse);
-        Stopped = Velocity.magnitude < 1;
-    }
-
-    void ApplySteering(float steering)
-    {
-        if (!InTrack || !CanMove || Velocity.magnitude < 0.5f)
-            return;
-
-        var forceVector = (MovingForward ? 1 : -1) * AngularAcceleration * transform.up;
-
-        // The faster the car goes, the less it is its steering power
-        var factor = 1 - Mathf.Min(SpeedKMH / TopSpeedKMH, 0.10f);
-
-        _rigidbody.AddTorque(forceVector * steering * factor, ForceMode.VelocityChange);
-        AngularVelocity = Vector3.ClampMagnitude(AngularVelocity, 1.25f);
-    }
-
-    void ApplyDownforce()
-    {
-        //if (!InTrack)
-        //    return;
-
-        _rigidbody.AddForce(_currentNormal * -Downforce, ForceMode.VelocityChange);
-    }
-
-    void UpdateWheels(float steering)
-    {
-        foreach (var axle in Axles)
-        {
-            if (axle.Steering)
-            {
-                var localRot = axle.LeftWheel.localRotation.eulerAngles;
-                localRot.y = steering * MaxSteeringAngle;
-                axle.LeftWheel.localRotation = Quaternion.Lerp(axle.LeftWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
-                localRot = axle.RightWheel.localRotation.eulerAngles;
-                localRot.y = steering * MaxSteeringAngle;
-                axle.RightWheel.localRotation = Quaternion.Lerp(axle.RightWheel.localRotation, Quaternion.Euler(localRot), Time.fixedDeltaTime * 5f);
-            }
-
-            //// Motor movement
-            //var axleRot = axle.LeftWheel.localRotation.eulerAngles;
-            //axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
-            //if (axleRot.x > 90)
-            //    axleRot.x = axleRot.x % 90;
-            //else if (axleRot.x < 0)
-            //    axleRot.x = (90 + axleRot.x) % 90;
-            //axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
-            //axle.LeftWheel.localRotation = Quaternion.Euler(axleRot);
-
-            //axleRot = axle.RightWheel.localRotation.eulerAngles;
-            //axleRot.x += SpeedKMH * 25 * (MovingForward ? 1 : -1) * Time.fixedDeltaTime;
-            //if (axleRot.x > 90)
-            //    axleRot.x = axleRot.x % 90;
-            //else if (axleRot.x < 0)
-            //    axleRot.x = (90 + axleRot.x) % 90;
-            //axleRot.x = Mathf.Clamp(axleRot.x, 0, 90);
-            //axle.RightWheel.localRotation = Quaternion.Euler(axleRot);
-        }
-    }
-
-    void UpdateBody(float throttle, float steering)
-    {
-        var sideRotation = MaxBodySideAngle * steering;
-        var forwardRotation = throttle >= 0 ? throttle * -MaxBodyAccelAngle : throttle * -MaxBodyBrakeAngle;
-        BodyPivot.localRotation = Quaternion.Lerp(BodyPivot.localRotation, Quaternion.Euler(forwardRotation, BodyPivot.localRotation.y, sideRotation), Time.fixedDeltaTime * 5f);
-    }
-
-    void ClampRotation()
-    {
-        var rotation = transform.localRotation.eulerAngles;
-        rotation.x = Utils.ClampRotation(rotation.x, MaxInclinationX);
-        rotation.z = Utils.ClampRotation(rotation.z, MaxInclinationZ);
-        transform.localRotation = Quaternion.Euler(rotation);
-    }
-
-    void AddTorque(float Torque, Vector3 axis)
-    {
-        _rigidbody.AddTorque(Torque * axis);
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "Track")
-        {
-            _currentNormal = collision.contacts[0].normal;
-            //_currentNormal = Utils.ProjectVector3(Vector3.up, collision.contacts[0].normal);
-
-            _trackCount++;
-        }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "Track")
-        {
-            _currentNormal = Vector3.up;
-            _trackCount--;
-        }
-    }
-}
-
-[System.Serializable]
-public class AxleInfo
-{
-    public Transform LeftWheel;
-    public Transform RightWheel;
-    public bool Steering;
 }

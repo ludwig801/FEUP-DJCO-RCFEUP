@@ -20,7 +20,7 @@ public abstract class Utils
         return (Vector3.Dot(a,b) * a / a.sqrMagnitude);
     }
 
-    public static Vector3 ProjectVector3OnlyXZ(Vector3 a, Vector3 b)
+    public static Vector3 ProjectVector3OnlyXZ(Vector3 a, Vector3 b, float percentage)
     {
         var projected = Vector3.Dot(a, b) * a / a.sqrMagnitude;
         return new Vector3(projected.x, b.y, projected.z);

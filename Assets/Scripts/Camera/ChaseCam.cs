@@ -3,47 +3,76 @@ using System.Collections;
 
 public class ChaseCam : MonoBehaviour
 {
+    public enum UpdateMode
+    {
+        Update, FixedUpdate, LateUpdate
+    }
+
     public Transform Pivot;
     public Camera Cam;
-    public Transform Target;
+    public CarMovement Target;
     public float FollowSmoothTime;
     public float RotateSmoothTime;
-    public float Height, Depth;
+    public float Height, Depth, Angle;
     public bool Follow;
+    public UpdateMode UpdateType;
+
+    [SerializeField]
+    Transform _targetFollow;
 
     void Start()
     {
         StartCoroutine(UpdateParameters());
-        StartCoroutine(FollowTarget());
     }
 
-    IEnumerator FollowTarget()
+    void Update()
     {
-        while (true)
+        if (Follow && UpdateType == UpdateMode.Update)
         {
-            if (Follow)
-            {
-                Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.rotation, Time.deltaTime * RotateSmoothTime);
-                Pivot.position = Vector3.Lerp(Pivot.position, Target.position, Time.deltaTime * FollowSmoothTime);
-            }
-
-            yield return null;
+            UpdateCameraPosition(Time.deltaTime);
         }
+    }
+
+    void FixedUpdate()
+    {
+        if (Follow && UpdateType == UpdateMode.FixedUpdate)
+        {
+            UpdateCameraPosition(Time.fixedDeltaTime);
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (Follow && UpdateType == UpdateMode.LateUpdate)
+        {
+            UpdateCameraPosition(Time.deltaTime);
+        }
+    }
+
+    void UpdateCameraPosition(float timeMultiplier)
+    {
+        var velocity = Target.Rigidbody.velocity.magnitude;
+        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.transform.rotation, timeMultiplier * RotateSmoothTime * velocity);
+        Pivot.position = Vector3.Lerp(Pivot.position, Target.transform.position, timeMultiplier * FollowSmoothTime * velocity);
     }
 
     IEnumerator UpdateParameters()
     {
-        float h = -1;
-        float d = -1;
+        var height = -1f;
+        var depth = -1f;
+        var angle = -1f;
 
         while (true)
         {
-            if (Height != d || Depth != h)
+            if (Height != height || Depth != depth || Angle != angle)
             {
-                //Cam.transform.localPosition.Set(0, Height, Depth);
                 Cam.transform.localPosition = new Vector3(0, Height, Depth);
-                h = Height;
-                d = Depth;
+                var euler = Cam.transform.eulerAngles;
+                euler.x = Angle;
+                Cam.transform.rotation = Quaternion.Euler(euler);
+                height = Height;
+                depth = Depth;
+                angle = Angle;
             }
 
             yield return new WaitForSeconds(0.1f);

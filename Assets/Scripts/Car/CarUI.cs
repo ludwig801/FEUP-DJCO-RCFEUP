@@ -127,19 +127,6 @@ public class CarUI : MonoBehaviour
 
     void UpdateCarPowerUp()
     {
-        var carMovement = _car.CarMovement;
-        if (carMovement.PowerUp != null)
-        {
-            var powerUp = carMovement.PowerUp;
-            PowerUp.enabled = true;
-            PowerUp.sprite = powerUp.Sprite;
-            PowerUpFill.color = Color.Lerp(PowerUpFill.color, powerUp.AccentColor, Time.deltaTime * 5f);
-            PowerUpFill.fillAmount = powerUp.TimeLeft / powerUp.Duration;
-        }
-        else
-        {
-            PowerUp.enabled = false;
-            PowerUpFill.fillAmount = 0;
-        }
+        // TODO
     }
 }
