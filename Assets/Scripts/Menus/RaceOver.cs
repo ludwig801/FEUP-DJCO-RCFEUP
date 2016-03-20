@@ -9,6 +9,7 @@ public class RaceOver : MonoBehaviour {
 	public Text playerMessage;
 	public Text raceTime;
 	public GameObject empObj;
+
 	private int playerPosition;
 	private float playerTime;
 

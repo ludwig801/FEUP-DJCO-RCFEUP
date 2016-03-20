@@ -7,6 +7,7 @@ public class RankingsManager : MonoBehaviour
     public int MaxNameLength;
     public RankingUI[] Rankings;
 
+
     void Start()
     {
         SetRankings();

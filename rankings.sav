@@ -3,7 +3,7 @@
   <Ranking place="1" name="Player" time="100" />
   <Ranking place="2" name="Player" time="200" />
   <Ranking place="3" name="hello" time="250" />
-  <Ranking place="4" name="" time="250" />
+  <Ranking place="4" name="namehere" time="250" />
   <Ranking place="5" name="Player" time="300" />
   <Ranking place="6" name="Player" time="400" />
   <Ranking place="7" name="Player" time="500" />
