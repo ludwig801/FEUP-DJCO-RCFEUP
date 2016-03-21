@@ -26,6 +26,7 @@ public static class SaveGameFile {
         }
 
         UpgradeWriter.InitializeUpgradesNode(Filename);
+        AchievementsIO.InitializeAchievementsNode(Filename);
     }
 
     private static string GetXmlVersion()
