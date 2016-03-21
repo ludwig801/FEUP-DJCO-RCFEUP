@@ -8,7 +8,6 @@ public class RaceOver : MonoBehaviour {
 	private InputField.SubmitEvent se;
 	public Text playerMessage;
 	public Text raceTime;
-	public GameObject empObj;
 
 	private int playerPosition;
 	private float playerTime;
@@ -23,7 +22,6 @@ public class RaceOver : MonoBehaviour {
 		playerTime = 250f;
 		if (playerPosition > 10) {
 			playerMessage.text = "YOU DIDN'T GET INTO THE TOP TEN";
-			empObj.SetActive (false);
 		} else {
 			playerMessage.text = "CONGRATULATIONS! YOU ARE IN " + GetPositionString (playerPosition) + " PLACE!"; 
 		}
