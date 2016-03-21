@@ -53,7 +53,7 @@ public class Car : MonoBehaviour
     {
         Upgrades = new List<Upgrade>();
         _coinsCount = 0;
-        SetCoinsText();
+        //SetCoinsText();
     }
 
     void OnTriggerEnter(Collider other)
