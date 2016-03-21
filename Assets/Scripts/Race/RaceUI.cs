@@ -4,42 +4,53 @@ using System.Collections;
 
 public class RaceUI : MonoBehaviour
 {
+    public RaceManager RaceManager;
     public RectTransform CountdownRect;
     public Text Countdown;
+    [Range(5, 60)]
+    public int UpdateRate;
 
     Coroutine _lastShowCountdown;
-    [SerializeField]
-    RaceManager _raceManager;
 
     void Start()
     {
-        _raceManager = RaceManager.Instance;
+        if(RaceManager == null)
+            RaceManager = RaceManager.Instance;
     }
 
     void Update()
     {
-        if (_raceManager.RaceIsOn && _raceManager.CountdownIsOn)
+        if (RaceManager.RaceIsOn && RaceManager.CountdownIsOn)
         {
             if (_lastShowCountdown != null)
                 StopCoroutine(_lastShowCountdown);
+            
             _lastShowCountdown = StartCoroutine(ShowCountdown());
         }
     }
 
     IEnumerator ShowCountdown()
     {
+        var oldUpdateRate = int.MaxValue;
+        var updateRateSec = 1f;
         var count = -1;
         CountdownRect.gameObject.SetActive(true);
 
-        while (_raceManager.CountdownIsOn)
+        while (RaceManager.CountdownIsOn)
         {
-            if (count != _raceManager.CurrentCount)
+            if (count != RaceManager.CurrentCount)
             {
-                count = _raceManager.CurrentCount;
+                count = RaceManager.CurrentCount;
                 Countdown.text = count.ToString();
             }
+
+            if (oldUpdateRate != UpdateRate)
+            {
+                oldUpdateRate = UpdateRate;
+                updateRateSec = 1f / UpdateRate;
+            }
             
-            yield return null;
+            yield return new WaitForSeconds(updateRateSec);
         }
 
         Countdown.text = "GO!!!";
@@ -47,7 +58,6 @@ public class RaceUI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         CountdownRect.gameObject.SetActive(false);
-
         yield break;
     }
 }

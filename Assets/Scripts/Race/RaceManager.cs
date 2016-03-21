@@ -26,15 +26,18 @@ public class RaceManager : MonoBehaviour
     public List<Transform> StartingPositions;
     public RaceTypes RaceType;
     public List<Car> Cars;
-    public int FastestCarCurrentLap;
+    public int FastestCarCurrentLap, RaceLaps;
+    public bool RaceIsOn, RacePaused, CountdownIsOn, RaceIsFinished;
+    public Car Winner;
     public int CountdownCount, CurrentCount;
-    public bool RaceIsOn, CountdownIsOn;
+    [Range(1, 60)]
+    public int CheckWinnerRate;
 
     Coroutine _lastCountdown;
     [SerializeField]
     IRaceType _currentRace;
 
-    protected void Awake()
+    void Awake()
     {
         if (_instance == null)
         {
@@ -46,16 +49,63 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    protected virtual void Start()
+    void Start()
     {
+        RacePaused = false;
         RaceIsOn = false;
+        RaceIsFinished = false;
         CountdownIsOn = false;
+        NewRace();
+
+        StartCoroutine(CheckForWinner());
+    }
+
+    IEnumerator CheckForWinner()
+    {
+        var oldRefreshRate = int.MaxValue;
+        var refresRateSec = 1f;
+
+        while (true)
+        {
+
+            var time = float.MaxValue;
+
+            foreach (var car in Cars)
+            {
+                if (car.LapTimeCounter.LapsTimes.Count >= RaceLaps)
+                {
+                    var carTime = car.LapTimeCounter.TotalTime;
+                    if (carTime < time)
+                    {
+                        time = carTime;
+                        Winner = car;
+                    }
+                }
+            }
+
+            if (Winner != null || RaceIsFinished)
+            {
+                StartCoroutine(OnRaceFinished());
+                yield break;
+            }
+
+            if (oldRefreshRate != CheckWinnerRate)
+            {
+                oldRefreshRate = CheckWinnerRate;
+                refresRateSec = 1f / CheckWinnerRate;
+            }
+
+            yield return new WaitForSeconds(refresRateSec); 
+        }
+
+        yield break;
     }
 
     public void NewRace()
     {
         RaceIsOn = false;
         CountdownIsOn = false;
+        RaceIsFinished = false;
         FastestCarCurrentLap = 0;
 
         for (int i = 0; i < Cars.Count; i++)
@@ -84,19 +134,17 @@ public class RaceManager : MonoBehaviour
     IEnumerator CountdownAndStart()
     {
         RaceIsOn = true;
+        RacePaused = false;
         CountdownIsOn = true;
         _currentRace.OnRaceStart();
 
         CurrentCount = CountdownCount;
         float timePassed = CountdownCount;
 
-        while (timePassed >= 0)
+        while (CurrentCount != 0)
         {
-            if (timePassed <= (CurrentCount - 1))
-                CurrentCount--;
-
-            timePassed -= Time.deltaTime;
-            yield return null;
+            yield return new WaitForSeconds(1);
+            CurrentCount--;
         }
 
         CurrentCount = 0;
@@ -130,5 +178,29 @@ public class RaceManager : MonoBehaviour
 
         // account for first checkpoint, which is always passed in the beggining
         return ((passedCheckpoints - 1) / Checkpoints.Count);
+    }
+
+    public void SetPaused(bool value)
+    {
+        RacePaused = value;
+        Time.timeScale = value ? 0 : 1;
+    }
+
+    IEnumerator OnRaceFinished()
+    {
+        RaceIsFinished = true;
+        foreach(var car in Cars)
+        {
+            car.CarMovement.State.CanMove = false;
+        }
+
+        while (Time.timeScale > 0.025f)
+        {
+            yield return new WaitForEndOfFrame();
+
+            Time.timeScale = Mathf.Lerp(Time.timeScale, 0, Time.unscaledDeltaTime * 10);
+        }
+
+        Time.timeScale = 0;
     }
 }

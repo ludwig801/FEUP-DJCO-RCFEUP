@@ -12,6 +12,8 @@ public class CarUI : MonoBehaviour
     public Color BestPartialColor, WorstPartialColor;
     public Image PowerUp, PowerUpBackground, PowerUpFill;
     public bool RunLapStats, RunTimeStats, RunPowerUpStats;
+    [Range(1, 60)]
+    public int LapRefreshRate, TimesRefreshRate;
 
     private Car _car;
     private RaceManager _raceManager;
@@ -33,6 +35,8 @@ public class CarUI : MonoBehaviour
         var oldLap = -1;
         var oldCheckpoint = -1;
         var lapCounter = _car.LapCounter;
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
 
         if (Lap == null || Checkpoint == null)
         {
@@ -54,7 +58,13 @@ public class CarUI : MonoBehaviour
                 Checkpoint.text = string.Concat("Checkpoint: ", oldCheckpoint);
             }
 
-            yield return null;
+            if (oldRefreshRate != LapRefreshRate)
+            {
+                oldRefreshRate = LapRefreshRate;
+                refreshRateSec = 1f / LapRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
         }
     }
 
@@ -64,6 +74,8 @@ public class CarUI : MonoBehaviour
         var lapCounter = _car.LapCounter;
         var lapTimeCounter = _car.LapTimeCounter;
         var oldPartialsCount = 0;
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
 
         while (true)
         {
@@ -121,7 +133,13 @@ public class CarUI : MonoBehaviour
                 LapTime.text = string.Concat("Time: ", Utils.GetCounterFormattedString(lapTimeCounter.CurrentLapTime));
             }
 
-            yield return null;
+            if (oldRefreshRate != TimesRefreshRate)
+            {
+                oldRefreshRate = TimesRefreshRate;
+                refreshRateSec = 1f / TimesRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
         }
     }
 
