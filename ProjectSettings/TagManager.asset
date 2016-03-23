@@ -8,6 +8,7 @@ TagManager:
   - Track
   - Race Manager
   - Coin
+  - Track Walls
   layers:
   - Default
   - TransparentFX
