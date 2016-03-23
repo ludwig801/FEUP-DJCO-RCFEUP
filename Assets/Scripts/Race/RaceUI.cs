@@ -20,7 +20,7 @@ public class RaceUI : MonoBehaviour
 
     void Update()
     {
-        if (RaceManager.RaceIsOn && RaceManager.CountdownIsOn)
+        if (RaceManager.State.Ongoing && RaceManager.Countdown.Running)
         {
             if (_lastShowCountdown != null)
                 StopCoroutine(_lastShowCountdown);
@@ -36,11 +36,11 @@ public class RaceUI : MonoBehaviour
         var count = -1;
         CountdownRect.gameObject.SetActive(true);
 
-        while (RaceManager.CountdownIsOn)
+        while (RaceManager.Countdown.Running)
         {
-            if (count != RaceManager.CurrentCount)
+            if (count != RaceManager.Countdown.CurrentCount)
             {
-                count = RaceManager.CurrentCount;
+                count = RaceManager.Countdown.CurrentCount;
                 Countdown.text = count.ToString();
             }
 

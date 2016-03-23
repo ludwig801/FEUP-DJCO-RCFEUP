@@ -17,9 +17,6 @@ public class ChaseCam : MonoBehaviour
     public bool Follow;
     public UpdateMode UpdateType;
 
-    [SerializeField]
-    Transform _targetFollow;
-
     void Start()
     {
         StartCoroutine(UpdateParameters());

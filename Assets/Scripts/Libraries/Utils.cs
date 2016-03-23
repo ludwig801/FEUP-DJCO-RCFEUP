@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Utils
 {
@@ -126,5 +127,22 @@ public abstract class Utils
         }
 
         return false;
+    }
+
+    public static List<Transform> ShuffleList(List<Transform> list)
+    {
+        System.Random rand = new System.Random();
+        Transform obj;
+
+        int n = list.Count;
+        for (int i = 0; i < n; i++)
+        {
+            int r = i + (int)(rand.NextDouble() * (n - i));
+            obj = list[r];
+            list[r] = list[i];
+            list[i] = obj;
+        }
+
+        return list;
     }
 }

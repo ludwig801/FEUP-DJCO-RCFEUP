@@ -5,7 +5,7 @@ using System.Collections;
 
 public class CarUI : MonoBehaviour
 {
-    public int CarIndex;
+    public Car Car;
     public RectTransform LapPartialPrefab;
     public Text Checkpoint, Lap, LapTime;
     public RectTransform LapPartialsRect, BestPartialsRect;
@@ -15,14 +15,12 @@ public class CarUI : MonoBehaviour
     [Range(1, 60)]
     public int LapRefreshRate, TimesRefreshRate;
 
-    private Car _car;
     private RaceManager _raceManager;
     private List<Text> _lapPartials, _bestPartials;
 
     void Start()
     {
         _raceManager = RaceManager.Instance;
-        _car = _raceManager.Cars[CarIndex];
         _lapPartials = new List<Text>();
         _bestPartials = new List<Text>();
 
@@ -34,7 +32,7 @@ public class CarUI : MonoBehaviour
     {
         var oldLap = -1;
         var oldCheckpoint = -1;
-        var lapCounter = _car.LapCounter;
+        var lapCounter = Car.LapCounter;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
 
@@ -71,15 +69,15 @@ public class CarUI : MonoBehaviour
     IEnumerator ShowTimeStats()
     {
         var oldCheckpoint = -1;
-        var lapCounter = _car.LapCounter;
-        var lapTimeCounter = _car.LapTimeCounter;
+        var lapCounter = Car.LapCounter;
+        var lapTimeCounter = Car.LapTimeCounter;
         var oldPartialsCount = 0;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
 
         while (true)
         {
-            if (_raceManager.RaceIsOn && lapTimeCounter.CurrentLapPartials != null)
+            if (_raceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
             {
                 if (oldCheckpoint != lapCounter.CurrentCheckpoint)
                 {

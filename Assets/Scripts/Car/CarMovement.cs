@@ -4,13 +4,22 @@ public class CarMovement : MonoBehaviour
 {
 	public Rigidbody Rigidbody;
 	public Transform CenterOfMass, MotorForcePosition;
-	public float TopSpeedKMH, TopSpeedReverseKMH;
-	public float TopAngularSpeedKMH;
-	[Range(0, 1)]
-	public float TractionControl;
+    [Range(0, 1)]
+    public float TractionControl;
+    public SpeedLimits SpeedStatsKMH;
 	public TorqueSystem TorqueSystem;
 	public VehicleState State;
     public VisualElements Visuals;
+
+    void Start()
+    {
+        TorqueSystem.CurrentMotorTorque = TorqueSystem.MotorTorque;
+        TorqueSystem.CurrentAngularTorque = TorqueSystem.AngularTorque;
+
+        SpeedStatsKMH.CurrentTopSpeed = SpeedStatsKMH.TopSpeed;
+        SpeedStatsKMH.CurrentTopSpeedReverse = SpeedStatsKMH.TopSpeedReverse;
+        SpeedStatsKMH.CurrentTopTurningSpeed = SpeedStatsKMH.TopTurningSpeed;
+    }
 
     void Update()
     {
@@ -47,7 +56,7 @@ public class CarMovement : MonoBehaviour
 		else if(throttle < 0)
 			State.MovingReverse = State.MovingReverse || State.Stopped || Vector3.Dot(Rigidbody.velocity, transform.forward) <= 0;
 
-		Rigidbody.AddForceAtPosition(Rigidbody.transform.forward * TorqueSystem.MotorTorque * throttle, MotorForcePosition.position, ForceMode.Acceleration);
+		Rigidbody.AddForceAtPosition(Rigidbody.transform.forward * TorqueSystem.CurrentMotorTorque * throttle, MotorForcePosition.position, ForceMode.Acceleration);
 	}
 
 	private void ApplyTorque()
@@ -60,7 +69,7 @@ public class CarMovement : MonoBehaviour
 		if (State.MovingReverse)
 			steering = -steering;
 
-		Rigidbody.AddTorque(Rigidbody.transform.up * steering * TorqueSystem.AngularTorque, ForceMode.VelocityChange);
+		Rigidbody.AddTorque(Rigidbody.transform.up * steering * TorqueSystem.CurrentAngularTorque, ForceMode.VelocityChange);
 
         State.CurrentSteering = steering;
 	}
@@ -83,18 +92,16 @@ public class CarMovement : MonoBehaviour
 	private void EvaluateAndClampMovement()
 	{
 		if (State.MovingForward)
-			Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(TopSpeedKMH));
+			Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(SpeedStatsKMH.CurrentTopSpeed));
 		else if (State.MovingReverse)
-			Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(TopSpeedReverseKMH));
+			Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(SpeedStatsKMH.CurrentTopSpeedReverse));
 
 		if (State.Stopped)
 			Rigidbody.angularVelocity = Vector3.zero;
 		else
-			Rigidbody.angularVelocity = Vector3.ClampMagnitude(Rigidbody.angularVelocity, UnitConverter.KmhToVelocity(TopAngularSpeedKMH) / Mathf.PI);
+			Rigidbody.angularVelocity = Vector3.ClampMagnitude(Rigidbody.angularVelocity, UnitConverter.KmhToVelocity(SpeedStatsKMH.CurrentTopTurningSpeed) / Mathf.PI);
 
 		State.Stopped = Rigidbody.velocity.magnitude < 5;
-		//if (State.Stopped && State.CanMove)
-		//    Rigidbody.velocity = Vector3.Lerp(Rigidbody.velocity, Vector3.zero, Time.fixedDeltaTime);
 	}
 
 	private void OnCollisionEnter(Collision collision)
@@ -150,7 +157,6 @@ public class CarMovement : MonoBehaviour
         if (Visuals.FrontAxle.SteerAxle)
         {
             var leftWheel = Visuals.FrontAxle.LeftWheel;
-            var currentEuler = leftWheel.localEulerAngles;
             leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(leftWheel.localRotation.x, State.CurrentSteering * Visuals.MaxSteering, leftWheel.localRotation.z), Time.deltaTime * Visuals.SteeringSpeed);
             Visuals.FrontAxle.RightWheel.localRotation = leftWheel.localRotation;
         }
@@ -158,10 +164,16 @@ public class CarMovement : MonoBehaviour
         if (Visuals.RearAxle.SteerAxle)
         {
             var leftWheel = Visuals.RearAxle.LeftWheel;
-            var currentEuler = leftWheel.localEulerAngles;
             leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(leftWheel.localRotation.x, State.CurrentSteering * Visuals.MaxSteering, leftWheel.localRotation.z), Time.deltaTime * Visuals.SteeringSpeed);
             Visuals.RearAxle.RightWheel.localRotation = leftWheel.localRotation;
         }
+    }
+
+    public void Reset()
+    {
+        Rigidbody.velocity = Vector3.zero;
+        Rigidbody.angularVelocity = Vector3.zero;
+        State.CanMove = false;
     }
 }
 
@@ -179,6 +191,17 @@ public class TorqueSystem
 	public float AngularTorque;
 	public bool UseMotorTorque;
 	public bool UseAngularTorque;
+    public float CurrentMotorTorque;
+    public float CurrentAngularTorque;
+}
+
+[System.Serializable]
+public class SpeedLimits
+{
+    public float TopSpeed, TopSpeedReverse;
+    public float TopTurningSpeed;
+    public float CurrentTopSpeed, CurrentTopSpeedReverse;
+    public float CurrentTopTurningSpeed;
 }
 
 [System.Serializable]

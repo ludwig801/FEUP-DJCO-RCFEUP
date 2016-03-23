@@ -70,4 +70,11 @@ public class Car : MonoBehaviour
     {
         coinsText.text = "Coins: " + _coinsCount;
     }
+
+    public void Reset()
+    {
+        CarMovement.Reset();
+        LapCounter.Reset();
+        LapTimeCounter.Reset();
+    }
 }

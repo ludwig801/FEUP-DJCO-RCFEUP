@@ -30,11 +30,11 @@ public class PauseMenuUI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            RaceManager.SetPaused(!RaceManager.RacePaused);
-            SetVisible(RaceManager.RacePaused);
+            RaceManager.SetPaused(!RaceManager.State.Paused);
+            SetVisible(RaceManager.State.Paused);
         }
 
-        if (RaceManager.RaceIsFinished)
+        if (RaceManager.State.Finished)
             SetVisible(false);
     }
 

@@ -42,7 +42,7 @@ public class RaceOverUI : MonoBehaviour
                 refreshRateSec = 1f / CheckFinishRate;
             }
 
-            SetVisible(RaceManager.RaceIsFinished);
+            SetVisible(RaceManager.State.Finished);
 
             yield return new WaitForSeconds(refreshRateSec);
         }
