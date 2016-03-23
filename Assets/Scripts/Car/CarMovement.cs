@@ -10,6 +10,7 @@ public class CarMovement : MonoBehaviour
 	public TorqueSystem TorqueSystem;
 	public VehicleState State;
     public VisualElements Visuals;
+    public AudioSource CrashAudio;
 
     void Start()
     {
@@ -106,11 +107,15 @@ public class CarMovement : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.tag == "Track")
-		{
-			State.Grounded = true;
-			State.GroundedOnSteering = true;
-		}
+        if (collision.gameObject.tag == "Track")
+        {
+            State.Grounded = true;
+            State.GroundedOnSteering = true;
+        }
+        else if (collision.gameObject.tag == "Track Walls")
+        {
+            CrashAudio.Play();
+        }
 	}
 
 	private void OnCollisionStay(Collision collision)
