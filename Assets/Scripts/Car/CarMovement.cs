@@ -10,16 +10,24 @@ public class CarMovement : MonoBehaviour
 	public float TractionControl;
 	public TorqueSystem TorqueSystem;
 	public VehicleState State;
+    public VisualElements Visuals;
 
-	private void FixedUpdate()
+    void Update()
+    {
+        ApplySideTilt();
+        ApplyThrottleTilt();
+        ApplyWheelsSteering();
+    }
+
+	void FixedUpdate()
 	{
 		Rigidbody.centerOfMass = CenterOfMass.localPosition;
 
-		var throttle = Mathf.Clamp(Input.GetAxis("Vertical"), -1, 1);
-		var steering = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
+		State.CurrentThrottle = Mathf.Clamp(Input.GetAxis("Vertical"), -1, 1);
+        State.CurrentSteering = Mathf.Clamp(Input.GetAxis("Horizontal"), -1, 1);
 
-		ApplyMotor(throttle);
-		ApplyTorque(steering);
+		ApplyMotor();
+		ApplyTorque();
 
 		ApplyTractionControl();
 		EvaluateAndClampMovement();
@@ -27,8 +35,10 @@ public class CarMovement : MonoBehaviour
 		Debug.DrawRay(Rigidbody.transform.position, Rigidbody.velocity, Color.green);
 	}
 
-	private void ApplyMotor(float throttle)
+	private void ApplyMotor()
 	{
+        var throttle = State.CurrentThrottle;
+
 		if (!State.CanMove || !State.Grounded || !TorqueSystem.UseMotorTorque || throttle == 0)
 			return;
 
@@ -40,8 +50,10 @@ public class CarMovement : MonoBehaviour
 		Rigidbody.AddForceAtPosition(Rigidbody.transform.forward * TorqueSystem.MotorTorque * throttle, MotorForcePosition.position, ForceMode.Acceleration);
 	}
 
-	private void ApplyTorque(float steering)
+	private void ApplyTorque()
 	{
+        var steering = State.CurrentSteering;
+
 		if (!State.CanMove || !State.Grounded || !State.GroundedOnSteering || !TorqueSystem.UseAngularTorque || steering == 0)
 			return;
 
@@ -49,6 +61,8 @@ public class CarMovement : MonoBehaviour
 			steering = -steering;
 
 		Rigidbody.AddTorque(Rigidbody.transform.up * steering * TorqueSystem.AngularTorque, ForceMode.VelocityChange);
+
+        State.CurrentSteering = steering;
 	}
 
 	private void ApplyTractionControl()
@@ -109,14 +123,52 @@ public class CarMovement : MonoBehaviour
 			State.GroundedOnSteering = false;
 		}
 	}
+
+    private void ApplySideTilt()
+    {
+        if (!Visuals.SideTilt)
+            return;
+
+        var currentEuler = Visuals.CarPivot.localEulerAngles;
+        Visuals.CarPivot.localRotation = Quaternion.Lerp(Visuals.CarPivot.localRotation, Quaternion.Euler(currentEuler.x, currentEuler.y, State.CurrentSteering * Visuals.MaxSideTilt), Time.deltaTime * Visuals.TiltSpeed);
+    }
+
+    private void ApplyThrottleTilt()
+    {
+        if (!Visuals.ThrottleTilt)
+            return;
+
+        var currentEuler = Visuals.CarPivot.localEulerAngles;
+        Visuals.CarPivot.localRotation = Quaternion.Lerp(Visuals.CarPivot.localRotation, Quaternion.Euler(-State.CurrentThrottle * Visuals.MaxThrottleTilt, currentEuler.y, currentEuler.z), Time.deltaTime * Visuals.TiltSpeed); 
+    }
+
+    private void ApplyWheelsSteering()
+    {
+        if (!Visuals.Steering)
+            return;
+
+        if (Visuals.FrontAxle.SteerAxle)
+        {
+            var leftWheel = Visuals.FrontAxle.LeftWheel;
+            var currentEuler = leftWheel.localEulerAngles;
+            leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(leftWheel.localRotation.x, State.CurrentSteering * Visuals.MaxSteering, leftWheel.localRotation.z), Time.deltaTime * Visuals.SteeringSpeed);
+            Visuals.FrontAxle.RightWheel.localRotation = leftWheel.localRotation;
+        }
+
+        if (Visuals.RearAxle.SteerAxle)
+        {
+            var leftWheel = Visuals.RearAxle.LeftWheel;
+            var currentEuler = leftWheel.localEulerAngles;
+            leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(leftWheel.localRotation.x, State.CurrentSteering * Visuals.MaxSteering, leftWheel.localRotation.z), Time.deltaTime * Visuals.SteeringSpeed);
+            Visuals.RearAxle.RightWheel.localRotation = leftWheel.localRotation;
+        }
+    }
 }
 
 [System.Serializable]
 public class Axle
 {
-	public CarWheel LeftWheel;
-	public CarWheel RightWheel;
-	public bool Steering;
+	public CarWheel LeftWheel, RightWheel;
 }
 
 [System.Serializable]
@@ -134,7 +186,9 @@ public class VehicleState
 {
 	public Vector3 GroundForward;
 	public bool CanMove, Grounded, GroundedOnSteering;
-	[SerializeField]
+    public float CurrentThrottle, CurrentSteering;
+
+    [SerializeField]
 	private bool _movingForward, _movingReverse, _stopped;
 
 	public bool MovingForward
@@ -181,4 +235,30 @@ public class VehicleState
 			_movingForward = _movingForward && !value;
 		}
 	}
+}
+
+[System.Serializable]
+public class VisualAxle
+{
+    public Transform LeftWheel, RightWheel;
+    public bool SteerAxle;
+}
+
+[System.Serializable]
+public class VisualElements
+{
+    public Transform CarPivot;
+    public float TiltSpeed;
+    public bool SideTilt;
+    [Range(0, 45)]
+    public int MaxSideTilt;
+    public bool ThrottleTilt;
+    [Range(0, 45)]
+    public int MaxThrottleTilt;
+
+    public bool Steering;
+    public float SteeringSpeed;
+    public VisualAxle FrontAxle, RearAxle;
+    [Range(0, 60)]
+    public int MaxSteering;
 }
