@@ -23,17 +23,15 @@ public class RaceManager : MonoBehaviour
 
     public PowerUpManager PowerUps;
     public CarsManager CarsManager;
-    public CheckpointManager CheckpointManager;
-    public bool RandomCarSpot;
+    public CheckpointManager Checkpoints;
     public RaceTypes RaceType;
-    public List<Checkpoint> Checkpoints;
-    public int StartCheckpoint;
+    public int NumLaps;
+    [Range(1, 60)]
+    public int CheckWinnerRate;
+    public bool RandomCarSpot;
     public List<Transform> StartingPositions;
     public RaceState State;
     public Countdown Countdown;
-    public int RaceLaps;
-    [Range(1, 60)]
-    public int CheckWinnerRate;
 
     Coroutine _lastCountdown;
 
@@ -68,7 +66,7 @@ public class RaceManager : MonoBehaviour
 
             foreach (var car in CarsManager.Cars)
             {
-                if (car.LapTimeCounter.LapsTimes.Count >= RaceLaps)
+                if (car.LapTimeCounter.LapsTimes.Count >= NumLaps)
                 {
                     var carTime = car.LapTimeCounter.TotalTime;
                     if (carTime < time)
@@ -81,7 +79,7 @@ public class RaceManager : MonoBehaviour
 
             if (State.Winner != null || State.Finished)
             {
-                StartCoroutine(OnRaceFinished());
+                OnRaceFinished();
                 yield break;
             }
 
@@ -126,28 +124,13 @@ public class RaceManager : MonoBehaviour
         CarsManager.ReleaseAllCars();
     }
 
-    public int GetFirstCheckpoint()
-    {
-        return StartCheckpoint;
-    }
-
-    public int GetNextCheckpoint(int currentCheckpoint)
-    {
-        return (currentCheckpoint + 1) % Checkpoints.Count;
-    }
-
-    public bool IsColliderOfCheckpoint(Collider col, int checkpointIndex)
-    {
-        return Checkpoints[checkpointIndex].Trigger == col;
-    }
-
     public int GetCurrentLap(int passedCheckpoints)
     {
         if (passedCheckpoints == 0)
             return -1;
 
         // account for first checkpoint, which is always passed in the beggining
-        return ((passedCheckpoints - 1) / Checkpoints.Count);
+        return ((passedCheckpoints - 1) / Checkpoints.Checkpoints.Count);
     }
 
     public void SetPaused(bool value)
@@ -156,22 +139,10 @@ public class RaceManager : MonoBehaviour
         Time.timeScale = value ? 0 : 1;
     }
 
-    IEnumerator OnRaceFinished()
+    void OnRaceFinished()
     {
         State.Finished = true;
-        foreach(var car in CarsManager.Cars)
-        {
-            car.CarMovement.State.CanMove = false;
-        }
-
-        while (Time.timeScale > 0.025f)
-        {
-            yield return new WaitForEndOfFrame();
-
-            Time.timeScale = Mathf.Lerp(Time.timeScale, 0, Time.unscaledDeltaTime * 10);
-        }
-
-        Time.timeScale = 0;
+        CarsManager.ResetAllCars();
     }
 }
 

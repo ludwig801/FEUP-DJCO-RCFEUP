@@ -3,8 +3,8 @@
 [RequireComponent(typeof(Car))]
 public class LapCounter : MonoBehaviour
 {
-    [SerializeField]
-    RaceManager _raceManager;
+    public RaceManager RaceManager;
+
     [SerializeField]
     int _currentLap;
     [SerializeField]
@@ -40,7 +40,7 @@ public class LapCounter : MonoBehaviour
 
     void Start()
     {
-        _raceManager = RaceManager.Instance;
+        RaceManager = RaceManager.Instance;
         _car = GetComponent<Car>();
 
         Reset();
@@ -49,18 +49,18 @@ public class LapCounter : MonoBehaviour
     public void Reset()
     {
         PassedCheckpoints = 0;
-        CurrentCheckpoint = _raceManager.GetFirstCheckpoint();
-        _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
+        CurrentCheckpoint = RaceManager.Checkpoints.GetStartingCheckpoint();
+        _currentLap = RaceManager.GetCurrentLap(PassedCheckpoints);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (_raceManager.IsColliderOfCheckpoint(other, CurrentCheckpoint))
+        if (RaceManager.Checkpoints.GetCheckpointIndex(other) == CurrentCheckpoint)
         {
             _car.LapTimeCounter.OnCheckpointPassed(CurrentCheckpoint);
-            CurrentCheckpoint = _raceManager.GetNextCheckpoint(CurrentCheckpoint);
+            CurrentCheckpoint = RaceManager.Checkpoints.GetNextCheckpoint(CurrentCheckpoint);
             PassedCheckpoints++;
-            _currentLap = _raceManager.GetCurrentLap(PassedCheckpoints);
+            _currentLap = RaceManager.GetCurrentLap(PassedCheckpoints);
         }
     }
 }

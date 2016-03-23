@@ -8,7 +8,7 @@ public class CarsManager : MonoBehaviour
 
     public void Start()
     {
-        Cars = new List<Car>(FindObjectsOfType<Car>());
+        //Cars = new List<Car>(FindObjectsOfType<Car>());
     }
 
     public void ResetAllCars()

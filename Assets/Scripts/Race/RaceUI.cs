@@ -20,7 +20,7 @@ public class RaceUI : MonoBehaviour
 
     void Update()
     {
-        if (RaceManager.State.Ongoing && RaceManager.Countdown.Running)
+        if (RaceManager.Countdown.Running)
         {
             if (_lastShowCountdown != null)
                 StopCoroutine(_lastShowCountdown);

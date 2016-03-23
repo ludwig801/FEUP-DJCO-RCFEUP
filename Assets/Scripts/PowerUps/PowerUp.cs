@@ -51,10 +51,7 @@ public abstract class PowerUp : MonoBehaviour
 
         var powerUp = PowerUps.GetTargetPowerUp(Target, this);
         if (powerUp != null)
-        {
-            Debug.Log("Found another powerup on this car.");
             powerUp.Stop();
-        }
 
         if (ApplyEffects())
             yield return new WaitForSeconds(Duration);
