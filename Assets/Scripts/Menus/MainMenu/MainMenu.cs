@@ -62,7 +62,7 @@ public class MainMenu : MonoBehaviour {
 	}
 
 	public void PressStart(){
-		SceneManager.LoadScene ("GameScene");
+		SceneManager.LoadScene ("GameScene_COPY");
 	}
 
     public void PressUpgrades()
