@@ -1,22 +1,15 @@
 fileFormatVersion: 2
-guid: bfcf5905db1a72c408ab2f9decefdd82
-timeCreated: 1457653807
+guid: 7e76c6a923e554f4abbf82e80323e31a
+timeCreated: 1458419725
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Mouse
-    100002: //RootNode
-    100004: Wheel
-    400000: Mouse
-    400002: //RootNode
-    400004: Wheel
-    2300000: Mouse
-    2300002: Wheel
-    3300000: Mouse
-    3300002: Wheel
-    4300000: Wheel
-    4300002: Mouse
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cube
   materials:
     importMaterials: 1
     materialName: 0
@@ -41,14 +34,14 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 0
+    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
@@ -60,7 +53,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     human: []

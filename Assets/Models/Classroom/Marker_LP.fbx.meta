@@ -1,34 +1,17 @@
 fileFormatVersion: 2
-guid: 18982b4cfd3d2cd4ba175b1829532f91
-timeCreated: 1458830268
+guid: 60541f9c55bbb5f4aa20d5a5a3355839
+timeCreated: 1457653899
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: BezierCurve
-    100002: Floor
-    100004: Inside
-    100006: Outside
-    100008: //RootNode
-    400000: BezierCurve
-    400002: Floor
-    400004: Inside
-    400006: Outside
-    400008: //RootNode
-    2300000: BezierCurve
-    2300002: Floor
-    2300004: Inside
-    2300006: Outside
-    3300000: BezierCurve
-    3300002: Floor
-    3300004: Inside
-    3300006: Outside
-    4300000: BezierCurve
-    4300002: Floor
-    4300004: Inside
-    4300006: Outside
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cylinder
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -51,7 +34,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 8
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -70,7 +53,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     human: []
