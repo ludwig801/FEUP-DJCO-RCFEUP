@@ -13,6 +13,7 @@ public abstract class PowerUp : MonoBehaviour
     public FloatAnimation FloatAnimation;
     public RotateAnimation RotateAnimation;
     public Types Type;
+    public string Description;
     public Color AccentColor;
     public Car Target;
     public float Duration;

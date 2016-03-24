@@ -161,7 +161,8 @@ MonoBehaviour:
     Clockwise: 0
     RotationAxis: 0
   Type: 0
-  AccentColor: {r: 0, g: 0, b: 0, a: 0}
+  Description: Speed Down
+  AccentColor: {r: 1, g: 0, b: 0, a: 1}
   Target: {fileID: 0}
   Duration: 0
   Available: 0

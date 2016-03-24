@@ -161,6 +161,7 @@ MonoBehaviour:
     Clockwise: 1
     RotationAxis: 1
   Type: 1
+  Description: Speed Up
   AccentColor: {r: 0.2827586, g: 1, b: 0, a: 1}
   Target: {fileID: 0}
   Duration: 2

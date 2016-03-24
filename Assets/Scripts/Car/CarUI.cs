@@ -5,29 +5,30 @@ using System.Collections;
 
 public class CarUI : MonoBehaviour
 {
+    public RaceManager RaceManager;
     public Car Car;
     public RectTransform LapPartialPrefab;
     public Text Checkpoint, Lap, LapTime;
     public RectTransform LapPartialsRect, BestPartialsRect;
     public Color BestPartialColor, WorstPartialColor;
-    public Image PowerUp, PowerUpBackground, PowerUpFill;
-    public Text CoinCount;
+    public Image PowerUp, PowerUpFill;
+    public Text PowerUpText, CoinCount;
     public bool RunLapStats, RunTimeStats, RunCollectablesStats;
     [Range(1, 60)]
-    public int LapRefreshRate, TimesRefreshRate, CollectablesRefreshRate;
+    public int LapRefreshRate, TimesRefreshRate, CoinsRefreshRate, PowerUpRefreshRate;
 
-    private RaceManager _raceManager;
     private List<Text> _lapPartials, _bestPartials;
 
     void Start()
     {
-        _raceManager = RaceManager.Instance;
+        RaceManager = RaceManager.Instance;
         _lapPartials = new List<Text>();
         _bestPartials = new List<Text>();
 
         StartCoroutine(ShowLapStats());
         StartCoroutine(ShowTimeStats());
-        StartCoroutine(ShowCollectables());
+        StartCoroutine(ShowCoins());
+        StartCoroutine(ShowPowerUp());
     }
 
     IEnumerator ShowLapStats()
@@ -82,7 +83,7 @@ public class CarUI : MonoBehaviour
 
         while (true)
         {
-            if (RunTimeStats && _raceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
+            if (RunTimeStats && RaceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
             {
                 if (oldCheckpoint != lapCounter.CurrentCheckpoint)
                 {
@@ -146,7 +147,7 @@ public class CarUI : MonoBehaviour
         }
     }
 
-    IEnumerator ShowCollectables()
+    IEnumerator ShowCoins()
     {
         var oldCoinCount = int.MinValue;
         var lapCounter = Car.LapCounter;
@@ -165,18 +166,71 @@ public class CarUI : MonoBehaviour
                 }
             }
 
-            if (oldRefreshRate != CollectablesRefreshRate)
+            if (oldRefreshRate != CoinsRefreshRate)
             {
-                oldRefreshRate = CollectablesRefreshRate;
-                refreshRateSec = 1f / CollectablesRefreshRate;
+                oldRefreshRate = CoinsRefreshRate;
+                refreshRateSec = 1f / CoinsRefreshRate;
             }
 
             yield return new WaitForSeconds(refreshRateSec);
         }
     }
 
-    void UpdateCarPowerUp()
+    IEnumerator ShowPowerUp()
     {
-        // TODO
+        var powerUps = RaceManager.PowerUps;
+        var currentPowerUp = powerUps.GetTargetPowerUp(Car);
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
+        Coroutine _lastCooldown = null;
+
+        while (true)
+        {
+            var pUp = powerUps.GetTargetPowerUp(Car);
+            if (currentPowerUp != pUp)
+            {
+                PowerUp.gameObject.SetActive(false);
+                PowerUpFill.gameObject.SetActive(false);
+                PowerUpText.gameObject.SetActive(false);
+
+                if (_lastCooldown != null)
+                    StopCoroutine(_lastCooldown);
+
+                if(pUp != null)
+                    _lastCooldown = StartCoroutine(ShowPowerUpCooldown(pUp));
+
+                currentPowerUp = pUp;
+            }
+
+            if (oldRefreshRate != PowerUpRefreshRate)
+            {
+                oldRefreshRate = PowerUpRefreshRate;
+                refreshRateSec = 1f / PowerUpRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
+        }
+    }
+
+    IEnumerator ShowPowerUpCooldown(PowerUp powerup)
+    {
+        var timeLeft = powerup.Duration;
+        var invDuration = 1f / powerup.Duration;
+
+        PowerUp.gameObject.SetActive(true);
+        PowerUpFill.gameObject.SetActive(true);
+        PowerUpText.gameObject.SetActive(true);
+
+        PowerUp.color = powerup.AccentColor;
+        PowerUpFill.color = powerup.AccentColor;
+        PowerUpText.color = powerup.AccentColor;
+        PowerUpText.text = powerup.Description;
+
+        while (timeLeft > 0)
+        {
+            PowerUpFill.fillAmount = invDuration * timeLeft;
+            timeLeft -= Time.deltaTime;
+            yield return null;
+        }
     }
 }
