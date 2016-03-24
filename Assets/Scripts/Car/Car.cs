@@ -8,16 +8,13 @@ using UnityEngine.UI;
 public class Car : MonoBehaviour
 {
 	public int CarId;
+    public int Coins;
 
     public ICollection<Upgrade> Upgrades;
-
-    public Text coinsText;
 
     CarMovement _carMovement;
     LapCounter _lapCounter;
     LapTimeCounter _timeCounter;
-
-    private int _coinsCount;
 
     public CarMovement CarMovement
     {
@@ -52,23 +49,16 @@ public class Car : MonoBehaviour
     void Start()
     {
         Upgrades = new List<Upgrade>();
-        _coinsCount = 0;
-        //SetCoinsText();
+        Coins = 0;
     }
 
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Coin"))
         {
-            _coinsCount++;
+            Coins++;
             Destroy(other.gameObject);
-            SetCoinsText();
         }
-    }
-
-    private void SetCoinsText()
-    {
-        coinsText.text = "Coins: " + _coinsCount;
     }
 
     public void Reset()

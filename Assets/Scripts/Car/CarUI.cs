@@ -11,9 +11,10 @@ public class CarUI : MonoBehaviour
     public RectTransform LapPartialsRect, BestPartialsRect;
     public Color BestPartialColor, WorstPartialColor;
     public Image PowerUp, PowerUpBackground, PowerUpFill;
-    public bool RunLapStats, RunTimeStats, RunPowerUpStats;
+    public Text CoinCount;
+    public bool RunLapStats, RunTimeStats, RunCollectablesStats;
     [Range(1, 60)]
-    public int LapRefreshRate, TimesRefreshRate;
+    public int LapRefreshRate, TimesRefreshRate, CollectablesRefreshRate;
 
     private RaceManager _raceManager;
     private List<Text> _lapPartials, _bestPartials;
@@ -26,6 +27,7 @@ public class CarUI : MonoBehaviour
 
         StartCoroutine(ShowLapStats());
         StartCoroutine(ShowTimeStats());
+        StartCoroutine(ShowCollectables());
     }
 
     IEnumerator ShowLapStats()
@@ -44,16 +46,19 @@ public class CarUI : MonoBehaviour
 
         while (true)
         {
-            if (oldLap != lapCounter.CurrentLap)
+            if (RunLapStats)
             {
-                oldLap = lapCounter.CurrentLap;
-                Lap.text = string.Concat("Lap: ", lapCounter.CurrentLapPlusOne);
-            }
+                if (oldLap != lapCounter.CurrentLap)
+                {
+                    oldLap = lapCounter.CurrentLap;
+                    Lap.text = string.Concat("Lap: ", lapCounter.CurrentLapPlusOne);
+                }
 
-            if (oldCheckpoint != lapCounter.CurrentCheckpoint)
-            {
-                oldCheckpoint = lapCounter.CurrentCheckpoint;
-                Checkpoint.text = string.Concat("Checkpoint: ", oldCheckpoint);
+                if (oldCheckpoint != lapCounter.CurrentCheckpoint)
+                {
+                    oldCheckpoint = lapCounter.CurrentCheckpoint;
+                    Checkpoint.text = string.Concat("Checkpoint: ", oldCheckpoint);
+                }
             }
 
             if (oldRefreshRate != LapRefreshRate)
@@ -77,7 +82,7 @@ public class CarUI : MonoBehaviour
 
         while (true)
         {
-            if (_raceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
+            if (RunTimeStats && _raceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
             {
                 if (oldCheckpoint != lapCounter.CurrentCheckpoint)
                 {
@@ -135,6 +140,35 @@ public class CarUI : MonoBehaviour
             {
                 oldRefreshRate = TimesRefreshRate;
                 refreshRateSec = 1f / TimesRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
+        }
+    }
+
+    IEnumerator ShowCollectables()
+    {
+        var oldCoinCount = int.MinValue;
+        var lapCounter = Car.LapCounter;
+        var lapTimeCounter = Car.LapTimeCounter;
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
+
+        while (true)
+        {
+            if (RunCollectablesStats)
+            {
+                if (oldCoinCount != Car.Coins)
+                {
+                    oldCoinCount = Car.Coins;
+                    CoinCount.text = string.Concat(Car.Coins);
+                }
+            }
+
+            if (oldRefreshRate != CollectablesRefreshRate)
+            {
+                oldRefreshRate = CollectablesRefreshRate;
+                refreshRateSec = 1f / CollectablesRefreshRate;
             }
 
             yield return new WaitForSeconds(refreshRateSec);
