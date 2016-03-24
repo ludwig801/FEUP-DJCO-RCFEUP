@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +8,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(LapTimeCounter))]
 public class Car : MonoBehaviour
 {
-	public int CarId;
+    public int CarId;
     public int Coins;
+    public AudioSource CoinCollect;
 
     public ICollection<Upgrade> Upgrades;
 
@@ -54,11 +56,22 @@ public class Car : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Coin"))
+        if (other.gameObject.CompareTag("Coin"))
         {
             Coins++;
-            Destroy(other.gameObject);
+            CoinCollect.Play();
+
+            StartCoroutine(DeactivateCoint(other));
         }
+    }
+
+    IEnumerator DeactivateCoint(Collider coin)
+    {
+        coin.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(3);
+
+        coin.gameObject.SetActive(true);
     }
 
     public void Reset()

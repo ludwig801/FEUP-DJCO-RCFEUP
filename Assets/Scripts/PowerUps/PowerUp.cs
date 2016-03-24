@@ -54,7 +54,11 @@ public abstract class PowerUp : MonoBehaviour
             powerUp.Stop();
 
         if (ApplyEffects())
+        {
+            PowerUps.PlaySound();
+
             yield return new WaitForSeconds(Duration);
+        }
 
         Reset();
     }

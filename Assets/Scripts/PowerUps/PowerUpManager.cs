@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class PowerUpManager : MonoBehaviour
 {
     public List<PowerUp> PowerUps;
+    public AudioSource PowerUpAudio;
 
     void Start()
     {
@@ -27,5 +28,10 @@ public class PowerUpManager : MonoBehaviour
         {
             powerUp.Reset();
         }
+    }
+
+    public void PlaySound()
+    {
+        PowerUpAudio.Play();
     }
 }
