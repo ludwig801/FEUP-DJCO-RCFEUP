@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 411664}
-  - 114: {fileID: 11439306}
+  - 114: {fileID: 11422100}
   - 54: {fileID: 5411904}
   m_Layer: 0
   m_Name: Vidal
@@ -57,7 +57,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 199172}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -96, y: 2.26, z: 94.4}
+  m_LocalPosition: {x: 60.2928, y: 4.9, z: -48.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 485716}
@@ -121,7 +121,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 135414}
-  m_Mesh: {fileID: 4300000, guid: 2271eac4cced4854ca5c6b1802579f17, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 814655136dcf349498701469c269ad1d, type: 3}
 --- !u!54 &5411904
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -137,7 +137,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &11439306
+--- !u!114 &11422100
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -145,27 +145,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 199172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a2900b2f18c2da49a9a71cddc97a830, type: 3}
+  m_Script: {fileID: 11500000, guid: 6bba5a5152d68cb409782565478c9f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   PowerUps: {fileID: 0}
   FloatAnimation:
     Active: 0
-    Target: {fileID: 411664}
-    Duration: 1
-    DeltaY: 1
+    Target: {fileID: 0}
+    Duration: 0
+    DeltaY: 0
   RotateAnimation:
     Active: 0
-    Target: {fileID: 411664}
-    Duration: 1
-    Clockwise: 1
-    RotationAxis: 1
+    Target: {fileID: 0}
+    Duration: 0
+    Clockwise: 0
+    RotationAxis: 0
   Type: 0
-  AccentColor: {r: 1, g: 0, b: 0, a: 1}
+  AccentColor: {r: 0, g: 0, b: 0, a: 0}
   Target: {fileID: 0}
-  Duration: 1
-  Available: 1
-  BoostFactor: 0.5
+  Duration: 0
+  Available: 0
+  TopSpeedFactor: 0
 --- !u!135 &13571378
 SphereCollider:
   m_ObjectHideFlags: 1

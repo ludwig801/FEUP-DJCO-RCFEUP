@@ -69,7 +69,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190890}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -82.27, y: 2.09, z: 94.4}
+  m_LocalPosition: {x: 59.83, y: 4.9, z: -53.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 433986}
@@ -121,7 +121,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 126152}
-  m_Mesh: {fileID: 4300000, guid: 2271eac4cced4854ca5c6b1802579f17, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 814655136dcf349498701469c269ad1d, type: 3}
 --- !u!54 &5407406
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PowerUps: {fileID: 0}
   FloatAnimation:
-    Active: 1
+    Active: 0
     Target: {fileID: 443710}
     Duration: 1
     DeltaY: 1
@@ -161,7 +161,7 @@ MonoBehaviour:
     Clockwise: 1
     RotationAxis: 1
   Type: 1
-  AccentColor: {r: 0, g: 0.37931037, b: 1, a: 1}
+  AccentColor: {r: 0.2827586, g: 1, b: 0, a: 1}
   Target: {fileID: 0}
   Duration: 2
   Available: 1

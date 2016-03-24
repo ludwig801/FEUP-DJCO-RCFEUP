@@ -114,7 +114,8 @@ public class CarMovement : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Track Walls")
         {
-            CrashAudio.Play();
+            if(!CrashAudio.isPlaying)
+                CrashAudio.Play();
         }
 	}
 

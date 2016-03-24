@@ -26,7 +26,7 @@ public abstract class PowerUp : MonoBehaviour
         PowerUps = RaceManager.Instance.PowerUps;
 
         _renderer = GetComponentInChildren<MeshRenderer>();
-        _renderer.material.color = AccentColor;
+        _renderer.materials[1].color = AccentColor;
         StartCoroutine(FloatAnimation.Run());
         StartCoroutine(RotateAnimation.Run());
     }

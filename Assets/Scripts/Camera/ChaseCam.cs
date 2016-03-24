@@ -48,9 +48,8 @@ public class ChaseCam : MonoBehaviour
 
     void UpdateCameraPosition(float timeMultiplier)
     {
-        var velocity = Target.Rigidbody.velocity.magnitude;
-        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.transform.rotation, timeMultiplier * RotateSmoothTime * velocity);
-        Pivot.position = Vector3.Lerp(Pivot.position, Target.transform.position, timeMultiplier * FollowSmoothTime * velocity);
+        Pivot.rotation = Quaternion.Lerp(Pivot.rotation, Target.transform.rotation, timeMultiplier * RotateSmoothTime);
+        Pivot.position = Vector3.Lerp(Pivot.position, Target.transform.position, timeMultiplier * FollowSmoothTime);
     }
 
     IEnumerator UpdateParameters()
