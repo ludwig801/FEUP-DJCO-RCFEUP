@@ -69,7 +69,7 @@ public class Car : MonoBehaviour
     {
         coin.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
 
         coin.gameObject.SetActive(true);
     }

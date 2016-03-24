@@ -99,7 +99,20 @@ public class CarMovement : MonoBehaviour
         var multiplier = (Vector3.up - Rigidbody.transform.up).magnitude;
 
         Rigidbody.AddTorque(axis * multiplier * Downforce, ForceMode.Acceleration);
-        Debug.DrawRay(Rigidbody.transform.position, axis * multiplier * Downforce, Color.yellow);
+
+        if (State.Grounded)
+            return;
+
+        var ray = new Ray(Rigidbody.transform.position, Vector3.down);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, 50))
+        {
+            if (hitInfo.collider.tag == "Track")
+            {
+                Rigidbody.AddForce(Vector3.down * Downforce * hitInfo.distance, ForceMode.Acceleration);
+            }
+        }
     }
 
     private void EvaluateAndClampMovement()
