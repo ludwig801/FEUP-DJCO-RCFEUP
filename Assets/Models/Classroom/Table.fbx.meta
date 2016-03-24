@@ -20,7 +20,7 @@ ModelImporter:
     6400000: Table_Legs
     6400002: Table_Top
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
