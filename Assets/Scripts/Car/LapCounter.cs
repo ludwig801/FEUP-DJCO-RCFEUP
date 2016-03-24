@@ -3,12 +3,23 @@
 [RequireComponent(typeof(Car))]
 public class LapCounter : MonoBehaviour
 {
-    public RaceManager RaceManager;
-
     [SerializeField]
     int _currentLap;
     [SerializeField]
     Car _car;
+
+    RaceManager _raceManager;
+
+    RaceManager RaceManager
+    {
+        get
+        {
+            if (_raceManager == null)
+                _raceManager = RaceManager.Instance;
+
+            return _raceManager;
+        }
+    }
 
     public int CurrentLapPlusOne
     {
@@ -40,7 +51,6 @@ public class LapCounter : MonoBehaviour
 
     void Start()
     {
-        RaceManager = RaceManager.Instance;
         _car = GetComponent<Car>();
 
         Reset();

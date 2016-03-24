@@ -31,6 +31,15 @@ public class CarUI : MonoBehaviour
         StartCoroutine(ShowPowerUp());
     }
 
+    void Update()
+    {
+        if (RaceManager.State.Finished)
+        {
+            StopAllCoroutines();
+            gameObject.SetActive(false);
+        }
+    }
+
     IEnumerator ShowLapStats()
     {
         var oldLap = -1;

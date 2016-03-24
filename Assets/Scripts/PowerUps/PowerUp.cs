@@ -22,12 +22,22 @@ public abstract class PowerUp : MonoBehaviour
     Coroutine _lastApply;
     MeshRenderer _renderer;
 
+    MeshRenderer Renderer
+    {
+        get
+        {
+            if(_renderer == null)
+                _renderer = GetComponentInChildren<MeshRenderer>();
+
+            return _renderer;
+        }
+    }
+
     protected virtual void Start()
     {
         PowerUps = RaceManager.Instance.PowerUps;
 
-        _renderer = GetComponentInChildren<MeshRenderer>();
-        _renderer.materials[1].color = AccentColor;
+        Renderer.materials[1].color = AccentColor;
         StartCoroutine(FloatAnimation.Run());
         StartCoroutine(RotateAnimation.Run());
     }
@@ -48,7 +58,7 @@ public abstract class PowerUp : MonoBehaviour
     {
         Target = car;
         Available = false;
-        _renderer.enabled = false;
+        Renderer.enabled = false;
 
         var powerUp = PowerUps.GetTargetPowerUp(Target, this);
         if (powerUp != null)
@@ -69,7 +79,7 @@ public abstract class PowerUp : MonoBehaviour
         if(Target != null)
             RemoveEffects();
 
-        _renderer.enabled = true;
+        Renderer.enabled = true;
         Target = null;
         Available = true;
     }

@@ -4,6 +4,7 @@ public class CarMovement : MonoBehaviour
 {
 	public Rigidbody Rigidbody;
 	public Transform CenterOfMass, MotorForcePosition;
+    public float Downforce;
     [Range(0, 1)]
     public float TractionControl;
     public SpeedLimits SpeedStatsKMH;
@@ -42,6 +43,8 @@ public class CarMovement : MonoBehaviour
 		ApplyTractionControl();
 		EvaluateAndClampMovement();
 
+        ApplyDownforce();
+
 		Debug.DrawRay(Rigidbody.transform.position, Rigidbody.velocity, Color.green);
 	}
 
@@ -70,7 +73,7 @@ public class CarMovement : MonoBehaviour
 		if (State.MovingReverse)
 			steering = -steering;
 
-		Rigidbody.AddTorque(Rigidbody.transform.up * steering * TorqueSystem.CurrentAngularTorque, ForceMode.VelocityChange);
+		Rigidbody.AddTorque(Vector3.up * steering * TorqueSystem.CurrentAngularTorque, ForceMode.VelocityChange);
 
         State.CurrentSteering = steering;
 	}
@@ -90,7 +93,16 @@ public class CarMovement : MonoBehaviour
 		Debug.DrawRay(Rigidbody.transform.position, -clampedSideComponent, Color.red);
 	}
 
-	private void EvaluateAndClampMovement()
+    private void ApplyDownforce()
+    {
+        var axis = Vector3.Cross(Rigidbody.transform.up, Vector3.up);
+        var multiplier = (Vector3.up - Rigidbody.transform.up).magnitude;
+
+        Rigidbody.AddTorque(axis * multiplier * Downforce, ForceMode.Acceleration);
+        Debug.DrawRay(Rigidbody.transform.position, axis * multiplier * Downforce, Color.yellow);
+    }
+
+    private void EvaluateAndClampMovement()
 	{
 		if (State.MovingForward)
 			Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, UnitConverter.KmhToVelocity(SpeedStatsKMH.CurrentTopSpeed));

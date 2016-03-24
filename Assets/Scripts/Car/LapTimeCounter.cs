@@ -9,12 +9,24 @@ public class LapTimeCounter : MonoBehaviour
     public float CurrentLapStartTime;
     public float CurrentLapTime;
     public List<float> LapsTimes;
-    public List<List<float>> PartialTimes;
+    
 
     [SerializeField]
     bool _timeCounting;
     [SerializeField]
     Car _car;
+    List<List<float>> _partialTimes;
+
+    List<List<float>> PartialTimes
+    {
+        get
+        {
+            if (_partialTimes == null)
+                _partialTimes = new List<List<float>>();
+
+            return _partialTimes;
+        }
+    }
 
     public List<float> CurrentLapPartials
     {
@@ -36,7 +48,6 @@ public class LapTimeCounter : MonoBehaviour
     void Start()
     {
         _car = GetComponent<Car>();
-        PartialTimes = new List<List<float>>();
         Reset();
     }
 
