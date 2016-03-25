@@ -177,8 +177,6 @@ public class RaceManager : MonoBehaviour
 
             RankingsWriter.WriteToFile(rankings);
         }
-
-        CarsManager.ResetAllCars();
     }
 }
 

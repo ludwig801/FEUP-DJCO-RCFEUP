@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public class RaceOverUI : MonoBehaviour
 {
     public RaceManager RaceManager;
     public RectTransform Container;
+    public Text TimeText, Description;
     public float AnimSpeed;
     public Utils.WindowPositions HidePosition, ShowPosition;
     [Range(1, 60)]
@@ -15,6 +17,7 @@ public class RaceOverUI : MonoBehaviour
     bool _visible;
     Coroutine _windowAnim;
     RectTransform _rectTransform;
+    Car _car;
 
     void Start()
     {
@@ -22,6 +25,7 @@ public class RaceOverUI : MonoBehaviour
             RaceManager = RaceManager.Instance;
 
         _rectTransform = GetComponent<RectTransform>();
+        _car = GetComponentInParent<CarCanvas>().Car;
 
         _visible = true;
         SetVisible(false);
@@ -58,7 +62,21 @@ public class RaceOverUI : MonoBehaviour
                 StopCoroutine(_windowAnim);
 
             _windowAnim = StartCoroutine(AnimateWindow());
+
+            if (value)
+                OnRaceFinish();
         }
+    }
+
+    void OnRaceFinish()
+    {
+        TimeText.text = string.Concat("Your time: ", Utils.GetCounterFormattedString(_car.LapTimeCounter.TotalTime));
+
+        if (RaceManager.State.WinnerRanking != null)
+            Description.text = string.Concat("You earned the ", RaceManager.State.WinnerRanking.Place, Utils.GetOrdinalEnding(RaceManager.State.WinnerRanking.Place), " place in the rankings!");
+        else
+            Description.text = string.Concat("Not enough to be on the rankings, though...");
+        
     }
 
     IEnumerator AnimateWindow()
