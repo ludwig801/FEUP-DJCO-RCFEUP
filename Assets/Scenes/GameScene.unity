@@ -41,7 +41,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -66,7 +66,7 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightingDataAsset: {fileID: 112000001, guid: 948e642ec2bd8414c8411def881e9275,
+  m_LightingDataAsset: {fileID: 112000001, guid: 2b44b2b792a8ff4449dd1626d9fd79c9,
     type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
@@ -12384,6 +12384,38 @@ Prefab:
     - target: {fileID: 10841762, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
       propertyPath: m_Shadows.m_Type
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 158706, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Name
+      value: Spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 186788, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Name
+      value: Spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 133024, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Name
+      value: Spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 153032, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Name
+      value: Spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 10841762, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 10882316, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 10839192, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 10883266, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
+      propertyPath: m_Lightmapping
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 32cbc6f0b0f012a48b1e8980bb808703, type: 2}
