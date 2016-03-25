@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public ShowHidePanel QuitGame, Credits, Main, Rankings;
+    public ShowHidePanel QuitGame, Credits, Main, Rankings, PlayMenu;
     ShowHidePanel _currentPanel;
 
     void Start()
@@ -47,7 +47,7 @@ public class MainMenu : MonoBehaviour
 
     public void OnPlayPressed()
     {
-        SceneManager.LoadScene("GameScene");
+        ChangeCurrentPanelTo(PlayMenu);
     }
 
     public void OnUpgradesPressed()
@@ -66,6 +66,7 @@ public class MainMenu : MonoBehaviour
         QuitGame.Visible = (newPanel == QuitGame);
         Credits.Visible = (newPanel == Credits);
         Rankings.Visible = (newPanel == Rankings);
+        PlayMenu.Visible = (newPanel == PlayMenu);
 
         _currentPanel = newPanel;
     }

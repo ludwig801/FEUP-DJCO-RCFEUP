@@ -11,12 +11,19 @@ public class NewRaceValues : MonoBehaviour
 
     void Start()
     {
-        foreach (var btn in NumPlayersBtns)
+        for (int i = 0; i < NumPlayersBtns.Count; i++)
         {
-            btn.Btn.image.color = ColorDefault;
-            btn.Btn.onClick.AddListener(() =>
+            var itemPlayers = NumPlayersBtns[i];
+            var itemLaps = NumLapsBtns[i];
+            itemPlayers.Btn.image.color = ColorDefault;
+            itemLaps.Btn.image.color = ColorDefault;
+            itemPlayers.Btn.onClick.AddListener(() =>
             {
-                SelectNumPlayers(btn);
+                SelectNumPlayers(itemPlayers);
+            });
+            itemLaps.Btn.onClick.AddListener(() =>
+            {
+                SelectNumLaps(itemLaps);
             });
         }
 

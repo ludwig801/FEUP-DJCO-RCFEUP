@@ -6577,8 +6577,8 @@ RectTransform:
   - {fileID: 2060446600}
   m_Father: {fileID: 2077596104}
   m_RootOrder: 4
-  m_AnchorMin: {x: -1, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 2, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6593,7 +6593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a002ae4a0e186a1459f8b0b3c9345e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HidePosition: 4
+  HidePosition: 1
   ShowPosition: 0
   Container: {fileID: 1605577147}
   AnimationSpeed: 10
@@ -9354,6 +9354,7 @@ MonoBehaviour:
   Credits: {fileID: 1285226192}
   Main: {fileID: 1213696325}
   Rankings: {fileID: 190150975}
+  PlayMenu: {fileID: 1605577148}
 --- !u!1001 &2100180293
 Prefab:
   m_ObjectHideFlags: 0
