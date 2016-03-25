@@ -1600,6 +1600,22 @@ Transform:
   - {fileID: 89069063}
   m_Father: {fileID: 1031299299}
   m_RootOrder: 18
+--- !u!1 &222628959 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 164494, guid: 5f9a8f444000e024b99652234daae390, type: 2}
+  m_PrefabInternal: {fileID: 1424209715}
+--- !u!114 &222628960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 222628959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 877a96c668095ef4db1dd18f5f18c843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Car: {fileID: 855665356}
 --- !u!1 &224795982
 GameObject:
   m_ObjectHideFlags: 0
@@ -10494,7 +10510,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11478932, guid: 5f9a8f444000e024b99652234daae390, type: 2}
       propertyPath: m_CharacterLimit
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11478932, guid: 5f9a8f444000e024b99652234daae390, type: 2}
       propertyPath: m_ContentType
@@ -10650,7 +10666,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11403998, guid: 5f9a8f444000e024b99652234daae390, type: 2}
       propertyPath: m_Text
-      value: 'max length: 3'
+      value: 'max length: 5'
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11479898, guid: 5f9a8f444000e024b99652234daae390, type: 2}

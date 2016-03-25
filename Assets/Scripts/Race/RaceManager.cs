@@ -141,8 +141,6 @@ public class RaceManager : MonoBehaviour
     void OnRaceFinished()
     {
         State.Finished = true;
-        CarsManager.ResetAllCars();
-
         if (State.Winner != null)
         {
             var rankings = RankingsReader.GetAllRankings();
@@ -166,17 +164,19 @@ public class RaceManager : MonoBehaviour
                     var r = rankings[i];
                     r.Place++;
                 }
-
-                State.WinnerRanking = new Ranking();
-                State.WinnerRanking.Place = winnerRankingsIndex + 1;
-                State.WinnerRanking.PlayerTime = totalTime;
-                State.WinnerRanking.PlayerName = State.Winner.PlayerName;
-
-                rankings.Add(State.WinnerRanking);
-
-                RankingsWriter.WriteToFile(rankings);
             }
+
+            State.WinnerRanking = new Ranking();
+            State.WinnerRanking.Place = (winnerRankingsIndex >= 0 ? winnerRankingsIndex : rankings.Count) + 1;
+            State.WinnerRanking.PlayerTime = totalTime;
+            State.WinnerRanking.PlayerName = State.Winner.PlayerName;
+
+            rankings.Add(State.WinnerRanking);
+
+            RankingsWriter.WriteToFile(rankings);
         }
+
+        CarsManager.ResetAllCars();
     }
 }
 

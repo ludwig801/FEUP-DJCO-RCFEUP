@@ -14,6 +14,7 @@ public class RaceBeginUI : MonoBehaviour
 
     Coroutine _windowAnim;
     RectTransform _rectTransform;
+    Car _car;
 
     void Start()
     {
@@ -21,6 +22,7 @@ public class RaceBeginUI : MonoBehaviour
             RaceManager = RaceManager.Instance;
 
         _rectTransform = GetComponent<RectTransform>();
+        _car = GetComponentInParent<CarCanvas>().Car;
 
         StartRace.interactable = false;
         SetVisible(true);
@@ -83,6 +85,7 @@ public class RaceBeginUI : MonoBehaviour
     {
         if (StartRace.interactable)
         {
+            _car.PlayerName = NameInput.text;
             RaceManager.NewRace();
             SetVisible(false);
         }

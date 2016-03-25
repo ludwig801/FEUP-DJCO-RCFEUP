@@ -6,7 +6,6 @@ using System.Collections;
 public class CarUI : MonoBehaviour
 {
     public RaceManager RaceManager;
-    public Car Car;
     public RectTransform LapPartialPrefab;
     public Text Checkpoint, Lap, LapTime;
     public RectTransform LapPartialsRect, BestPartialsRect;
@@ -18,12 +17,14 @@ public class CarUI : MonoBehaviour
     public int LapRefreshRate, TimesRefreshRate, CoinsRefreshRate, PowerUpRefreshRate;
 
     private List<Text> _lapPartials, _bestPartials;
+    private Car _car;
 
     void Start()
     {
         RaceManager = RaceManager.Instance;
         _lapPartials = new List<Text>();
         _bestPartials = new List<Text>();
+        _car = GetComponentInParent<CarCanvas>().Car;
 
         StartCoroutine(ShowLapStats());
         StartCoroutine(ShowTimeStats());
@@ -44,7 +45,7 @@ public class CarUI : MonoBehaviour
     {
         var oldLap = -1;
         var oldCheckpoint = -1;
-        var lapCounter = Car.LapCounter;
+        var lapCounter = _car.LapCounter;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
         var checkpointCount = RaceManager.CheckpointManager.Checkpoints.Count;
@@ -86,8 +87,8 @@ public class CarUI : MonoBehaviour
     IEnumerator ShowTimeStats()
     {
         var oldCheckpoint = -1;
-        var lapCounter = Car.LapCounter;
-        var lapTimeCounter = Car.LapTimeCounter;
+        var lapCounter = _car.LapCounter;
+        var lapTimeCounter = _car.LapTimeCounter;
         var oldPartialsCount = 0;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
@@ -163,8 +164,6 @@ public class CarUI : MonoBehaviour
     IEnumerator ShowCoins()
     {
         var oldCoinCount = int.MinValue;
-        var lapCounter = Car.LapCounter;
-        var lapTimeCounter = Car.LapTimeCounter;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
 
@@ -172,10 +171,10 @@ public class CarUI : MonoBehaviour
         {
             if (RunCollectablesStats)
             {
-                if (oldCoinCount != Car.Coins)
+                if (oldCoinCount != _car.Coins)
                 {
-                    oldCoinCount = Car.Coins;
-                    CoinCount.text = string.Concat(Car.Coins);
+                    oldCoinCount = _car.Coins;
+                    CoinCount.text = string.Concat(_car.Coins);
                 }
             }
 
@@ -192,14 +191,14 @@ public class CarUI : MonoBehaviour
     IEnumerator ShowPowerUp()
     {
         var powerUps = RaceManager.PowerUps;
-        var currentPowerUp = powerUps.GetTargetPowerUp(Car);
+        var currentPowerUp = powerUps.GetTargetPowerUp(_car);
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
         Coroutine _lastCooldown = null;
 
         while (true)
         {
-            var pUp = powerUps.GetTargetPowerUp(Car);
+            var pUp = powerUps.GetTargetPowerUp(_car);
             if (currentPowerUp != pUp)
             {
                 PowerUp.gameObject.SetActive(false);

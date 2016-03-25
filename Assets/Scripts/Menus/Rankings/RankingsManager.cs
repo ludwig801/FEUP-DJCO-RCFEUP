@@ -9,7 +9,7 @@ public class RankingsManager : MonoBehaviour
 
     void Start()
     {
-        SetRankings();
+        LoadAllRankings();
     }
 
     void Update()
@@ -20,7 +20,7 @@ public class RankingsManager : MonoBehaviour
         }
     }
 
-    private void SetRankings()
+    private void LoadAllRankings()
     {
         var rankings = RankingsReader.GetAllRankings();
 
@@ -51,5 +51,12 @@ public class RankingsManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void ResetAllRankings()
+    {
+        var empty = new List<Ranking>();
+        RankingsWriter.WriteToFile(empty);
+        LoadAllRankings();
     }
 }

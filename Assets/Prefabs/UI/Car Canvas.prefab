@@ -611,7 +611,7 @@ GameObject:
   - 114: {fileID: 11421122}
   - 222: {fileID: 22223522}
   m_Layer: 5
-  m_Name: Player Canvas
+  m_Name: Car Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
