@@ -95,6 +95,8 @@ public class RaceManager : MonoBehaviour
     public void NewRace()
     {
         State.Reset();
+        State.Started = true;
+
         PowerUps.ResetAllPowerUps();
         CarsManager.ResetAllCars();
         CarsManager.AssignStartingPositions(StartingPositions, RandomCarSpot);
@@ -183,12 +185,13 @@ public class RaceManager : MonoBehaviour
 [System.Serializable]
 public class RaceState
 {
-    public bool Ongoing, Paused, Finished;
+    public bool Started, Ongoing, Paused, Finished;
     public Car Winner;
     public Ranking WinnerRanking;
 
     internal void Reset()
     {
+        Started = false;
         Paused = false;
         Ongoing = false;
         Finished = false;

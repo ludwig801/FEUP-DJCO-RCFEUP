@@ -1,19 +1,32 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using UnityEngine;
+using System.IO;
 
 public static class RankingsReader
 {
+    public const string Filename = "Rankings.sav";
+
+    public static XmlDocument OpenRankigsFile()
+    {
+        if (!File.Exists(Filename))
+            RankingsWriter.WriteToFile();
+
+        var doc = new XmlDocument();
+        doc.Load(Filename);
+
+        return doc;
+    }
+
     public static List<Ranking> GetAllRankings()
     {
         var list = new List<Ranking>();
 
-        var rankingsFile = RankingsFile.OpenRankigsFile();
+        var rankingsFile = OpenRankigsFile();
         var currentRankings = rankingsFile.SelectSingleNode("/Document/Rankings").ChildNodes;
 
         foreach (XmlNode xmlRanking in currentRankings)
         {
-            list.Add(ConvertToRanking(xmlRanking));
+            list.Add(ParseRanking(xmlRanking));
         }
 
         list.Sort();
@@ -21,7 +34,7 @@ public static class RankingsReader
         return list;
     }
 
-    public static Ranking ConvertToRanking(XmlNode node)
+    public static Ranking ParseRanking(XmlNode node)
     {
         var newRanking = new Ranking();
 

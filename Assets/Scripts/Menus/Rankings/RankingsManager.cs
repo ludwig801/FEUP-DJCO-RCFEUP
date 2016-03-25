@@ -12,14 +12,6 @@ public class RankingsManager : MonoBehaviour
         LoadAllRankings();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            SceneManager.LoadScene("MainMenu");
-        }
-    }
-
     private void LoadAllRankings()
     {
         var rankings = RankingsReader.GetAllRankings();

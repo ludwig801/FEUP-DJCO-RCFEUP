@@ -7,6 +7,7 @@ public class PauseMenuUI : MonoBehaviour
 {
     public RaceManager RaceManager;
     public RectTransform Container;
+    public Button Resume, Restart;
     public float AnimSpeed;
     public Utils.WindowPositions HidePosition, ShowPosition;
 
@@ -21,6 +22,8 @@ public class PauseMenuUI : MonoBehaviour
             RaceManager = RaceManager.Instance;
 
         _rectTransform = GetComponent<RectTransform>();
+        Resume.interactable = false;
+        Restart.interactable = false;
 
         _visible = true;
         SetVisible(false);
@@ -32,6 +35,8 @@ public class PauseMenuUI : MonoBehaviour
         {
             RaceManager.SetPaused(!RaceManager.State.Paused);
             SetVisible(RaceManager.State.Paused);
+            Resume.interactable = RaceManager.State.Started;
+            Restart.interactable = RaceManager.State.Started && RaceManager.State.Ongoing;
         }
 
         if (RaceManager.State.Finished)

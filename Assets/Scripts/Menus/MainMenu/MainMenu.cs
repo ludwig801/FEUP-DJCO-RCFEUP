@@ -1,80 +1,72 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
-public class MainMenu : MonoBehaviour {
+public class MainMenu : MonoBehaviour
+{
+    public ShowHidePanel QuitGame, Credits, Main, Rankings;
+    ShowHidePanel _currentPanel;
 
-	public RectTransform quitDialoguePanel;
-	public RectTransform creditsPanel;
-	public RectTransform startMenu;
+    void Start()
+    {
+        ChangeCurrentPanelTo(Main);
+    }
 
-	public Button playButton;
-	public Button quitButton;
-	public Button creditsButton;
-	public Button rankingsButton;
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+            OnBackPressed();
+    }
 
-	// Use this for initialization
-	void Start () {
-		playButton = playButton.GetComponent<Button> ();
-		quitButton = quitButton.GetComponent<Button> ();
-		creditsButton = creditsButton.GetComponent<Button> ();
+    public void OnCreditsPressed()
+    {
+        ChangeCurrentPanelTo(Credits);
+    }
 
-		startMenu.gameObject.SetActive(true);
-		quitDialoguePanel.gameObject.SetActive(false);
-		creditsPanel.gameObject.SetActive (false);
-	}
-	
-	public void PressQuitAtMainMenu(){
-		quitDialoguePanel.gameObject.SetActive (true);
-		creditsPanel.gameObject.SetActive(false);
+    public void OnBackPressed()
+    {
+        if (_currentPanel == Main)
+            OnQuitPressed();
+        else
+            ChangeCurrentPanelTo(Main);
+    }
 
-		playButton.enabled = false;
-		quitButton.enabled = false;
-		creditsButton.enabled = false;
-	}
+    public void OnQuitPressed()
+    {
+        ChangeCurrentPanelTo(QuitGame);
+    }
 
-	public void PressCreditsAtMainMenu(){
-		quitDialoguePanel.gameObject.SetActive(false);
-		creditsPanel.gameObject.SetActive(true);
+    public void OnQuitCancelled()
+    {
+        ChangeCurrentPanelTo(Main);
+    }
 
-		playButton.enabled = false;
-		quitButton.enabled = false;
-		creditsButton.enabled = false;
-	}
+    public void OnQuitConfirmed()
+    {
+        Application.Quit();
+    }
 
-	public void PressBackAtCreditsMenu(){
-		quitDialoguePanel.gameObject.SetActive (false);
-		creditsPanel.gameObject.SetActive (false);
+    public void OnPlayPressed()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
 
-		playButton.enabled = true;
-		quitButton.enabled = true;
-		creditsButton.enabled = true;
-	}
-
-	public void PressNoAtQuitMenu(){
-		quitDialoguePanel.gameObject.SetActive (false);
-		creditsPanel.gameObject.SetActive (false);
-
-		playButton.enabled = true;
-		quitButton.enabled = true;
-		creditsButton.enabled = true;
-	}
-
-	public void PressStart(){
-		SceneManager.LoadScene ("GameScene");
-	}
-
-    public void PressUpgrades()
+    public void OnUpgradesPressed()
     {
         SceneManager.LoadScene("UpgradesMenuScene");
     }
 
-	public void PressYesAtQuitMenu(){
-		Application.Quit();
-	}
+    public void OnRankingsPressed()
+    {
+        ChangeCurrentPanelTo(Rankings);
+    }
 
-	public void PressRankings(){
-		SceneManager.LoadScene ("RankingScreen");
-	}
+    private void ChangeCurrentPanelTo(ShowHidePanel newPanel)
+    {
+        Main.Visible = (newPanel == Main);
+        QuitGame.Visible = (newPanel == QuitGame);
+        Credits.Visible = (newPanel == Credits);
+        Rankings.Visible = (newPanel == Rankings);
+
+        _currentPanel = newPanel;
+    }
 }
