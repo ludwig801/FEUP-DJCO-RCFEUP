@@ -4340,68 +4340,6 @@ Transform:
   - {fileID: 1005369673}
   m_Father: {fileID: 1031299299}
   m_RootOrder: 0
---- !u!1001 &642770867
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 475782, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11401434, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 865652482}
-    - target: {fileID: 11467834, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 865652482}
-    - target: {fileID: 11469868, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: RaceManager
-      value: 
-      objectReference: {fileID: 865652482}
-    - target: {fileID: 11458368, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 865652482}
-    - target: {fileID: 189464, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-      propertyPath: m_Name
-      value: Player 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1001 &659141157
 Prefab:
   m_ObjectHideFlags: 0
@@ -5798,12 +5736,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 424086, guid: 54af3267d1caf694c90e78619fb8df94, type: 2}
   m_PrefabInternal: {fileID: 836850686}
---- !u!114 &855665356 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11422178, guid: e628591bdfbe9a844b1e91bdacac11ef,
-    type: 2}
-  m_PrefabInternal: {fileID: 642770867}
-  m_Script: {fileID: 11500000, guid: c9b860b4b4593b3418581ea7209d0279, type: 3}
 --- !u!1001 &856430242
 Prefab:
   m_ObjectHideFlags: 0
@@ -5939,6 +5871,7 @@ GameObject:
   - 114: {fileID: 865652482}
   - 114: {fileID: 865652483}
   - 82: {fileID: 865652484}
+  - 81: {fileID: 865652485}
   m_Layer: 0
   m_Name: Race Manager
   m_TagString: Race Manager
@@ -5975,6 +5908,8 @@ MonoBehaviour:
   CheckpointManager: {fileID: 1986066046}
   RaceType: 0
   NumLaps: 1
+  NumPlayers: 0
+  PlayerPrefab: {fileID: 189464, guid: e628591bdfbe9a844b1e91bdacac11ef, type: 2}
   CheckWinnerRate: 5
   RandomCarSpot: 0
   StartingPositions:
@@ -6011,8 +5946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9726a37a282d2bd44b5c61f5d5c4dab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cars:
-  - {fileID: 855665356}
+  Cars: []
 --- !u!82 &865652484
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6087,6 +6021,13 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!81 &865652485
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 865652480}
+  m_Enabled: 1
 --- !u!1001 &886943409
 Prefab:
   m_ObjectHideFlags: 0
@@ -9992,7 +9933,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!1001 &1480557713
 Prefab:
   m_ObjectHideFlags: 0

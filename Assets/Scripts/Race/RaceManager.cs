@@ -27,6 +27,7 @@ public class RaceManager : MonoBehaviour
     public CheckpointManager CheckpointManager;
     public RaceTypes RaceType;
     public int NumLaps, NumPlayers;
+    public GameObject PlayerPrefab;
     [Range(1, 60)]
     public int CheckWinnerRate;
     public bool RandomCarSpot;
@@ -74,6 +75,26 @@ public class RaceManager : MonoBehaviour
                     break;
             }
         }
+
+        CreatePlayers();
+    }
+
+    public void CreatePlayers()
+    {
+        for (int i = 0; i < NumPlayers; i++)
+        {
+            var player = Instantiate(PlayerPrefab) as GameObject;
+            player.name = "Player " + (i + 1);
+            var car = player.GetComponentInChildren<Car>();
+            var carCanvas = player.GetComponentInChildren<CarCanvas>();
+            carCanvas.Car = car;
+            var carMovement = car.CarMovement;
+            carMovement.CarInput.Index = i;
+            var chaseCam = player.GetComponentInChildren<ChaseCam>();
+            chaseCam.Target = carMovement;
+            
+            CarsManager.Cars.Add(car);
+        }
     }
 
     public void NewRace()
@@ -98,17 +119,20 @@ public class RaceManager : MonoBehaviour
 
         while (true)
         {
-            var time = float.MaxValue;
-
-            foreach (var car in CarsManager.Cars)
+            if (State.Ongoing)
             {
-                if (car.LapTimeCounter.LapsTimes.Count >= NumLaps)
+                var time = float.MaxValue;
+
+                foreach (var car in CarsManager.Cars)
                 {
-                    var carTime = car.LapTimeCounter.TotalTime;
-                    if (carTime < time)
+                    if (car.LapTimeCounter.LapsTimes.Count >= NumLaps)
                     {
-                        time = carTime;
-                        State.Winner = car;
+                        var carTime = car.LapTimeCounter.TotalTime;
+                        if (carTime < time)
+                        {
+                            time = carTime;
+                            State.Winner = car;
+                        }
                     }
                 }
             }

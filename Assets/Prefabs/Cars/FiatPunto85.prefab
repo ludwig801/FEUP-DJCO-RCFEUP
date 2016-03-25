@@ -944,7 +944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47b762bb34e5e1f4eb92cdefbd405d4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _raceManager: {fileID: 0}
+  PassAudio: {fileID: 0}
   _currentLap: 0
   _car: {fileID: 0}
 --- !u!114 &11492248
@@ -958,9 +958,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0548d839081d5fa499ca8953cc2df745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InputIndex: 0
   Rigidbody: {fileID: 5486934}
   CenterOfMass: {fileID: 432948}
   MotorForcePosition: {fileID: 471926}
+  Downforce: 0
   TractionControl: 0.25
   SpeedStatsKMH:
     TopSpeed: 120
@@ -1005,6 +1007,17 @@ MonoBehaviour:
       RightWheel: {fileID: 468538}
       SteerAxle: 0
     MaxSteering: 45
+  Audio:
+    AccelerationAudio: {fileID: 0}
+    CrashAudio: {fileID: 0}
+    MinAccelBoundKMH: 0
+    MaxAccelBoundKMH: 0
+    Delta: 0
+    InvertedDelta: 0
+    LerpSpeed: 0
+  CarInput:
+    Throttle: 0
+    Steering: 0
 --- !u!114 &11497312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1016,8 +1029,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9b860b4b4593b3418581ea7209d0279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerName: 
   CarId: 0
-  coinsText: {fileID: 0}
+  Coins: 0
+  CoinCollect: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
