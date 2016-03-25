@@ -95,10 +95,4 @@ public class PauseMenuUI : MonoBehaviour
         RaceManager.SetPaused(false);
         RaceManager.NewRace();
     }
-
-    public void OnQuitRace()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MainMenu");
-    }
 }

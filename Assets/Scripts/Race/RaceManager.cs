@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : MonoBehaviour
 {
@@ -54,6 +55,21 @@ public class RaceManager : MonoBehaviour
         StartCoroutine(CheckForWinner());
     }
 
+    public void NewRace()
+    {
+        State.Reset();
+        State.Started = true;
+
+        PowerUps.ResetAllPowerUps();
+        CarsManager.ResetAllCars();
+        CarsManager.AssignStartingPositions(StartingPositions, RandomCarSpot);
+
+        if (_lastCountdown != null)
+            StopCoroutine(_lastCountdown);
+
+        _lastCountdown = StartCoroutine(CountdownAndStart());
+    }
+
     IEnumerator CheckForWinner()
     {
         var oldRefreshRate = int.MaxValue;
@@ -88,23 +104,8 @@ public class RaceManager : MonoBehaviour
                 refresRateSec = 1f / CheckWinnerRate;
             }
 
-            yield return new WaitForSeconds(refresRateSec); 
+            yield return new WaitForSeconds(refresRateSec);
         }
-    }
-
-    public void NewRace()
-    {
-        State.Reset();
-        State.Started = true;
-
-        PowerUps.ResetAllPowerUps();
-        CarsManager.ResetAllCars();
-        CarsManager.AssignStartingPositions(StartingPositions, RandomCarSpot);
-
-        if (_lastCountdown != null)
-            StopCoroutine(_lastCountdown);
-
-        _lastCountdown = StartCoroutine(CountdownAndStart());
     }
 
     IEnumerator CountdownAndStart()
@@ -140,7 +141,7 @@ public class RaceManager : MonoBehaviour
         Time.timeScale = value ? 0 : 1;
     }
 
-    void OnRaceFinished()
+    private void OnRaceFinished()
     {
         State.Finished = true;
         if (State.Winner != null)
@@ -177,6 +178,12 @@ public class RaceManager : MonoBehaviour
 
             RankingsWriter.WriteToFile(rankings);
         }
+    }
+
+    public void OnQuitRace()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("MainMenu");
     }
 }
 

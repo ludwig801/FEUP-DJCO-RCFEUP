@@ -105,9 +105,4 @@ public class RaceOverUI : MonoBehaviour
             }
         }
     }
-
-    public void OnQuitToMainMenu()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
 }
