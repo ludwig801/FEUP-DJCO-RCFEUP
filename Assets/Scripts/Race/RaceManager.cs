@@ -26,7 +26,7 @@ public class RaceManager : MonoBehaviour
     public CarsManager CarsManager;
     public CheckpointManager CheckpointManager;
     public RaceTypes RaceType;
-    public int NumLaps;
+    public int NumLaps, NumPlayers;
     [Range(1, 60)]
     public int CheckWinnerRate;
     public bool RandomCarSpot;
@@ -50,16 +50,30 @@ public class RaceManager : MonoBehaviour
 
     void Start()
     {
-        State.Reset();
+        ReadRaceValues();
 
-        CreateCars();
+        State.Reset();
 
         StartCoroutine(CheckForWinner());
     }
 
-    public void CreateCars()
+    public void ReadRaceValues()
     {
+        var kValues = RaceReader.ReadAllValues(RaceReader.Filename);
 
+        foreach (var keyValue in kValues)
+        {
+            switch (keyValue.Key)
+            {
+                case "numPlayers":
+                    NumPlayers = int.Parse(keyValue.Value);
+                    break;
+
+                case "numLaps":
+                    NumLaps = int.Parse(keyValue.Value);
+                    break;
+            }
+        }
     }
 
     public void NewRace()

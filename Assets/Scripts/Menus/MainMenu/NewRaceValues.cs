@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class NewRaceValues : MonoBehaviour
 {
@@ -51,6 +52,14 @@ public class NewRaceValues : MonoBehaviour
                 item.Btn.targetGraphic.color = ColorDefault;
         }
         Laps = bv.Value;
+    }
+
+    public void OnRacePressed()
+    {
+        RaceWriter.UpdateKeyValue(RaceReader.Filename, "numPlayers", Players.ToString());
+        RaceWriter.UpdateKeyValue(RaceReader.Filename, "numLaps", Laps.ToString());
+
+        SceneManager.LoadScene("GameScene");
     }
 
     [System.Serializable]

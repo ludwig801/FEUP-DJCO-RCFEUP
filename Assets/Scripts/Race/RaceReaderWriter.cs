@@ -16,33 +16,56 @@ public static class RaceWriter
     public static void UpdateKeyValue(string filename, string key, string value)
     {
         if (!File.Exists(filename))
+        {
+            WriteKeyValue(filename, key, value);
             return;
+        }
+
+        bool found = false;
 
         var lines = File.ReadAllLines(filename);
-        foreach (var line in lines)
+        for (int i = 0; i < lines.Length; i++)
         {
+            var line = lines[i];
             var kv = KeyValue.Parse(line);
 
             if (kv.Key == key)
+            {
+                found = true;
                 kv.Value = value;
+                lines[i] = kv.ToString();
+            }
         }
 
-        File.WriteAllLines(filename, lines);
+        if (found)
+            File.WriteAllLines(filename, lines);
+        else
+            WriteKeyValue(filename, key, value);
     }
 }
 
 public static class RaceReader
 {
-    public static List<KeyValue> ReadAllValues(string filename, string key, string value)
+    public static string Filename = "RaceValues.sav";
+
+    public static List<KeyValue> ReadAllValues(string filename)
     {
         List<KeyValue> list = new List<KeyValue>();
 
-        using (var reader = new StreamReader(filename, true))
+        if (File.Exists(filename))
         {
-            while(!reader.EndOfStream)
-                list.Add(KeyValue.Parse(reader.ReadLine()));
+            using (var reader = new StreamReader(filename))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var kv = KeyValue.Parse(reader.ReadLine());
+                    if (kv != null)
+                        list.Add(kv);
+                }
 
-            reader.Close();
+
+                reader.Close();
+            }
         }
 
         return list;
