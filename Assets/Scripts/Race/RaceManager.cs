@@ -52,7 +52,14 @@ public class RaceManager : MonoBehaviour
     {
         State.Reset();
 
+        CreateCars();
+
         StartCoroutine(CheckForWinner());
+    }
+
+    public void CreateCars()
+    {
+
     }
 
     public void NewRace()
