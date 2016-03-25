@@ -18,7 +18,7 @@ public class RaceOver : MonoBehaviour {
 		se.AddListener (SubmitPlayerName);
 		input.onEndEdit = se;
 		//GET SINGLETON TIME INFORMATION
-		playerPosition = RankingWriter.GetPlayerPosition(250f);
+		playerPosition = RankingsWriter.GetPlayerPosition(250f);
 		playerTime = 250f;
 		if (playerPosition > 10) {
 			playerMessage.text = "YOU DIDN'T GET INTO THE TOP TEN";
@@ -31,7 +31,7 @@ public class RaceOver : MonoBehaviour {
 	{
 		string playername = input.text.Trim();
 		Debug.Log(playername.ToUpper());
-		RankingWriter.UpdateRankings (playerPosition, playername, playerTime);
+		RankingsWriter.UpdateRankings (playerPosition, playername, playerTime);
 	}
 
 	private string GetPositionString(int position){

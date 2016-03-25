@@ -1,20 +1,14 @@
 ﻿using System.IO;
 using System.Xml;
-using UnityEngine;
+using System.Collections.Generic;
 
-public static class RankingWriter
+public static class RankingsWriter
 {
 	public static void InitializeRankings(string filename)
 	{
 		using (var writer = new StreamWriter (filename, true))
 		{
 			writer.WriteLine (OpeningParentNode ());
-
-			for (int i = 1; i <= 10; i++) 
-			{
-				writer.Write (ChildNode (i, "Player", (float)500));
-			}
-
 			writer.WriteLine (OlosingParentNode ());
 		}
 	}
@@ -29,16 +23,21 @@ public static class RankingWriter
 		return "</Rankings>";
 	}
 
-	private static string ChildNode(int place, string name, float time)
+	private static string ChildNode(int place, string playerName, float time)
 	{
-		return "\t<Ranking place='" + place + "' name='" + name + "' time='" + time.ToString() + "'/>\n";
+		return string.Concat("\t<Ranking place='", place, "' playerName='", playerName, "' time='", time.ToString(), "'/>\n");
 	}
 
-	public static int GetPlayerPosition(float playerTime)
+    private static string ChildNode(Ranking rankingObj)
+    {
+        return string.Concat("\t<Ranking place='", rankingObj.Place, "' playerName='", rankingObj.PlayerName, "' time='", rankingObj.PlayerTime.ToString(), "'/>\n");
+    }
+
+    public static int GetPlayerPosition(float playerTime)
 	{
 		var xmlDoc = RankingsFile.OpenRankigsFile ();
 
-		var currentRankings = xmlDoc.SelectSingleNode ("/Rankings").ChildNodes;
+		var currentRankings = xmlDoc.SelectSingleNode ("/Document/Rankings").ChildNodes;
 
 		int currentPosition = 10;
 
@@ -77,7 +76,7 @@ public static class RankingWriter
 	{
 		var node = GetRankingsNode (xmlDoc, place);
 
-		node.Attributes [1].Value = name;
+        node.Attributes [1].Value = name;
 		node.Attributes [2].Value = time.ToString ();
 	}
 
@@ -90,7 +89,7 @@ public static class RankingWriter
 
 	private static XmlNode GetRankingsNode(XmlDocument xmlDoc, int place)
 	{
-		var elements = xmlDoc.SelectSingleNode ("/Rankings").ChildNodes;
+		var elements = xmlDoc.SelectSingleNode ("/Document/Rankings").ChildNodes;
 
 		foreach (XmlNode element in elements)
 		{
@@ -102,4 +101,21 @@ public static class RankingWriter
 
 		return null;
 	}
+
+    public static void WriteToFile(List<Ranking> list)
+    {
+        using (var writer = new StreamWriter(RankingsFile.Filename, false))
+        {
+            writer.WriteLine("<Document>");
+            writer.WriteLine(OpeningParentNode());
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                writer.Write(ChildNode(list[i]));
+            }
+
+            writer.WriteLine(OlosingParentNode());
+            writer.WriteLine("</Document>");
+        }
+    }
 }

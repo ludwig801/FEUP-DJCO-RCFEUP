@@ -50,7 +50,6 @@ public class RaceManager : MonoBehaviour
     void Start()
     {
         State.Reset();
-        NewRace();
 
         StartCoroutine(CheckForWinner());
     }
@@ -143,6 +142,41 @@ public class RaceManager : MonoBehaviour
     {
         State.Finished = true;
         CarsManager.ResetAllCars();
+
+        if (State.Winner != null)
+        {
+            var rankings = RankingsReader.GetAllRankings();
+            var winnerRankingsIndex = -1;
+            var totalTime = State.Winner.LapTimeCounter.TotalTime;
+
+            for (int i = 0; i < rankings.Count; i++)
+            {
+                var r = rankings[i];
+                if (r.PlayerTime > totalTime)
+                {
+                    winnerRankingsIndex = i;
+                    break;
+                }
+            }
+
+            if (winnerRankingsIndex >= 0)
+            {
+                for (int i = winnerRankingsIndex; i < rankings.Count; i++)
+                {
+                    var r = rankings[i];
+                    r.Place++;
+                }
+
+                State.WinnerRanking = new Ranking();
+                State.WinnerRanking.Place = winnerRankingsIndex + 1;
+                State.WinnerRanking.PlayerTime = totalTime;
+                State.WinnerRanking.PlayerName = State.Winner.PlayerName;
+
+                rankings.Add(State.WinnerRanking);
+
+                RankingsWriter.WriteToFile(rankings);
+            }
+        }
     }
 }
 
@@ -151,6 +185,7 @@ public class RaceState
 {
     public bool Ongoing, Paused, Finished;
     public Car Winner;
+    public Ranking WinnerRanking;
 
     internal void Reset()
     {

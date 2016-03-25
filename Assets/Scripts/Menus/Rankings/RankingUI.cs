@@ -8,8 +8,10 @@ public class RankingUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 {
     public int Index;
     public Text Place, RacerName, RaceTime;
-    public Color DefaultColor, HoverColor;
-    public bool MouseHover;
+    public Color DefaultColor, HoverColor, DisabledColor, TextColor;
+    public bool MouseHover, Disabled;
+    [Range(1, 60)]
+    public int ImageRefreshRate, DisabledRefreshRate;
 
     [SerializeField]
     private Image _img;
@@ -29,22 +31,86 @@ public class RankingUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         _oldMouseHover = !MouseHover;
         _colorTo = DefaultColor;
 
+        Place.color = TextColor;
+        RacerName.color = TextColor;
+        RaceTime.color = TextColor;
+
+        StartCoroutine(UpdateDisabled());
         StartCoroutine(UpdateImageColor());
     }
 
     IEnumerator UpdateImageColor()
     {
+        var originalRefreshRate = ImageRefreshRate;
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
+        var oldDisabled = !Disabled;
+
         while (true)
         {
-            yield return null;
-
-            if (_oldMouseHover != MouseHover)
+            if (oldDisabled != Disabled)
             {
-                if (Utils.IsColorLike(_img.color, _colorTo))
-                    _oldMouseHover = MouseHover;
-
-                _img.color = Color.Lerp(_img.color, _colorTo, Time.deltaTime * 5f);
+                _img.enabled = !Disabled;
+                oldDisabled = Disabled;
             }
+            else if (_oldMouseHover != MouseHover)
+            {
+                ImageRefreshRate = 60;
+                _img.color = Color.Lerp(_img.color, _colorTo, Time.deltaTime * 5f);
+
+                if (Utils.IsColorLike(_img.color, _colorTo))
+                {
+                    ImageRefreshRate = originalRefreshRate;
+                    _oldMouseHover = MouseHover;
+                }
+            }
+
+            if (oldRefreshRate != ImageRefreshRate)
+            {
+                oldRefreshRate = ImageRefreshRate;
+                refreshRateSec = 1f / ImageRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
+        }
+    }
+
+    IEnumerator UpdateDisabled()
+    {
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
+
+        while (true)
+        {
+            if (!Disabled)
+            {
+                if (RacerName.text.Length <= 0 || RaceTime.text.Length <= 0)
+                {
+                    Disabled = true;
+                    _colorTo = DisabledColor;
+                    Place.enabled = !Disabled;
+                    RacerName.enabled = !Disabled;
+                    RaceTime.enabled = !Disabled;
+                }
+            }
+            else
+            {
+                if (RacerName.text.Length > 0 && RaceTime.text.Length > 0)
+                {
+                    Disabled = false;
+                    Place.enabled = !Disabled;
+                    RacerName.enabled = !Disabled;
+                    RaceTime.enabled = !Disabled;
+                }
+            }
+
+            if (oldRefreshRate != DisabledRefreshRate)
+            {
+                oldRefreshRate = DisabledRefreshRate;
+                refreshRateSec = 1f / DisabledRefreshRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
         }
     }
 
@@ -52,13 +118,17 @@ public class RankingUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     {
         _oldMouseHover = false;
         MouseHover = true;
-        _colorTo = HoverColor;
+
+        if (!Disabled)
+            _colorTo = HoverColor;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         _oldMouseHover = true;
         MouseHover = false;
-        _colorTo = DefaultColor;
+
+        if (!Disabled)
+            _colorTo = DefaultColor;
     }
 }

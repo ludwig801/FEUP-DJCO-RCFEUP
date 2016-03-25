@@ -8,6 +8,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(LapTimeCounter))]
 public class Car : MonoBehaviour
 {
+    public string PlayerName;
     public int CarId;
     public int Coins;
     public AudioSource CoinCollect;

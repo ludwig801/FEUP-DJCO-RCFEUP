@@ -8,9 +8,7 @@ public static class RankingsFile {
 	public static XmlDocument OpenRankigsFile()
 	{
 		if(!File.Exists(Filename))
-		{
 			CreateRankingsFile();
-		}
 
 		var doc = new XmlDocument();
 		doc.Load(Filename);
@@ -18,15 +16,19 @@ public static class RankingsFile {
 		return doc;
 	}
 
-	private static void CreateRankingsFile()
+	public static void CreateRankingsFile()
 	{
-		using (var writer = new StreamWriter(Filename, true))
-		{
-			writer.WriteLine(GetXmlVersion());
-		}
+        using (var writer = new StreamWriter(Filename, false))
+        {
+            writer.WriteLine(GetXmlVersion());
 
-		RankingWriter.InitializeRankings(Filename);
-	}
+            writer.WriteLine("<Document>");
+
+            RankingsWriter.InitializeRankings(Filename);
+
+            writer.WriteLine("</Document>");
+        }
+    }
 
 	private static string GetXmlVersion()
 	{

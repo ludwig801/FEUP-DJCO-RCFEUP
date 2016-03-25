@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class RankingsManager : MonoBehaviour
 {
     public int MaxNameLength;
-    public RankingUI[] Rankings;
-
+    public List<RankingUI> RankingsUI;
 
     void Start()
     {
@@ -23,19 +22,34 @@ public class RankingsManager : MonoBehaviour
 
     private void SetRankings()
     {
-        for (int i = 0; i < 10; i++)
+        var rankings = RankingsReader.GetAllRankings();
+
+        for (int i = 0; i < RankingsUI.Count; i++)
         {
-            SetRankingsPlace(i);
+            var rankingUI = RankingsUI[i];
+            var ranking = GetRanking(rankings, (i+1));
+
+            if (ranking != null)
+            {
+                rankingUI.RacerName.text = ranking.PlayerName.Substring(0, Mathf.Min(MaxNameLength, ranking.PlayerName.Length));
+                rankingUI.RaceTime.text = Utils.GetCounterFormattedString(ranking.PlayerTime);
+            }
+            else
+            {
+                rankingUI.RacerName.text = string.Empty;
+                rankingUI.RaceTime.text = string.Empty;
+            }
         }
     }
 
-    private void SetRankingsPlace(int place)
+    private Ranking GetRanking(List<Ranking> list, int place)
     {
-        var rank = RankingWriter.GetRanking(place + 1);
-        var ranking = Rankings[place];
+        foreach (var ranking in list)
+        {
+            if (ranking.Place == place)
+                return ranking;
+        }
 
-        var name = rank.Attributes[1].Value;
-        ranking.RacerName.text = name.Substring(0, Mathf.Min(MaxNameLength, name.Length));
-        ranking.RaceTime.text = Utils.GetCounterFormattedString(float.Parse(rank.Attributes[2].Value));
+        return null;
     }
 }

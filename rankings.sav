@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Rankings>
-  <Ranking place="1" name="Player" time="100" />
-  <Ranking place="2" name="Player" time="200" />
-  <Ranking place="3" name="hello" time="250" />
-  <Ranking place="4" name="namehere" time="250" />
-  <Ranking place="5" name="asdasdasdasd" time="250" />
-  <Ranking place="6" name="asdasd" time="250" />
-  <Ranking place="7" name="TEST" time="250" />
-  <Ranking place="8" name="adsdads" time="250" />
-  <Ranking place="9" name="Player" time="300" />
-  <Ranking place="10" name="Player" time="400" />
-</Rankings>
+<Document>
+	<Rankings>
+	</Rankings>
+</Document>
