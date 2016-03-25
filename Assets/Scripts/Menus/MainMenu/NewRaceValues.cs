@@ -15,8 +15,8 @@ public class NewRaceValues : MonoBehaviour
         {
             var itemPlayers = NumPlayersBtns[i];
             var itemLaps = NumLapsBtns[i];
-            itemPlayers.Btn.image.color = ColorDefault;
-            itemLaps.Btn.image.color = ColorDefault;
+            itemPlayers.Btn.targetGraphic.color = ColorDefault;
+            itemLaps.Btn.targetGraphic.color = ColorDefault;
             itemPlayers.Btn.onClick.AddListener(() =>
             {
                 SelectNumPlayers(itemPlayers);
@@ -33,22 +33,22 @@ public class NewRaceValues : MonoBehaviour
 
     private void SelectNumPlayers(ButtonValue bv)
     {
-        bv.Btn.image.color = ColorSelected;
+        bv.Btn.targetGraphic.color = ColorSelected;
         foreach (var item in NumPlayersBtns)
         {
             if (item != bv)
-                item.Btn.image.color = ColorDefault;
+                item.Btn.targetGraphic.color = ColorDefault;
         }
         Players = bv.Value;
     }
 
     private void SelectNumLaps(ButtonValue bv)
     {
-        bv.Btn.image.color = ColorSelected;
+        bv.Btn.targetGraphic.color = ColorSelected;
         foreach (var item in NumLapsBtns)
         {
             if (item != bv)
-                item.Btn.image.color = ColorDefault;
+                item.Btn.targetGraphic.color = ColorDefault;
         }
         Laps = bv.Value;
     }
