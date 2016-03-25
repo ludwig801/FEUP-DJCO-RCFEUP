@@ -1,7 +1,9 @@
 <Document>
     <Rankings>
-	<Ranking place='2' playerName='LOL' time='28.99973'/>
-	<Ranking place='3' playerName='LUIS' time='30.32352'/>
-	<Ranking place='1' playerName='LUIS' time='27.79223'/>
+	<Ranking place='2' playerName='LOL' time='26.96893'/>
+	<Ranking place='3' playerName='LUIS' time='27.79223'/>
+	<Ranking place='4' playerName='LOL' time='28.99973'/>
+	<Ranking place='5' playerName='LUIS' time='30.32352'/>
+	<Ranking place='1' playerName='LOL' time='26.51212'/>
     </Rankings>
 </Document>

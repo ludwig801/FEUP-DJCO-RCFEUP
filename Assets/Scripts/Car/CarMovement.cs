@@ -11,7 +11,7 @@ public class CarMovement : MonoBehaviour
 	public TorqueSystem TorqueSystem;
 	public VehicleState State;
     public VisualElements Visuals;
-    public AudioSource CrashAudio;
+    public VehicleAudio Audio;
 
     void Start()
     {
@@ -21,6 +21,9 @@ public class CarMovement : MonoBehaviour
         SpeedStatsKMH.CurrentTopSpeed = SpeedStatsKMH.TopSpeed;
         SpeedStatsKMH.CurrentTopSpeedReverse = SpeedStatsKMH.TopSpeedReverse;
         SpeedStatsKMH.CurrentTopTurningSpeed = SpeedStatsKMH.TopTurningSpeed;
+
+        Audio.AccelerationAudio.Play();
+        Audio.SetBounds(0, SpeedStatsKMH.TopSpeed);
     }
 
     void Update()
@@ -28,6 +31,7 @@ public class CarMovement : MonoBehaviour
         ApplySideTilt();
         ApplyThrottleTilt();
         ApplyWheelsSteering();
+        ApplySound();
     }
 
 	void FixedUpdate()
@@ -139,8 +143,8 @@ public class CarMovement : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Track Walls")
         {
-            if(!CrashAudio.isPlaying)
-                CrashAudio.Play();
+            if(!Audio.CrashAudio.isPlaying)
+                Audio.CrashAudio.Play();
         }
 	}
 
@@ -198,6 +202,12 @@ public class CarMovement : MonoBehaviour
             leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(leftWheel.localRotation.x, State.CurrentSteering * Visuals.MaxSteering, leftWheel.localRotation.z), Time.deltaTime * Visuals.SteeringSpeed);
             Visuals.RearAxle.RightWheel.localRotation = leftWheel.localRotation;
         }
+    }
+
+    private void ApplySound()
+    {
+        var accelAudio = Audio.AccelerationAudio;
+        accelAudio.pitch = Mathf.Lerp(accelAudio.pitch, UnitConverter.VelocityToKMH(Rigidbody.velocity.magnitude) * Audio.InvertedDelta + 0.5f, Time.deltaTime * Audio.LerpSpeed);
     }
 
     public void Reset()
@@ -315,4 +325,21 @@ public class VisualElements
     public VisualAxle FrontAxle, RearAxle;
     [Range(0, 60)]
     public int MaxSteering;
+}
+
+[System.Serializable]
+public class VehicleAudio
+{
+    public AudioSource AccelerationAudio, CrashAudio;
+    public float MinAccelBoundKMH, MaxAccelBoundKMH;
+    public float Delta, InvertedDelta;
+    public float LerpSpeed;
+
+    public void SetBounds(float min, float max)
+    {
+        MinAccelBoundKMH = Mathf.Max(0, min);
+        MaxAccelBoundKMH = Mathf.Max(max, MinAccelBoundKMH);
+        Delta = MaxAccelBoundKMH - MinAccelBoundKMH;
+        InvertedDelta = 1f / Delta;
+    }
 }
