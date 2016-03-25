@@ -10,7 +10,7 @@ public class Checkpoint : MonoBehaviour
     public bool Starting;
     public float BoardRotation, BoardHeight;
 
-    void Update()
+    void Start()
     {
         var delta = (PillarB.position - PillarA.position);
         Trigger.size = new Vector3(delta.magnitude, Scale.y, Scale.z);

@@ -3,6 +3,8 @@
 [RequireComponent(typeof(Car))]
 public class LapCounter : MonoBehaviour
 {
+    public AudioSource PassAudio;
+
     [SerializeField]
     int _currentLap;
     [SerializeField]
@@ -52,6 +54,7 @@ public class LapCounter : MonoBehaviour
     void Start()
     {
         _car = GetComponent<Car>();
+        PassAudio.pitch = 0.5f;
 
         Reset();
     }
@@ -59,18 +62,20 @@ public class LapCounter : MonoBehaviour
     public void Reset()
     {
         PassedCheckpoints = 0;
-        CurrentCheckpoint = RaceManager.Checkpoints.GetStartingCheckpoint();
+        CurrentCheckpoint = RaceManager.CheckpointManager.GetStartingCheckpoint();
         _currentLap = RaceManager.GetCurrentLap(PassedCheckpoints);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (RaceManager.Checkpoints.GetCheckpointIndex(other) == CurrentCheckpoint)
+        if (RaceManager.CheckpointManager.GetCheckpointIndex(other) == CurrentCheckpoint)
         {
             _car.LapTimeCounter.OnCheckpointPassed(CurrentCheckpoint);
-            CurrentCheckpoint = RaceManager.Checkpoints.GetNextCheckpoint(CurrentCheckpoint);
+            CurrentCheckpoint = RaceManager.CheckpointManager.GetNextCheckpoint(CurrentCheckpoint);
             PassedCheckpoints++;
             _currentLap = RaceManager.GetCurrentLap(PassedCheckpoints);
+
+            PassAudio.Play();
         }
     }
 }

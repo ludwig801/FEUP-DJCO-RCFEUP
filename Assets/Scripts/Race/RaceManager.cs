@@ -23,7 +23,7 @@ public class RaceManager : MonoBehaviour
 
     public PowerUpManager PowerUps;
     public CarsManager CarsManager;
-    public CheckpointManager Checkpoints;
+    public CheckpointManager CheckpointManager;
     public RaceTypes RaceType;
     public int NumLaps;
     [Range(1, 60)]
@@ -130,7 +130,7 @@ public class RaceManager : MonoBehaviour
             return -1;
 
         // account for first checkpoint, which is always passed in the beggining
-        return ((passedCheckpoints - 1) / Checkpoints.Checkpoints.Count);
+        return ((passedCheckpoints - 1) / CheckpointManager.Checkpoints.Count);
     }
 
     public void SetPaused(bool value)

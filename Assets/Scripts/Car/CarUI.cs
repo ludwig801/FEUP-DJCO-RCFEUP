@@ -47,6 +47,8 @@ public class CarUI : MonoBehaviour
         var lapCounter = Car.LapCounter;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
+        var checkpointCount = RaceManager.CheckpointManager.Checkpoints.Count;
+        var lapCount = RaceManager.NumLaps;
 
         if (Lap == null || Checkpoint == null)
         {
@@ -61,13 +63,13 @@ public class CarUI : MonoBehaviour
                 if (oldLap != lapCounter.CurrentLap)
                 {
                     oldLap = lapCounter.CurrentLap;
-                    Lap.text = string.Concat("Lap: ", lapCounter.CurrentLapPlusOne);
+                    Lap.text = string.Concat(lapCounter.CurrentLapPlusOne, " | ", lapCount);
                 }
 
-                if (oldCheckpoint != lapCounter.CurrentCheckpoint)
+                if (oldCheckpoint != lapCounter.PassedCheckpoints)
                 {
-                    oldCheckpoint = lapCounter.CurrentCheckpoint;
-                    Checkpoint.text = string.Concat("Checkpoint: ", oldCheckpoint);
+                    oldCheckpoint = lapCounter.PassedCheckpoints;
+                    Checkpoint.text = string.Concat(lapCounter.PassedCheckpoints, " | ", checkpointCount);
                 }
             }
 
@@ -89,6 +91,8 @@ public class CarUI : MonoBehaviour
         var oldPartialsCount = 0;
         var oldRefreshRate = int.MaxValue;
         var refreshRateSec = 1f;
+
+        LapTime.text = string.Concat(Utils.GetCounterFormattedString(0));
 
         while (true)
         {
@@ -143,7 +147,7 @@ public class CarUI : MonoBehaviour
                     }
                 }
 
-                LapTime.text = string.Concat("Time: ", Utils.GetCounterFormattedString(lapTimeCounter.CurrentLapTime));
+                LapTime.text = string.Concat(Utils.GetCounterFormattedString(lapTimeCounter.CurrentLapTime));
             }
 
             if (oldRefreshRate != TimesRefreshRate)
