@@ -2,6 +2,7 @@
 
 public class CarMovement : MonoBehaviour
 {
+    public RaceManager RaceManager;
     public Rigidbody Rigidbody;
 	public Transform CenterOfMass, MotorForcePosition;
     public float Downforce;
@@ -16,6 +17,8 @@ public class CarMovement : MonoBehaviour
 
     void Start()
     {
+        RaceManager = RaceManager.Instance;
+
         TorqueSystem.CurrentMotorTorque = TorqueSystem.MotorTorque;
         TorqueSystem.CurrentAngularTorque = TorqueSystem.AngularTorque;
 
@@ -210,7 +213,13 @@ public class CarMovement : MonoBehaviour
     private void ApplySound()
     {
         var accelAudio = Audio.AccelerationAudio;
-        accelAudio.pitch = Mathf.Lerp(accelAudio.pitch, UnitConverter.VelocityToKMH(Rigidbody.velocity.magnitude) * Audio.InvertedDelta + 0.5f, Time.deltaTime * Audio.LerpSpeed);
+        if (RaceManager.State.Paused)
+            accelAudio.volume = Mathf.Lerp(accelAudio.volume, 0, Time.unscaledDeltaTime * Audio.LerpSpeed);
+        else
+        {
+            accelAudio.volume = Audio.Volume;
+            accelAudio.pitch = Mathf.Lerp(accelAudio.pitch, UnitConverter.VelocityToKMH(Rigidbody.velocity.magnitude) * Audio.InvertedDelta + 0.5f, Time.deltaTime * Audio.LerpSpeed);
+        }
     }
 
     public void Reset()
@@ -337,6 +346,7 @@ public class VehicleAudio
     public float MinAccelBoundKMH, MaxAccelBoundKMH;
     public float Delta, InvertedDelta;
     public float LerpSpeed;
+    public float Volume;
 
     public void SetBounds(float min, float max)
     {

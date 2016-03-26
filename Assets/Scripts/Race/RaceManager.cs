@@ -103,19 +103,23 @@ public class RaceManager : MonoBehaviour
         CamerasManager.FitCameras();
     }
 
-    public void NewRace()
+    public void NewRace(bool waitForAllPlayers)
     {
-        State.Reset();
-        State.Started = true;
+        State.PlayersReady++;
+        if (!waitForAllPlayers || State.PlayersReady == NumPlayers)
+        {
+            State.Reset();
+            State.Started = true;
 
-        PowerUps.ResetAllPowerUps();
-        CarsManager.ResetAllCars();
-        CarsManager.AssignStartingPositions(StartingPositions, RandomCarSpot);
+            PowerUps.ResetAllPowerUps();
+            CarsManager.ResetAllCars();
+            CarsManager.AssignStartingPositions(StartingPositions, RandomCarSpot);
 
-        if (_lastCountdown != null)
-            StopCoroutine(_lastCountdown);
+            if (_lastCountdown != null)
+                StopCoroutine(_lastCountdown);
 
-        _lastCountdown = StartCoroutine(CountdownAndStart());
+            _lastCountdown = StartCoroutine(CountdownAndStart());
+        }
     }
 
     IEnumerator CheckForWinner()
@@ -244,9 +248,11 @@ public class RaceState
     public bool Started, Ongoing, Paused, Finished;
     public Car Winner;
     public Ranking WinnerRanking;
+    public int PlayersReady;
 
     internal void Reset()
     {
+        PlayersReady = 0;
         Started = false;
         Paused = false;
         Ongoing = false;

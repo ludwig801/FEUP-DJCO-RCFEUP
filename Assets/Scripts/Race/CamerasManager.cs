@@ -16,7 +16,7 @@ public class CamerasManager : MonoBehaviour
             var chaseCam = Cameras[i];
             var halfOffset = (i % 2) * 0.5f;
             var x = numPlayers <= 2 ? 0 : halfOffset;
-            var y = numPlayers <= 2 ? (((i + 1) % 2) * 0.5f) : 1 - (0.25f + (i / 2) * 0.5f);
+            var y = numPlayers == 1 ? 0 : numPlayers == 2 ? (((i + 1) % 2) * 0.5f) : 1 - (0.25f + (i / 2) * 0.5f);
 
             var camRect = new Rect();
             camRect.position = new Vector2(x, y);
