@@ -86,8 +86,18 @@ public class RaceBeginUI : MonoBehaviour
         if (StartRace.interactable)
         {
             _car.PlayerName = NameInput.text;
-            RaceManager.NewRace();
-            SetVisible(false);
+            RaceManager.NewRace(true);
+            StartRace.interactable = false;
+            NameInput.interactable = false;
+            StartCoroutine(WaitForRaceBegin());
         }
+    }
+
+    IEnumerator WaitForRaceBegin()
+    {
+        while (!RaceManager.Countdown.Running && !RaceManager.State.Ongoing)
+            yield return null;
+
+        SetVisible(false);
     }
 }

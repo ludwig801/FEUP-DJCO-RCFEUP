@@ -6,17 +6,10 @@ public class CarsManager : MonoBehaviour
 {
     public List<Car> Cars;
 
-    public void Start()
-    {
-        //Cars = new List<Car>(FindObjectsOfType<Car>());
-    }
-
     public void ResetAllCars()
     {
         foreach (var car in Cars)
-        {
             car.Reset();
-        }
     }
 
     public void AssignStartingPositions(List<Transform> startingPositions, bool random)

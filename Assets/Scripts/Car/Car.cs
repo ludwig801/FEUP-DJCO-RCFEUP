@@ -9,8 +9,10 @@ using UnityEngine.UI;
 public class Car : MonoBehaviour
 {
     public string PlayerName;
+    public int PlayerIndex;
     public int CarId;
     public int Coins;
+    public int PlaceInRace, RankingsPlace;
     public AudioSource CoinCollect;
 
     public ICollection<Upgrade> Upgrades;
@@ -18,6 +20,18 @@ public class Car : MonoBehaviour
     CarMovement _carMovement;
     LapCounter _lapCounter;
     LapTimeCounter _timeCounter;
+    RaceManager _raceManager;
+
+    public RaceManager RaceManager
+    {
+        get
+        {
+            if (_raceManager == null)
+                _raceManager = RaceManager.Instance;
+
+            return _raceManager;
+        }
+    }
 
     public CarMovement CarMovement
     {
@@ -49,6 +63,14 @@ public class Car : MonoBehaviour
         }
     }
 
+    public bool Finished
+    {
+        get
+        {
+            return LapCounter.CurrentLap >= RaceManager.NumLaps;
+        }
+    }
+
     void Start()
     {
         Upgrades = new List<Upgrade>();
@@ -57,7 +79,7 @@ public class Car : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Coin"))
+        if (!Finished && other.gameObject.CompareTag("Coin"))
         {
             Coins++;
             CoinCollect.Play();
@@ -77,6 +99,9 @@ public class Car : MonoBehaviour
 
     public void Reset()
     {
+        PlaceInRace = 0;
+        RankingsPlace = 0;
+
         CarMovement.Reset();
         LapCounter.Reset();
         LapTimeCounter.Reset();

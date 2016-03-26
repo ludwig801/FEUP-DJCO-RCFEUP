@@ -93,6 +93,6 @@ public class PauseMenuUI : MonoBehaviour
     {
         SetVisible(false);
         RaceManager.SetPaused(false);
-        RaceManager.NewRace();
+        RaceManager.NewRace(false);
     }
 }
