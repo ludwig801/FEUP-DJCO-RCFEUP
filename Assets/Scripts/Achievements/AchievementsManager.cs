@@ -8,6 +8,8 @@ public class AchievementsManager : MonoBehaviour {
     public Car Car;
 
 	void Start () {
+
+        Car = GetComponent<Car>();
 	    
         for(var i = 0; i < _achievementsStatus.Length; i++)
         {
