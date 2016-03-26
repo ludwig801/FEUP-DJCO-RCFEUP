@@ -43,7 +43,7 @@ public static class AchievementsIO  {
 
     private static XmlNode GetUpgradeNode(XmlDocument xmlDoc, int achievementId)
     {
-        var elements = xmlDoc.SelectSingleNode("/Achievements").ChildNodes;
+        var elements = xmlDoc.SelectSingleNode("/Document/Achievements").ChildNodes;
 
         foreach (XmlNode element in elements)
         {

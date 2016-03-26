@@ -37,10 +37,10 @@ public static class RaceWriter
             }
         }
 
-        if (found)
-            File.WriteAllLines(filename, lines);
-        else
-            WriteKeyValue(filename, key, value);
+        //if (found)
+        //    File.WriteAllLines(filename, lines);
+        //else
+        //    WriteKeyValue(filename, key, value);
     }
 }
 

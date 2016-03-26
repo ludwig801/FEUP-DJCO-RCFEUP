@@ -57,7 +57,7 @@ public static class UpgradeWriter
 
     private static XmlNode GetUpgradeNode(XmlDocument xmlDoc, int upgradeId)
     {
-        var elements = xmlDoc.SelectSingleNode("/Upgrades").ChildNodes;
+        var elements = xmlDoc.SelectSingleNode("/Document/Upgrades").ChildNodes;
 
         foreach (XmlNode element in elements)
         {
