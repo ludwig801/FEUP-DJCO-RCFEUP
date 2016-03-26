@@ -18,6 +18,7 @@ public class CarUI : MonoBehaviour
 
     private List<Text> _lapPartials, _bestPartials;
     private Car _car;
+    private bool _oldFinished;
 
     void Start()
     {
@@ -30,14 +31,29 @@ public class CarUI : MonoBehaviour
         StartCoroutine(ShowTimeStats());
         StartCoroutine(ShowCoins());
         StartCoroutine(ShowPowerUp());
+
+        _oldFinished = _car.Finished;
     }
 
     void Update()
     {
-        if (RaceManager.State.Finished)
+        if (_oldFinished != _car.Finished)
         {
-            StopAllCoroutines();
-            gameObject.SetActive(false);
+            _oldFinished = _car.Finished;
+            if (_car.Finished)
+            {
+                StopAllCoroutines();
+            }
+            else
+            {
+                StartCoroutine(ShowLapStats());
+                StartCoroutine(ShowTimeStats());
+                StartCoroutine(ShowCoins());
+                StartCoroutine(ShowPowerUp());
+            }
+
+            for (int i = 0; i < transform.childCount; i++)
+                transform.GetChild(i).gameObject.SetActive(!_car.Finished);
         }
     }
 
@@ -56,6 +72,9 @@ public class CarUI : MonoBehaviour
             Debug.LogWarning(string.Concat(Lap.name, " or ", Checkpoint.name, " is null. Coroutine will not proceed and UI values will not be updated."));
             yield break;
         }
+
+        Checkpoint.text = string.Concat("- | ", checkpointCount);
+        Lap.text = string.Concat("- | ", lapCount);
 
         while (true)
         {
@@ -97,6 +116,16 @@ public class CarUI : MonoBehaviour
 
         while (true)
         {
+            if (RaceManager.Countdown.Running)
+            {
+                for (var i = 0; i < _lapPartials.Count; i++)
+                {
+                    _lapPartials[i].enabled = false;
+                    _bestPartials[i].enabled = false;
+                }
+                LapTime.text = string.Concat(Utils.GetCounterFormattedString(0));
+            }
+
             if (RunTimeStats && RaceManager.State.Ongoing && lapTimeCounter.CurrentLapPartials != null)
             {
                 if (oldCheckpoint != lapCounter.CurrentCheckpoint)
@@ -135,6 +164,8 @@ public class CarUI : MonoBehaviour
                         var currentPartialValue = currentPartials[checkpoint];
                         currentPartialText.text = Utils.GetCounterFormattedString(currentPartialValue);
                         currentPartialText.enabled = true;
+                        if(!_bestPartials[checkpoint].enabled)
+                            _bestPartials[checkpoint].enabled = true;
                         if (lapTimeCounter.IsBestPartial(checkpoint, currentPartialValue))
                         {
                             _bestPartials[checkpoint].text = currentPartialText.text;

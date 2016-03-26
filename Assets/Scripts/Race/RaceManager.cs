@@ -59,7 +59,7 @@ public class RaceManager : MonoBehaviour
 
         State.Reset();
 
-        StartCoroutine(CheckForWinner());
+        StartCoroutine(CheckForRaceEnd());
     }
 
     public void ReadRaceValues()
@@ -95,7 +95,7 @@ public class RaceManager : MonoBehaviour
             carMovement.CarInput.Index = i;
             var chaseCam = player.GetComponentInChildren<ChaseCam>();
             chaseCam.Target = carMovement;
-            
+
             CarsManager.Cars.Add(car);
             CamerasManager.Cameras.Add(chaseCam);
         }
@@ -122,7 +122,7 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    IEnumerator CheckForWinner()
+    IEnumerator CheckForRaceEnd()
     {
         var oldRefreshRate = int.MaxValue;
         var refresRateSec = 1f;
@@ -131,23 +131,17 @@ public class RaceManager : MonoBehaviour
         {
             if (State.Ongoing)
             {
-                var time = float.MaxValue;
-
+                var numCarsFinished = 0;
                 foreach (var car in CarsManager.Cars)
                 {
                     if (car.LapTimeCounter.LapsTimes.Count >= NumLaps)
-                    {
-                        var carTime = car.LapTimeCounter.TotalTime;
-                        if (carTime < time)
-                        {
-                            time = carTime;
-                            State.Winner = car;
-                        }
-                    }
+                        numCarsFinished++;
                 }
+                if (numCarsFinished >= NumPlayers)
+                    State.Finished = true;
             }
 
-            if (State.Winner != null || State.Finished)
+            if (State.Finished)
             {
                 OnRaceFinished();
                 yield break;
@@ -199,46 +193,80 @@ public class RaceManager : MonoBehaviour
     private void OnRaceFinished()
     {
         State.Finished = true;
-        if (State.Winner != null)
-        {
-            var rankings = RankingsReader.GetAllRankings();
-            var winnerRankingsIndex = -1;
-            var totalTime = State.Winner.LapTimeCounter.TotalTime;
 
-            for (int i = 0; i < rankings.Count; i++)
+        foreach (var car in CarsManager.Cars)
+        {
+            car.PlaceInRace = 0;
+            car.RankingsPlace = 0;
+        }
+
+        for (int i = 0; i < CarsManager.Cars.Count; i++)
+        {
+            var car = CarsManager.Cars[i];
+            var carRaceTime = car.LapTimeCounter.RaceTime;
+            for (int j = 0; j < CarsManager.Cars.Count; j++)
             {
-                var r = rankings[i];
-                if (r.PlayerTime > totalTime)
+                if (j != i)
                 {
-                    winnerRankingsIndex = i;
+                    var other = CarsManager.Cars[j];
+                    if (other.LapTimeCounter.RaceTime < carRaceTime)
+                        car.PlaceInRace++;
+                }
+            }
+        }
+
+        var rankings = RankingsReader.GetAllRankings();
+
+        for (int i = 0; i < CarsManager.Cars.Count; i++)
+        {
+            var currentCar = CarsManager.Cars[i];
+            var currentCarTime = currentCar.LapTimeCounter.RaceTime;
+            var foundPlace = false;
+            for (int j = 0; j < rankings.Count; j++)
+            {
+                var currentRanking = rankings[j];
+
+                if (currentCarTime < currentRanking.PlayerTime)
+                {
+                    for (int k = j + 1; k < rankings.Count; k++)
+                        rankings[k] = rankings[k - 1];
+
+                    currentCar.RankingsPlace = j + 1;
+                    var r = new Ranking();
+                    r.Place = currentCar.RankingsPlace;
+                    r.PlayerName = currentCar.PlayerName;
+                    r.PlayerTime = currentCarTime;
+
+                    rankings[j] = r;
+                    foundPlace = true;
                     break;
                 }
             }
 
-            if (winnerRankingsIndex >= 0)
+            if (!foundPlace)
             {
-                for (int i = winnerRankingsIndex; i < rankings.Count; i++)
-                {
-                    var r = rankings[i];
-                    r.Place++;
-                }
+                currentCar.RankingsPlace = rankings.Count + 1;
+                var r = new Ranking();
+                r.Place = currentCar.RankingsPlace;
+                r.PlayerName = currentCar.PlayerName;
+                r.PlayerTime = currentCarTime;
+
+                rankings.Add(r);
             }
-
-            State.WinnerRanking = new Ranking();
-            State.WinnerRanking.Place = (winnerRankingsIndex >= 0 ? winnerRankingsIndex : rankings.Count) + 1;
-            State.WinnerRanking.PlayerTime = totalTime;
-            State.WinnerRanking.PlayerName = State.Winner.PlayerName;
-
-            rankings.Add(State.WinnerRanking);
-
-            RankingsWriter.WriteToFile(rankings);
         }
+
+        RankingsWriter.WriteToFile(rankings);
     }
 
-    public void OnQuitRace()
+    public void OnQuitRace(bool waitForAllPlayers = false)
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MainMenu");
+        State.QuitPlayers++;
+        if (!waitForAllPlayers || State.QuitPlayers == NumPlayers)
+        {
+            State.QuitPlayers = 0;
+            Time.timeScale = 1;
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 }
 
@@ -246,18 +274,16 @@ public class RaceManager : MonoBehaviour
 public class RaceState
 {
     public bool Started, Ongoing, Paused, Finished;
-    public Car Winner;
-    public Ranking WinnerRanking;
-    public int PlayersReady;
+    public int PlayersReady, QuitPlayers;
 
     internal void Reset()
     {
+        QuitPlayers = 0;
         PlayersReady = 0;
         Started = false;
         Paused = false;
         Ongoing = false;
         Finished = false;
-        Winner = null;
     }
 }
 

@@ -7,11 +7,12 @@ public class RaceOverUI : MonoBehaviour
 {
     public RaceManager RaceManager;
     public RectTransform Container;
-    public Text TimeText, Description;
+    public Text Title, TimeText, Description;
+    public Button MainMenu, Restart;
     public float AnimSpeed;
     public Utils.WindowPositions HidePosition, ShowPosition;
     [Range(1, 60)]
-    public int CheckFinishRate;
+    public int CheckFinishRate, CheckRaceEndRate;
 
     [SerializeField]
     bool _visible;
@@ -35,18 +36,23 @@ public class RaceOverUI : MonoBehaviour
 
     IEnumerator CheckRaceFinished()
     {
+        var oldFinished = true;
         var oldCheckRate = int.MaxValue;
         var refreshRateSec = 1f;
 
         while (true)
         {
+            if (oldFinished != _car.Finished)
+            {
+                oldFinished = _car.Finished;
+                SetVisible(_car.Finished);
+            }
+
             if (oldCheckRate != CheckFinishRate)
             {
                 oldCheckRate = CheckFinishRate;
                 refreshRateSec = 1f / CheckFinishRate;
             }
-
-            SetVisible(RaceManager.State.Finished);
 
             yield return new WaitForSeconds(refreshRateSec);
         }
@@ -64,19 +70,54 @@ public class RaceOverUI : MonoBehaviour
             _windowAnim = StartCoroutine(AnimateWindow());
 
             if (value)
-                OnRaceFinish();
+            {
+                StartCoroutine(WaitForRaceEnd());
+            }
         }
     }
 
-    void OnRaceFinish()
+    public void OnMainMenuPressed()
     {
-        TimeText.text = string.Concat("Your time: ", Utils.GetCounterFormattedString(_car.LapTimeCounter.TotalTime));
+        MainMenu.interactable = false;
+        RaceManager.OnQuitRace(true);
+    }
 
-        if (RaceManager.State.WinnerRanking != null)
-            Description.text = string.Concat("You earned the ", RaceManager.State.WinnerRanking.Place, Utils.GetOrdinalEnding(RaceManager.State.WinnerRanking.Place), " place in the rankings!");
+    public void OnRestartPressed()
+    {
+        Restart.interactable = false;
+        RaceManager.NewRace(true);
+    }
+
+    IEnumerator WaitForRaceEnd()
+    {
+        var oldRefreshRate = int.MaxValue;
+        var refreshRateSec = 1f;
+
+        TimeText.text = string.Concat("Your time: ", Utils.GetCounterFormattedString(_car.LapTimeCounter.RaceTime));
+        Description.text = string.Concat("Waiting for other players to finish...");
+        MainMenu.interactable = false;
+        Restart.interactable = false;
+
+        while (!RaceManager.State.Finished)
+        {
+            if (oldRefreshRate != CheckRaceEndRate)
+            {
+                oldRefreshRate = CheckRaceEndRate;
+                refreshRateSec = 1f / CheckRaceEndRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
+        }
+
+        MainMenu.interactable = true;
+        Restart.interactable = true;
+
+        TimeText.text = string.Concat("Your time: ", Utils.GetCounterFormattedString(_car.LapTimeCounter.RaceTime));
+
+        if(_car.RankingsPlace > 0)
+            Description.text = string.Concat("You earned the ", _car.RankingsPlace, Utils.GetOrdinalEnding(_car.RankingsPlace), " place in the rankings!");
         else
             Description.text = string.Concat("Not enough to be on the rankings, though...");
-        
     }
 
     IEnumerator AnimateWindow()

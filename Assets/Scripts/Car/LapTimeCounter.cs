@@ -9,7 +9,6 @@ public class LapTimeCounter : MonoBehaviour
     public float CurrentLapStartTime;
     public float CurrentLapTime;
     public List<float> LapsTimes;
-    
 
     [SerializeField]
     bool _timeCounting;
@@ -42,6 +41,18 @@ public class LapTimeCounter : MonoBehaviour
             }
 
             return null;
+        }
+    }
+
+    public float RaceTime
+    {
+        get
+        {
+            var sum = 0f;
+            foreach (var time in LapsTimes)
+                sum += time;
+
+            return sum;
         }
     }
 
