@@ -21,17 +21,17 @@ public static class UpgradeWriter
 
     private static string GetOpeningParentNode()
     {
-        return "<Upgrades>";
+        return "    <Upgrades>";
     }
 
     private static string GetClosingParentNode()
     {
-        return "</Upgrades>";
+        return "    </Upgrades>";
     }
 
     private static string GetChildNode(int id, int level)
     {
-        return "    <Upgrade id='" + id + "' level='" + level + "' />";
+        return "        <Upgrade id='" + id + "' level='" + level + "' />";
     }
 
     public static void IncrementUpgradeLevel(int upgradeId)

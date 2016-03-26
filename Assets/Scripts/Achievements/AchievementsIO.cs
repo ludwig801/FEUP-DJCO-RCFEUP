@@ -19,17 +19,17 @@ public static class AchievementsIO  {
 
     private static string GetOpeningParentNode()
     {
-        return "<Achievements>";
+        return "    <Achievements>";
     }
 
     private static string GetClosingParentNode()
     {
-        return "</Achievements>";
+        return "    </Achievements>";
     }
 
     private static string GetChildNode(int id)
     {
-        return "    <Achievement id='" + id + "' status='0' />";
+        return "        <Achievement id='" + id + "' status='0' />";
     }
 
     public static int GetAchievementStatus(int achievementId)

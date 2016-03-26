@@ -23,14 +23,30 @@ public static class SaveGameFile {
         using (var streamWriter = new StreamWriter(Filename, true))
         {
             streamWriter.WriteLine(GetXmlVersion());
+            streamWriter.WriteLine(GetOpeningDocumentTag());
         }
 
         UpgradeWriter.InitializeUpgradesNode(Filename);
         AchievementsIO.InitializeAchievementsNode(Filename);
+
+        using (var streamWriter = new StreamWriter(Filename, true))
+        {
+            streamWriter.WriteLine(GetClosingDocumentTag());
+        }
     }
 
     private static string GetXmlVersion()
     {
         return "<?xml version='1.0' encoding='utf-8'?>";
+    }
+
+    private static string GetOpeningDocumentTag()
+    {
+        return "<Document>";
+    }
+
+    private static string GetClosingDocumentTag()
+    {
+        return "</Document>";
     }
 }
