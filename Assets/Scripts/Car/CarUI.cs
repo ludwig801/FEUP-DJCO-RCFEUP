@@ -119,12 +119,12 @@ public class CarUI : MonoBehaviour
                         if (_lapPartials.Count < partialsCount)
                         {
                             var partial = Instantiate(LapPartialPrefab).GetComponent<Text>();
-                            partial.transform.SetParent(LapPartialsRect);
+                            partial.transform.SetParent(LapPartialsRect, false);
                             partial.name = string.Concat("Partial ", partialsCount);
                             _lapPartials.Add(partial);
 
                             partial = Instantiate(LapPartialPrefab).GetComponent<Text>();
-                            partial.transform.SetParent(BestPartialsRect);
+                            partial.transform.SetParent(BestPartialsRect, false);
                             partial.name = string.Concat("Best ", partialsCount);
                             partial.enabled = true;
                             _bestPartials.Add(partial);

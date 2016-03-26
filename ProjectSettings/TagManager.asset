@@ -46,3 +46,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Overlay
+    uniqueID: 553031333
+    locked: 0

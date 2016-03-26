@@ -22,6 +22,7 @@ public class RaceManager : MonoBehaviour
         TIME_TRIAL = 0
     }
 
+    public CamerasManager CamerasManager;
     public PowerUpManager PowerUps;
     public CarsManager CarsManager;
     public CheckpointManager CheckpointManager;
@@ -52,6 +53,9 @@ public class RaceManager : MonoBehaviour
     void Start()
     {
         ReadRaceValues();
+        CreatePlayers();
+        CarsManager.ResetAllCars();
+        CarsManager.AssignStartingPositions(StartingPositions, true);
 
         State.Reset();
 
@@ -75,8 +79,6 @@ public class RaceManager : MonoBehaviour
                     break;
             }
         }
-
-        CreatePlayers();
     }
 
     public void CreatePlayers()
@@ -86,6 +88,7 @@ public class RaceManager : MonoBehaviour
             var player = Instantiate(PlayerPrefab) as GameObject;
             player.name = "Player " + (i + 1);
             var car = player.GetComponentInChildren<Car>();
+            car.PlayerIndex = i;
             var carCanvas = player.GetComponentInChildren<CarCanvas>();
             carCanvas.Car = car;
             var carMovement = car.CarMovement;
@@ -94,7 +97,10 @@ public class RaceManager : MonoBehaviour
             chaseCam.Target = carMovement;
             
             CarsManager.Cars.Add(car);
+            CamerasManager.Cameras.Add(chaseCam);
         }
+
+        CamerasManager.FitCameras();
     }
 
     public void NewRace()

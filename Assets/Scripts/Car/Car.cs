@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class Car : MonoBehaviour
 {
     public string PlayerName;
+    public int PlayerIndex;
     public int CarId;
     public int Coins;
     public AudioSource CoinCollect;

@@ -5870,6 +5870,7 @@ GameObject:
   - 4: {fileID: 865652481}
   - 114: {fileID: 865652482}
   - 114: {fileID: 865652483}
+  - 114: {fileID: 865652486}
   - 82: {fileID: 865652484}
   - 81: {fileID: 865652485}
   m_Layer: 0
@@ -5903,6 +5904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a67e1de9e554b540983e6b5dedbbadb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CamerasManager: {fileID: 865652486}
   PowerUps: {fileID: 224795984}
   CarsManager: {fileID: 865652483}
   CheckpointManager: {fileID: 1986066046}
@@ -6028,6 +6030,18 @@ AudioListener:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 865652480}
   m_Enabled: 1
+--- !u!114 &865652486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 865652480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44ed007be78af0b4b930b7a782858666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cameras: []
 --- !u!1001 &886943409
 Prefab:
   m_ObjectHideFlags: 0
