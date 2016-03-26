@@ -228,8 +228,18 @@ public class RaceManager : MonoBehaviour
 
                 if (currentCarTime < currentRanking.PlayerTime)
                 {
-                    for (int k = j + 1; k < rankings.Count; k++)
-                        rankings[k] = rankings[k - 1];
+					if (rankings.Count == 10) { // rankings filled, only has to replace
+						for (int k = rankings.Count - 1; k > j; k--) {
+							rankings [k] = rankings [k - 1];
+							rankings [k].Place += 1; //update the place
+						}
+					} else {
+						rankings.Add (rankings [rankings.Count - 1]); // duplicate the last one
+						for (int k = rankings.Count - 1; k > j; k--) { // replace the others
+							rankings [k] = rankings [k - 1];
+							rankings [k].Place += 1;
+						}
+					}
 
                     currentCar.RankingsPlace = j + 1;
                     var r = new Ranking();
