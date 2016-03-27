@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class AchievementsUI : MonoBehaviour {
 
@@ -18,5 +19,10 @@ public class AchievementsUI : MonoBehaviour {
         }
 
 	}
+
+    public void OnBackPressed()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 
 }

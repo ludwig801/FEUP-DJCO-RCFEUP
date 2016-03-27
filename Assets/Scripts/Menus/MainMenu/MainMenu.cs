@@ -60,6 +60,11 @@ public class MainMenu : MonoBehaviour
         ChangeCurrentPanelTo(Rankings);
     }
 
+    public void OnAchievementsPressed()
+    {
+        SceneManager.LoadScene("AchievementsScene");
+    }
+
     private void ChangeCurrentPanelTo(ShowHidePanel newPanel)
     {
         Main.Visible = (newPanel == Main);
