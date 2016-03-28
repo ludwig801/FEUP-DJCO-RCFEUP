@@ -15,6 +15,8 @@ public class CarMovement : MonoBehaviour
     public VehicleAudio Audio;
     public VehicleInput CarInput;
 
+    public int WallHitCount;
+
     void Start()
     {
         RaceManager = RaceManager.Instance;
@@ -28,6 +30,8 @@ public class CarMovement : MonoBehaviour
 
         Audio.AccelerationAudio.Play();
         Audio.SetBounds(0, SpeedStatsKMH.TopSpeed);
+
+        WallHitCount = 0;
     }
 
     void Update()
@@ -147,7 +151,9 @@ public class CarMovement : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Track Walls")
         {
-            if(!Audio.CrashAudio.isPlaying)
+            WallHitCount++;
+
+            if (!Audio.CrashAudio.isPlaying)
                 Audio.CrashAudio.Play();
         }
 	}
