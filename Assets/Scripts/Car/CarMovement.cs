@@ -67,12 +67,16 @@ public class CarMovement : MonoBehaviour
 		if (!State.CanMove || !State.Grounded || !TorqueSystem.UseMotorTorque || throttle == 0)
 			return;
 
-		if (throttle > 0)
-			State.MovingForward = State.MovingForward || State.Stopped || Vector3.Dot(Rigidbody.velocity, transform.forward) >= 0;
-		else if(throttle < 0)
-			State.MovingReverse = State.MovingReverse || State.Stopped || Vector3.Dot(Rigidbody.velocity, transform.forward) <= 0;
+        if (throttle > 0)
+            State.MovingForward = State.MovingForward || State.Stopped || Vector3.Dot(Rigidbody.velocity, transform.forward) >= 0;
+        else if (throttle < 0)
+            State.MovingReverse = State.MovingReverse || State.Stopped || Vector3.Dot(Rigidbody.velocity, transform.forward) <= 0;
 
-		Rigidbody.AddForceAtPosition(Rigidbody.transform.forward * TorqueSystem.CurrentMotorTorque * throttle, MotorForcePosition.position, ForceMode.Acceleration);
+        var motorForce = TorqueSystem.CurrentMotorTorque;
+        if ((throttle > 0 && State.MovingReverse) || (throttle < 0 && State.MovingForward))
+            motorForce *= TorqueSystem.BrakeFactor;
+
+        Rigidbody.AddForceAtPosition(Rigidbody.transform.forward * motorForce * throttle, MotorForcePosition.position, ForceMode.Acceleration);
 	}
 
 	private void ApplyTorque()
@@ -121,9 +125,7 @@ public class CarMovement : MonoBehaviour
         if (Physics.Raycast(ray, out hitInfo, 50))
         {
             if (hitInfo.collider.tag == "Track")
-            {
-                Rigidbody.AddForce(Vector3.down * Downforce * hitInfo.distance, ForceMode.Acceleration);
-            }
+                Rigidbody.AddForce(Vector3.down * Downforce * hitInfo.distance * 10, ForceMode.Acceleration);
         }
     }
 

@@ -94,11 +94,35 @@ public class RaceManager : MonoBehaviour
             var chaseCam = player.GetComponentInChildren<ChaseCam>();
             chaseCam.Target = carMovement;
 
+            ReadUpgrades(car);
+
             CarsManager.Cars.Add(car);
             CamerasManager.Cameras.Add(chaseCam);
         }
 
         CamerasManager.FitCameras();
+    }
+
+    public void ReadUpgrades(Car car)
+    {
+        var numLevels = 5f;
+        var engine = UpgradeWriter.GetUpgradeLevel(0) / numLevels;
+        var springs = UpgradeWriter.GetUpgradeLevel(1) / numLevels;
+        var weightReduction = UpgradeWriter.GetUpgradeLevel(2) / numLevels;
+
+        Debug.Log(string.Concat("Upgrades: ", engine, " | ", springs, " | ", weightReduction));
+
+        var grip = 1 - weightReduction;
+        var accelBonus = Mathf.Min(engine * springs * grip, 0.25f);
+        var speedBonus = Mathf.Min(engine + weightReduction, 0.75f);
+        var handlingBonus = Mathf.Clamp(weightReduction * springs, 0.1f, 0.75f);
+
+        Debug.Log(string.Concat("Bonuses: ", accelBonus, " [", grip, "] | ", speedBonus, " | ", handlingBonus));
+
+        var carMovement = car.CarMovement;
+        carMovement.TorqueSystem.MotorTorque *= (1 + accelBonus);
+        carMovement.SpeedStatsKMH.TopSpeed *= (1 + speedBonus);
+        carMovement.TractionControl = handlingBonus;
     }
 
     public void NewRace(bool waitForAllPlayers)

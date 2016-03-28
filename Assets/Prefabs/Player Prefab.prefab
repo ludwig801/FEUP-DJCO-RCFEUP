@@ -3653,7 +3653,7 @@ MonoBehaviour:
   TorqueSystem:
     MotorTorque: 40
     BrakeFactor: 0.25
-    AngularTorque: 0.75
+    AngularTorque: 0.6
     UseMotorTorque: 1
     UseAngularTorque: 1
     CurrentMotorTorque: 0
@@ -3699,6 +3699,7 @@ MonoBehaviour:
     Index: 0
     Throttle: 0
     Steering: 0
+  WallHitCount: 0
 --- !u!114 &11467834
 MonoBehaviour:
   m_ObjectHideFlags: 1
