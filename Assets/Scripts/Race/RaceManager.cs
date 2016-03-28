@@ -58,8 +58,6 @@ public class RaceManager : MonoBehaviour
         CarsManager.AssignStartingPositions(StartingPositions, true);
 
         State.Reset();
-
-        StartCoroutine(CheckForRaceEnd());
     }
 
     public void ReadRaceValues()
@@ -119,6 +117,8 @@ public class RaceManager : MonoBehaviour
                 StopCoroutine(_lastCountdown);
 
             _lastCountdown = StartCoroutine(CountdownAndStart());
+
+            StartCoroutine(CheckForRaceEnd());
         }
     }
 
@@ -143,8 +143,8 @@ public class RaceManager : MonoBehaviour
 
             if (State.Finished)
             {
-                yield return null;
                 OnRaceFinished();
+                yield break;
             }
 
             if (oldRefreshRate != CheckWinnerRate)

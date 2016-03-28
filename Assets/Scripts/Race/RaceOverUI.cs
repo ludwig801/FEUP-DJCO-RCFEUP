@@ -70,9 +70,7 @@ public class RaceOverUI : MonoBehaviour
             _windowAnim = StartCoroutine(AnimateWindow());
 
             if (value)
-            {
                 StartCoroutine(WaitForRaceEnd());
-            }
         }
     }
 

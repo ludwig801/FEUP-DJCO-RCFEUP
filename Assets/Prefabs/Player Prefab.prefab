@@ -2339,8 +2339,8 @@ MonoBehaviour:
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 1
-    m_MaxSize: 16
+    m_MinSize: 10
+    m_MaxSize: 20
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2648,6 +2648,7 @@ MonoBehaviour:
   PlaceInRace: 0
   RankingsPlace: 0
   CoinCollect: {fileID: 8272966}
+  CheckFinishRate: 5
 --- !u!114 &11422468
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5069,8 +5070,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.2}
-  m_AnchoredPosition: {x: 0, y: 26999972}
-  m_SizeDelta: {x: -10, y: 53999936}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22453480
 RectTransform:

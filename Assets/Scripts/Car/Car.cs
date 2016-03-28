@@ -9,11 +9,11 @@ using UnityEngine.UI;
 public class Car : MonoBehaviour
 {
     public string PlayerName;
-    public int PlayerIndex;
-    public int CarId;
-    public int Coins;
+    public int PlayerIndex, CarId, Coins;
     public int PlaceInRace, RankingsPlace;
     public AudioSource CoinCollect;
+    [Range(1, 60)]
+    public int CheckFinishRate;
 
     public ICollection<Upgrade> Upgrades;
 
@@ -75,6 +75,8 @@ public class Car : MonoBehaviour
     {
         Upgrades = new List<Upgrade>();
         Coins = 0;
+
+        StartCoroutine(CheckForFinish());
     }
 
     void OnTriggerEnter(Collider other)
@@ -85,6 +87,35 @@ public class Car : MonoBehaviour
             CoinCollect.Play();
 
             StartCoroutine(DeactivateCoint(other));
+        }
+    }
+
+    IEnumerator CheckForFinish()
+    {
+        var oldFinished = Finished;
+        var oldCheckRate = int.MaxValue;
+        var refreshRateSec = 1f;
+
+        while (true)
+        {
+            if (Finished != oldFinished)
+            {
+                oldFinished = Finished;
+                if (Finished)
+                {
+                    CarMovement.State.CanMove = !Finished;
+                    CarMovement.Rigidbody.velocity = Vector3.zero;
+                    CarMovement.Rigidbody.angularVelocity = Vector3.zero;
+                }
+            }
+
+            if (oldCheckRate != CheckFinishRate)
+            {
+                oldCheckRate = CheckFinishRate;
+                refreshRateSec = 1f / CheckFinishRate;
+            }
+
+            yield return new WaitForSeconds(refreshRateSec);
         }
     }
 

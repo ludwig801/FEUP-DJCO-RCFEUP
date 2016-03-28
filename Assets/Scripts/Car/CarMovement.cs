@@ -54,8 +54,6 @@ public class CarMovement : MonoBehaviour
 		EvaluateAndClampMovement();
 
         ApplyDownforce();
-
-		Debug.DrawRay(Rigidbody.transform.position, Rigidbody.velocity, Color.green);
 	}
 
 	private void ApplyMotor()
