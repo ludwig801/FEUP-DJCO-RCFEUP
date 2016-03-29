@@ -4,9 +4,9 @@ public static class AchievementsInfo  {
 
     private static Dictionary<int, string> _achievements = new Dictionary<int, string>
     {
-        { 0, "Reach top speed." },
-        { 1, "Collect your first coin." },
-        { 2, "Crash you car!" }
+        { 0, "Reach top speed" },
+        { 1, "Collect 50 coins" },
+        { 2, "Crash you car" }
     };
 
     public static int GetTotalAchievementsCount()

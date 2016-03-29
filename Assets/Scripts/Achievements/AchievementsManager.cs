@@ -5,6 +5,7 @@ using UnityEngine;
 public class AchievementsManager : MonoBehaviour
 {
     public RaceManager RaceManager;
+    public NewAchievementUI ShowAchievementUI;
     [Range(1, 60)]
     public int RefreshRate; // Refresh Rate, in Times Per Second
 
@@ -33,6 +34,7 @@ public class AchievementsManager : MonoBehaviour
                 if (!achievementVerified[i] && VerifyAchievementWithId(car, i))
                 {
                     achievementVerified[i] = true;
+                    ShowAchievementUI.ShowAchievement(AchievementsInfo.GetAchievementDescription(i));
                     AchievementsIO.ChangeAchievementStatus(i);
                 }
             }
@@ -82,7 +84,7 @@ public class AchievementsManager : MonoBehaviour
                 return (UnitConverter.VelocityToKMH(currentVelocity) >= topSpeed);
 
             case 1:
-                return (car.Coins > 0);
+                return (car.Coins >= 50);
 
             case 2:
                 return (car.CarMovement.WallHitCount > 0);
