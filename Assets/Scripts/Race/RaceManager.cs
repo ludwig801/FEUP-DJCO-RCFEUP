@@ -293,10 +293,24 @@ public class RaceManager : MonoBehaviour
         State.QuitPlayers++;
         if (!waitForAllPlayers || State.QuitPlayers == NumPlayers)
         {
+            SaveCoins();
             State.QuitPlayers = 0;
             Time.timeScale = 1;
             SceneManager.LoadScene("MainMenu");
         }
+    }
+
+    public void SaveCoins()
+    {
+        var coinsSum = 0;
+        foreach (var car in CarsManager.Cars)
+            coinsSum += car.Coins;
+
+        var oldCoins = CoinsIO.GetCoinCount();
+
+        coinsSum += oldCoins;
+
+        CoinsIO.SetCoinCount(coinsSum);
     }
 }
 
