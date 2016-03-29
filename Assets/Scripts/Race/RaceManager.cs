@@ -110,14 +110,10 @@ public class RaceManager : MonoBehaviour
         var springs = UpgradeWriter.GetUpgradeLevel(1) / numLevels;
         var weightReduction = UpgradeWriter.GetUpgradeLevel(2) / numLevels;
 
-        Debug.Log(string.Concat("Upgrades: ", engine, " | ", springs, " | ", weightReduction));
-
         var grip = 1 - weightReduction;
         var accelBonus = Mathf.Min(engine * springs * grip, 0.25f);
         var speedBonus = Mathf.Min(engine + weightReduction, 0.75f);
         var handlingBonus = Mathf.Clamp(weightReduction * springs, 0.1f, 0.75f);
-
-        Debug.Log(string.Concat("Bonuses: ", accelBonus, " [", grip, "] | ", speedBonus, " | ", handlingBonus));
 
         var carMovement = car.CarMovement;
         carMovement.TorqueSystem.MotorTorque *= (1 + accelBonus);

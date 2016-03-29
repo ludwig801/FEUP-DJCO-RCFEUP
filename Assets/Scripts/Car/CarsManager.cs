@@ -27,7 +27,6 @@ public class CarsManager : MonoBehaviour
 
     public void ReleaseAllCars()
     {
-        Debug.Log("Cars released");
         foreach (var car in Cars)
             car.CarMovement.State.CanMove = true;
     }
