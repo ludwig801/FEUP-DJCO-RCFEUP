@@ -6,8 +6,8 @@
     <Upgrade id="2" level="2" />
   </Upgrades>
   <Achievements>
-    <Achievement id="0" status="1" />
-    <Achievement id="1" status="1" />
-    <Achievement id="2" status="1" />
+    <Achievement id="0" status="0" />
+    <Achievement id="1" status="0" />
+    <Achievement id="2" status="0" />
   </Achievements>
 </Document>
