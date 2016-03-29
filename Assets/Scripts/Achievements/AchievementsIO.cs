@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Xml;
 
-public static class AchievementsIO  {
-
+public static class AchievementsIO
+{
     public static void InitializeAchievementsNode(string filenameWithExtension)
     {
         using (var streamWriter = new StreamWriter(filenameWithExtension, true))
@@ -60,9 +60,6 @@ public static class AchievementsIO  {
     public static void ChangeAchievementStatus(int achievementId)
     {
         var xmlDoc = SaveGameFile.OpenSaveGameFile();
-
-        var status = GetAchievementStatus(achievementId);
-
         var node = GetUpgradeNode(xmlDoc, achievementId);
 
         node.Attributes[1].Value = "" + (int.Parse(node.Attributes[1].Value) == 0 ? 1 : 0);

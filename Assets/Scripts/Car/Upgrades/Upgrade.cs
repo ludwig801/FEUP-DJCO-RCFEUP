@@ -1,12 +1,20 @@
-﻿public class Upgrade
+﻿[System.Serializable]
+public class Upgrade
 {
     private const int MaxLevel = 5;
+    private const int CostMultiplier = 150;
 
     public int UpgradeId;
-
     public int Level;
-
     public int Increment;
+
+    public int Cost
+    {
+        get
+        {
+            return (Level + 1) * CostMultiplier;
+        }
+    }
 
     public double PriceForNextLevel;
 

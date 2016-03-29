@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Document>
   <Upgrades>
-    <Upgrade id="0" level="0" />
+    <Upgrade id="0" level="3" />
     <Upgrade id="1" level="3" />
     <Upgrade id="2" level="2" />
   </Upgrades>

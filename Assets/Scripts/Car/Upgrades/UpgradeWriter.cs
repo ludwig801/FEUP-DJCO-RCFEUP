@@ -43,7 +43,15 @@ public static class UpgradeWriter
         node.Attributes[1].Value = "" + (int.Parse(node.Attributes[1].Value) + 1);
 
         xmlDoc.Save(SaveGameFile.Filename);
+    }
 
+    public static void SetUpgradeLevel(int upgradeId, int newValue)
+    {
+        var xmlDoc = SaveGameFile.OpenSaveGameFile();
+        var node = GetUpgradeNode(xmlDoc, upgradeId);
+
+        node.Attributes[1].Value = newValue.ToString();
+        xmlDoc.Save(SaveGameFile.Filename);
     }
 
     public static int GetUpgradeLevel(int upgradeId)

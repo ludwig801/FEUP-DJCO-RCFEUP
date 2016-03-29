@@ -9,86 +9,94 @@ public class UpgradeManager : MonoBehaviour
     private int Handling = 1;
     private int Weight = 2;
 
+    public Text CoinsValue;
     public UpgradeLevelHandler[] LevelHandlers;
     public UpgradeUI[] UpgradeButtons;
 
+    [SerializeField]
     private List<Upgrade> Upgrades;
+    private int NumCoins;
 
     void Start()
     {
-        SetUpgradeLevels();
+        NumCoins = CoinsIO.GetCoinCount();
+        ReadCurrentUpgrades();
+        UpdateUIValues();
+        SaveValuesToFile();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             SceneManager.LoadScene("MainMenu");
+    }
 
-        for (int i = 0; i < Upgrades.Count; i++)
+    private void ReadCurrentUpgrades()
+    {
+        var numUpgrades = 3;
+        Upgrades = new List<Upgrade>();
+
+        for (int i = 0; i < numUpgrades; i++)
         {
-
+            var upgrade = new Upgrade();
+            upgrade.UpgradeId = i;
+            upgrade.Level = UpgradeWriter.GetUpgradeLevel(i);
+            LevelHandlers[i].SetLevelTo(upgrade.Level);
+            Upgrades.Add(upgrade);
         }
     }
 
-    private void SetUpgradeLevels()
+    private void UpdateUIValues()
     {
-        var minId = 0;
-        var maxId = 2;
+        for (int i = 0; i < Upgrades.Count; i++)
+        {
+            var upgrade = Upgrades[i];
+            Debug.Log(i + " | " + upgrade.Cost);
+            UpgradeButtons[i].Btn.interactable = upgrade.CanIncrementLevel && NumCoins >= upgrade.Cost;
+            UpgradeButtons[i].Value.text = upgrade.Cost.ToString();
+            LevelHandlers[i].SetLevelTo(upgrade.Level);
+        }
 
-        Upgrades = new List<Upgrade>();
-
-        for (int i = minId; i <= maxId; i++)
-            SetLevelForUpgradeWithId(i);
+        CoinsValue.text = NumCoins.ToString();
     }
 
-    private void SetLevelForUpgradeWithId(int upgradeId)
+    private void SaveValuesToFile()
     {
-        var currentLevel = GetLevel(upgradeId);
-        Upgrades.Add(new Upgrade() { UpgradeId = upgradeId, Level = currentLevel });
-        LevelHandlers[upgradeId].SetLevelTo(currentLevel);
-
-        UpgradeLevel(upgradeId, currentLevel);
-    }
-
-    private int GetLevel(int upgradeId)
-    {
-        return UpgradeWriter.GetUpgradeLevel(upgradeId);
+        CoinsIO.SetCoinCount(NumCoins);
+        for (int i = 0; i < Upgrades.Count; i++)
+        {
+            var upgrade = Upgrades[i];
+            Debug.Log(i + " | " + upgrade.Level);
+            UpgradeWriter.SetUpgradeLevel(i, upgrade.Level);
+        }
     }
 
     public void UpgradeSpeed()
     {
-        UpgradeLevel(Speed, Upgrades[Speed].Level);
+        UpgradeLevel(Speed);
     }
 
     public void UpgradeHandling()
     {
-        UpgradeLevel(Handling, Upgrades[Handling].Level);
+        UpgradeLevel(Handling);
     }
 
     public void UpgradeWeight()
     {
-        UpgradeLevel(Weight, Upgrades[Weight].Level);
+        UpgradeLevel(Weight);
     }
 
-    private void UpgradeLevel(int index, int currentLevel)
+    private void UpgradeLevel(int index)
     {
-        if (Upgrades[index].CanIncrementLevel)
+        var upgrade = Upgrades[index];
+        if (upgrade.Cost <= NumCoins && upgrade.CanIncrementLevel)
         {
-            Upgrades[index].Level++;
-            UpgradeWriter.IncrementUpgradeLevel(Upgrades[index].UpgradeId);
-            LevelHandlers[index].IncrementLevelIfNotMax();
+            NumCoins -= upgrade.Cost;
+            upgrade.Level++;
         }
 
-        if (!Upgrades[index].CanIncrementLevel)
-        {
-            UpgradeButtons[index].Btn.interactable = false;
-            UpgradeButtons[index].Value.text = string.Empty;
-        }
-        else
-        {
-            UpgradeButtons[index].Btn.interactable = true;
-            UpgradeButtons[index].Value.text = string.Concat((currentLevel + 1) * 100);
-        }
+        UpdateUIValues();
+        SaveValuesToFile();
     }
 }
 
