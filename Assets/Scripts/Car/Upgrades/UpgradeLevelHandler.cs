@@ -1,8 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeLevelHandler : MonoBehaviour {
+public class UpgradeLevelHandler : MonoBehaviour
+{
 
     private const int MaxLevel = 5;
 
@@ -10,15 +10,11 @@ public class UpgradeLevelHandler : MonoBehaviour {
 
     public Color ActiveColor;
 
-    private int _currentLevel;
-
-	void Start () {
-        _currentLevel = 0;
-	}
+    private int _currentLevel = 0;
 
     public void IncrementLevelIfNotMax()
     {
-        if(_currentLevel < MaxLevel)
+        if (_currentLevel < MaxLevel)
         {
             Levels[_currentLevel].color = ActiveColor;
             _currentLevel++;
@@ -30,9 +26,6 @@ public class UpgradeLevelHandler : MonoBehaviour {
         _currentLevel = levelToSetTo;
 
         for (int i = 0; i < levelToSetTo; i++)
-        {
             Levels[i].color = ActiveColor;
-        }
     }
-
 }

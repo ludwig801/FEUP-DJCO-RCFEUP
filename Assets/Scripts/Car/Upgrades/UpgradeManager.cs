@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -9,21 +10,23 @@ public class UpgradeManager : MonoBehaviour
     private int Weight = 2;
 
     public UpgradeLevelHandler[] LevelHandlers;
-    public Button[] UpgradeButtons;
+    public UpgradeUI[] UpgradeButtons;
 
-    private Upgrade[] Upgrades;
+    private List<Upgrade> Upgrades;
 
     void Start()
     {
         SetUpgradeLevels();
     }
 
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
             SceneManager.LoadScene("MainMenu");
+
+        for (int i = 0; i < Upgrades.Count; i++)
+        {
+
         }
     }
 
@@ -32,24 +35,19 @@ public class UpgradeManager : MonoBehaviour
         var minId = 0;
         var maxId = 2;
 
-        Upgrades = new Upgrade[maxId + 1];
+        Upgrades = new List<Upgrade>();
 
         for (int i = minId; i <= maxId; i++)
-        {
             SetLevelForUpgradeWithId(i);
-        }
     }
 
     private void SetLevelForUpgradeWithId(int upgradeId)
     {
         var currentLevel = GetLevel(upgradeId);
-        Upgrades[upgradeId] = new Upgrade() { UpgradeId = upgradeId, Level = currentLevel };
+        Upgrades.Add(new Upgrade() { UpgradeId = upgradeId, Level = currentLevel });
         LevelHandlers[upgradeId].SetLevelTo(currentLevel);
 
-        if (!Upgrades[upgradeId].CanIncrementLevel)
-        {
-            UpgradeButtons[upgradeId].gameObject.SetActive(false);
-        }
+        UpgradeLevel(upgradeId, currentLevel);
     }
 
     private int GetLevel(int upgradeId)
@@ -59,47 +57,44 @@ public class UpgradeManager : MonoBehaviour
 
     public void UpgradeSpeed()
     {
-        if (Upgrades[Speed].CanIncrementLevel)
-        {
-            Upgrades[Speed].Level++;
-            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Speed].UpgradeId);
-            LevelHandlers[Speed].IncrementLevelIfNotMax();
-        }
-
-        if(!Upgrades[Speed].CanIncrementLevel)
-        {
-            UpgradeButtons[Speed].gameObject.SetActive(false);
-        }
+        UpgradeLevel(Speed, Upgrades[Speed].Level);
     }
 
     public void UpgradeHandling()
     {
-        if (Upgrades[Handling].CanIncrementLevel)
-        {
-            Upgrades[Handling].Level++;
-            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Handling].UpgradeId);
-            LevelHandlers[Handling].IncrementLevelIfNotMax();
-        }
-
-        if (!Upgrades[Handling].CanIncrementLevel)
-        {
-            UpgradeButtons[Handling].gameObject.SetActive(false);
-        }
+        UpgradeLevel(Handling, Upgrades[Handling].Level);
     }
 
     public void UpgradeWeight()
     {
-        if(Upgrades[Weight].CanIncrementLevel)
-        {
-            Upgrades[Weight].Level++;
-            UpgradeWriter.IncrementUpgradeLevel(Upgrades[Weight].UpgradeId);
-            LevelHandlers[Weight].IncrementLevelIfNotMax();
-        }
-
-        if (!Upgrades[Weight].CanIncrementLevel)
-        {
-            UpgradeButtons[Weight].gameObject.SetActive(false);
-        }
+        UpgradeLevel(Weight, Upgrades[Weight].Level);
     }
 
+    private void UpgradeLevel(int index, int currentLevel)
+    {
+        if (Upgrades[index].CanIncrementLevel)
+        {
+            Upgrades[index].Level++;
+            UpgradeWriter.IncrementUpgradeLevel(Upgrades[index].UpgradeId);
+            LevelHandlers[index].IncrementLevelIfNotMax();
+        }
+
+        if (!Upgrades[index].CanIncrementLevel)
+        {
+            UpgradeButtons[index].Btn.interactable = false;
+            UpgradeButtons[index].Value.text = string.Empty;
+        }
+        else
+        {
+            UpgradeButtons[index].Btn.interactable = true;
+            UpgradeButtons[index].Value.text = string.Concat((currentLevel + 1) * 100);
+        }
+    }
+}
+
+[System.Serializable]
+public class UpgradeUI
+{
+    public Button Btn;
+    public Text Value;
 }

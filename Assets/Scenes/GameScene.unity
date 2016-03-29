@@ -6568,7 +6568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa454311d41b574a89d3ccd689ff117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LerpSpeed: 10
+  LerpSpeed: 2
   ShowTime: 2
   Description: {fileID: 1779105627}
 --- !u!1001 &886943409
