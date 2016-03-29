@@ -588,6 +588,34 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 400216, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.067
+      objectReference: {fileID: 0}
+    - target: {fileID: 418996, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.063
+      objectReference: {fileID: 0}
+    - target: {fileID: 437200, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.067
+      objectReference: {fileID: 0}
+    - target: {fileID: 10886798, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_SpotAngle
+      value: 121
+      objectReference: {fileID: 0}
+    - target: {fileID: 10813390, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_SpotAngle
+      value: 121
+      objectReference: {fileID: 0}
+    - target: {fileID: 10808272, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_SpotAngle
+      value: 121
+      objectReference: {fileID: 0}
+    - target: {fileID: 10827536, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
+      propertyPath: m_SpotAngle
+      value: 121
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a07f69c7c7247ae4bae0b03eed8f2c27, type: 2}
   m_IsPrefabParent: 0
